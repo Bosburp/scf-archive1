@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Chess Study Archive | SC&F</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #0a0a0a; color: #d1d5db; font-family: 'Georgia', serif; }
+        .brand-font { font-family: 'Josefin Sans', sans-serif; }
+        .parchment-text { color: #f5f5dc; }
+        .gold-accent { color: #c5a059; }
+
+        .chess-card { background: #121212; border: 1px solid #262626; transition: all 0.5s ease; }
+        .chess-card:hover { border-color: #c5a059; background: #171717; transform: translateY(-5px); box-shadow: 0 15px 30px -10px rgba(197, 160, 89, 0.2); }
+        
+        .card-image { transition: transform 0.8s ease; }
+        .chess-card:hover .card-image { transform: scale(1.1); }
+
+        .search-container input { background-color: #121212; border: 1px solid #262626; color: #f5f5dc; }
+        .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 0 1px #c5a059; }
+
+        .filter-chip { border: 1px solid #262626; transition: all 0.3s; cursor: pointer; color: #52525b; }
+        .filter-chip:hover { border-color: #404040; color: #a1a1aa; }
+        .filter-chip.active { border-color: #c5a059; color: #f5f5dc; background: #1a1a1a; }
+
+        .forest-tag { background-color: #143224; color: #a7f3d0; }
+        .btn-icon { width: 18px; height: 18px; filter: brightness(0) invert(1); opacity: 0.7; }
+    </style>
+</head>
+<body class="min-h-screen p-8 md:p-16">
+    <div class="max-w-6xl mx-auto">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.3em] parchment-text mb-6 uppercase leading-tight whitespace-nowrap">
+                The Chess Study Archive
+            </h1>
+            <p class="gold-accent brand-font font-semibold tracking-[0.2em] uppercase text-[10px] mb-12">
+                Hosted by Study Creators & Friends
+            </p>
+            
+            <div class="flex flex-wrap justify-center gap-6 mb-16">
+                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-indigo-500 text-zinc-400 hover:text-white px-8 py-3 rounded-sm text-[10px] brand-font font-bold uppercase tracking-[0.2em] transition-all group">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" class="btn-icon group-hover:opacity-100" alt="Discord Icon">
+                    Discord Invite
+                </a>
+                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-emerald-700 text-zinc-400 hover:text-white px-8 py-3 rounded-sm text-[10px] brand-font font-bold uppercase tracking-[0.2em] transition-all group">
+                    <span class="text-lg group-hover:opacity-100">♔</span>
+                    Lichess Team
+                </a>
+            </div>
+        </header>
+
+        <div class="max-w-4xl mx-auto mb-20 text-center">
+            <div class="search-container relative mb-10 max-w-2xl mx-auto">
+                <input type="text" id="searchInput" placeholder="Search by opening, tactic, or author..." class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none transition-all italic">
+            </div>
+            
+            <div id="filterContainer" class="flex flex-wrap justify-center gap-3 mb-6"></div>
+            
+            <div id="sideFilterContainer" class="flex flex-wrap justify-center gap-3 border-t border-zinc-900 pt-6"></div>
+            
+            <div id="studyCount" class="mt-8 text-zinc-600 text-[10px] brand-font font-bold uppercase tracking-[0.3em]"></div>
+        </div>
+
+        <div id="latestSection" class="mb-20 hidden">
+            <h3 class="text-zinc-500 brand-font font-bold uppercase tracking-[0.4em] text-[11px] mb-8 border-b border-zinc-900 pb-4">Latest Additions</h3>
+            <div id="latestGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12"></div>
+        </div>
+
+        <h3 id="collectionHeader" class="text-zinc-500 brand-font font-bold uppercase tracking-[0.4em] text-[11px] mb-8 border-b border-zinc-900 pb-4">Full Collection</h3>
+        <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+            <div class="col-span-full text-center py-20 text-zinc-700 italic tracking-widest text-sm">Accessing Registry...</div>
+        </div>
+    </div>
+
+    <script>
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
+        let currentFilter = 'All';
+        let currentSideFilter = 'Any Side';
+
+        async function loadData() {
+            try {
+                const response = await fetch(sheetUrl);
+                const csvText = await response.text();
+                const rows = csvText.split('\n').map(row => row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+
+                window.chessData = rows.slice(1).map(cols => {
+                    const customImage = cols[8] ? cols[8].replace(/"/g, '').trim() : null;
+                    return {
+                        side: cols[1]?.replace(/"/g, '') || "Universal",
+                        category: cols[2]?.replace(/"/g, '') || "General",
+                        title: cols[3]?.replace(/"/g, '') || "Untitled",
+                        author: cols[4]?.replace(/"/g, '') || "Anonymous",
+                        link: cols[5]?.replace(/"/g, '') || "#",
+                        notes: cols[6]?.replace(/"/g, '') || "",
+                        image: (customImage && customImage.startsWith('http')) 
+                            ? customImage 
+                            : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80"
+                    };
+                }).filter(item => item.title !== "Untitled" && item.title !== "").reverse();
+
+                createFilters();
+                createSideFilters();
+                renderArchive();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function createFilters() {
+            const categories = ['All', ...new Set(window.chessData.map(i => i.category))]
+                .filter(cat => cat !== 'General');
+
+            const container = document.getElementById('filterContainer');
+            container.innerHTML = categories.map(cat => `
+                <div onclick="setFilter('${cat}')" class="filter-chip px-4 py-1.5 rounded-full text-[10px] brand-font uppercase tracking-[0.2em] ${currentFilter === cat ? 'active' : ''}">
+                    ${cat}
+                </div>
+            `).join('');
+        }
+
+        function createSideFilters() {
+            const sides = ['Any Side', 'White', 'Black', 'Universal'];
+            const container = document.getElementById('sideFilterContainer');
+            container.innerHTML = sides.map(s => `
+                <div onclick="setSideFilter('${s}')" class="filter-chip px-4 py-1.5 rounded-full text-[10px] brand-font uppercase tracking-[0.2em] ${currentSideFilter === s ? 'active' : ''}">
+                    ${s}
+                </div>
+            `).join('');
+        }
+
+        window.setFilter = (cat) => {
+            currentFilter = cat;
+            createFilters();
+            renderArchive();
+        };
+
+        window.setSideFilter = (side) => {
+            currentSideFilter = side;
+            createSideFilters();
+            renderArchive();
+        };
+
+        function renderArchive() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = window.chessData.filter(i => {
+                const matchesSearch = i.title.toLowerCase().includes(term) || i.author.toLowerCase().includes(term);
+                const matchesCat = currentFilter === 'All' || i.category === currentFilter;
+                const matchesSide = currentSideFilter === 'Any Side' || i.side === currentSideFilter;
+                return matchesSearch && matchesCat && matchesSide;
+            });
+
+            document.getElementById('studyCount').innerText = `${filtered.length} Studies Found`;
+
+            const latestSection = document.getElementById('latestSection');
+            const collectionHeader = document.getElementById('collectionHeader');
+            
+            if(term === "" && currentFilter === 'All' && currentSideFilter === 'Any Side') {
+                latestSection.classList.remove('hidden');
+                collectionHeader.innerText = "Full Collection";
+                document.getElementById('latestGrid').innerHTML = filtered.slice(0, 3).map(i => cardHtml(i)).join('');
+                document.getElementById('resultsGrid').innerHTML = filtered.slice(3).map(i => cardHtml(i)).join('');
+            } else {
+                latestSection.classList.add('hidden');
+                collectionHeader.innerText = "Filtered Archive";
+                document.getElementById('resultsGrid').innerHTML = filtered.map(i => cardHtml(i)).join('');
+            }
+        }
+
+        function cardHtml(item) {
+            return `
+                <a href="${item.link}" target="_blank" class="chess-card overflow-hidden flex flex-col h-full shadow-2xl">
+                    <div class="h-40 w-full overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-1000">
+                        <img src="${item.image}" class="card-image w-full h-full object-cover opacity-40" alt="Chess Study Preview">
+                        <div class="absolute top-4 left-4 forest-tag text-[8px] brand-font px-2 py-1 font-bold uppercase tracking-widest z-10">${item.side}</div>
+                    </div>
+                    <div class="p-8 flex-grow flex flex-col">
+                        <span class="text-[10px] brand-font font-semibold tracking-[0.2em] text-zinc-500 uppercase mb-3 block italic">${item.category}</span>
+                        <h2 class="text-xl brand-font parchment-text mb-4 leading-snug tracking-wide">${item.title}</h2>
+                        <p class="gold-accent text-xs brand-font mb-6 font-medium tracking-wide">By ${item.author}</p>
+                        <p class="text-zinc-500 text-xs leading-relaxed italic line-clamp-3">${item.notes}</p>
+                    </div>
+                </a>
+            `;
+        }
+
+        document.getElementById('searchInput').addEventListener('input', renderArchive);
+        loadData();
+    </script>
+</body>
+</html>
