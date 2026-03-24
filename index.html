@@ -10,7 +10,6 @@
     
     <style>
         :root { --bg: #0a0a0a; --card: #121212; --text: #d1d5db; --border: #262626; --heading: #f5f5dc; }
-        
         body.light-mode { --bg: #fdfbf7; --card: #ffffff; --text: #4b5563; --border: #e5e7eb; --heading: #1a1a1a; }
 
         body { background-color: var(--bg); color: var(--text); font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background 0.5s ease, color 0.5s ease; }
@@ -50,6 +49,7 @@
         .modal-overlay { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; background-color: rgba(10, 10, 10, 0.9); }
         body.light-mode .modal-overlay { background-color: rgba(253, 251, 247, 0.9); }
 
+        /* THE ANIMATED BUTTONS */
         #toTopBtn, #themeToggle {
             position: fixed; bottom: 40px; width: 45px; height: 45px;
             background: var(--bg); border: 1px solid var(--border); display: flex;
@@ -59,7 +59,10 @@
         #toTopBtn { right: 40px; opacity: 0; transform: translateY(20px); pointer-events: none; }
         #toTopBtn.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
         #themeToggle { right: 95px; }
-        #toTopBtn:hover, #themeToggle:hover { border-color: #c5a059; color: #c5a059; }
+
+        #toTopBtn:hover, #themeToggle:hover { border-color: #c5a059; transform: rotate(45deg); }
+        #toTopBtn svg, #themeToggle svg { transition: transform 0.5s; transform: rotate(0deg); }
+        #toTopBtn:hover svg, #themeToggle:hover svg { transform: rotate(-45deg); color: #c5a059; }
 
         #liveCounter { font-size: 10px; letter-spacing: 0.3em; transition: all 0.3s ease; }
     </style>
@@ -105,7 +108,6 @@
                         <li>Follow the pinned template to post your link.</li>
                     </ol>
                 </div>
-                <p class="text-[10px] uppercase tracking-[0.2em] opacity-50">Our curators review every study for depth, accuracy, and annotations.</p>
             </div>
         </div>
     </div>
@@ -115,17 +117,13 @@
             <h1 class="text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.4em] parchment-text mb-6 uppercase">The Chess Study Library</h1>
             <p class="gold-accent brand-font font-semibold tracking-[0.2em] uppercase text-[10px] mb-12">Hosted by Study Creators & Friends</p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] flex items-center gap-3 border transition-all">
-                    Discord
-                </a>
+                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] flex items-center gap-3 border transition-all">Discord</a>
                 
                 <button onclick="toggleSubmit()" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all hover:bg-transparent hover:text-[#c5a059]">
                     Submit Study
                 </button>
 
-                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] flex items-center gap-3 border transition-all">
-                    Lichess
-                </a>
+                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] flex items-center gap-3 border transition-all">Lichess</a>
                 <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] border transition-all">About Us</button>
             </div>
         </header>
@@ -220,9 +218,8 @@
 
         function moveCarousel(dir) {
             const grid = document.getElementById('latestGrid');
-            const totalItems = 9;
             const itemsInView = window.innerWidth > 1024 ? 3 : (window.innerWidth > 640 ? 2 : 1);
-            const maxPos = totalItems - itemsInView;
+            const maxPos = 9 - itemsInView;
             carouselPos = (carouselPos + dir);
             if (carouselPos > maxPos) carouselPos = 0;
             if (carouselPos < 0) carouselPos = maxPos;
@@ -248,7 +245,7 @@
                     <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase mb-2 block italic">${i.category}</span>
                     <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
                     
-                    <p onclick="filterByAuthor('${i.author}')" class="gold-accent text-[11px] brand-font mb-6 font-medium cursor-pointer hover:underline w-fit uppercase tracking-wider">By ${i.author}</p>
+                    <p onclick="filterByAuthor('${i.author}')" class="gold-accent text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
                     
                     <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
                 </div>
