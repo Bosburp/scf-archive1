@@ -126,7 +126,7 @@
                 </button>
 
                 <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] flex items-center gap-3 border transition-all">
-                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm1.88 13.92h-3.76a.547.547 0 0 0-.546.547v.546c0 .302.245.547.546.547h3.76a.547.547 0 0 0 .547-.547v-.546a.547.547 0 0 0-.547-.547zm-1.88-9.043c-1.42 0-2.57 1.151-2.57 2.57 0 .578.192 1.112.518 1.542l-.123 3.61c-.01.3.23.547.531.547h3.29c.3 0 .541-.247.53-.547l-.123-3.61c.326-.43.518-.964.518-1.542 0-1.42-1.151-2.57-2.57-2.57z"/></svg>
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1.26 15.14h-2.52a.54.54 0 0 1-.54-.54v-.55a.54.54 0 0 1 .54-.54h2.52a.54.54 0 0 1 .54.54v.55a.54.54 0 0 1-.54.54zm.19-4.88l-.13 3.61a.54.54 0 0 1-.54.53h-1.56a.54.54 0 0 1-.54-.53l-.13-3.61a2.55 2.55 0 0 1-.41-1.35 2.57 2.57 0 1 1 5.14 0 2.55 2.55 0 0 1-.41 1.35h-.82z"/></svg>
                     Lichess
                 </a>
                 <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] border transition-all">About Us</button>
@@ -223,6 +223,7 @@
 
         function moveCarousel(dir) {
             const grid = document.getElementById('latestGrid');
+            if (!grid || !grid.querySelector('.carousel-item')) return;
             const itemsInView = window.innerWidth > 1024 ? 3 : (window.innerWidth > 640 ? 2 : 1);
             const maxPos = 9 - itemsInView;
             carouselPos = (carouselPos + dir);
