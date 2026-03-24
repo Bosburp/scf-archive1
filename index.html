@@ -14,31 +14,40 @@
         .parchment-text { color: #f5f5dc; }
         .gold-accent { color: #c5a059; }
         
-        /* Smooth Search Bar */
         .search-container input { 
             background-color: #121212; border: 1px solid #262626; color: #f5f5dc; 
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); outline: none; }
 
-        /* Sliding Carousel Logic */
         .carousel-viewport { overflow: hidden; width: 100%; }
-        #latestGrid { 
-            display: flex; gap: 2.5rem; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); 
-            will-change: transform;
-        }
+        #latestGrid { display: flex; gap: 2.5rem; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
         .carousel-item { min-width: calc(33.333% - 1.67rem); flex-shrink: 0; }
         @media (max-width: 1024px) { .carousel-item { min-width: calc(50% - 1.25rem); } }
         @media (max-width: 640px) { .carousel-item { min-width: 100%; } }
 
-        .chess-card { background: #121212; border: 1px solid #262626; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; }
+        /* Header Button Hover */
+        .header-btn { transition: all 0.3s ease; }
+        .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); }
+
+        /* Card & Hover Note Logic */
+        .chess-card { background: #121212; border: 1px solid #262626; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; position: relative; overflow: hidden; }
         .chess-card:hover { border-color: #c5a059; background: #171717; transform: translateY(-8px); box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.15); }
         
+        .hover-note {
+            position: absolute; inset: 0; background: rgba(10, 10, 10, 0.95); padding: 2rem;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            opacity: 0; transition: opacity 0.4s ease; z-index: 30; pointer-events: none;
+        }
+        .chess-card:hover .hover-note { opacity: 1; }
+
         .filter-chip { border: 1px solid #262626; transition: all 0.3s; cursor: pointer; color: #52525b; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em; }
         .filter-chip.active { border-color: #c5a059; color: #f5f5dc; background: #1a1a1a; }
         .forest-tag { background-color: #143224; color: #a7f3d0; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; }
         
         #aboutPage { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; }
+        
+        #noResults { display: none; text-align: center; padding: 80px 20px; border: 1px dashed #262626; border-radius: 4px; }
     </style>
 </head>
 <body class="min-h-screen p-8 md:p-16">
@@ -60,13 +69,13 @@
             <h1 class="text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.4em] parchment-text mb-6 uppercase">The Chess Study Library</h1>
             <p class="gold-accent brand-font font-semibold tracking-[0.2em] uppercase text-[10px] mb-12">Hosted by Study Creators & Friends</p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-indigo-500 text-zinc-400 hover:text-white px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all group">
+                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-indigo-500 text-zinc-400 hover:text-white px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all group">
                     <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" class="w-3 h-3 invert opacity-50 group-hover:opacity-100" alt="Discord"> Discord
                 </a>
-                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-emerald-700 text-zinc-400 hover:text-white px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all group">
+                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-emerald-700 text-zinc-400 hover:text-white px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all group">
                     <img src="https://lichess1.org/assets/_6m999D/logo/lichess-favicon-256.png" class="w-3 h-3" alt="Lichess"> Lichess
                 </a>
-                <button onclick="toggleAbout()" class="bg-zinc-900 border border-zinc-800 hover:border-[#c5a059] text-zinc-400 hover:text-white px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all">About Us</button>
+                <button onclick="toggleAbout()" class="header-btn bg-zinc-900 border border-zinc-800 hover:border-[#c5a059] text-zinc-400 hover:text-white px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all">About Us</button>
             </div>
         </header>
 
@@ -92,6 +101,10 @@
         </div>
 
         <h3 id="archiveHeader" class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px] mb-8 border-b border-zinc-900 pb-2">Full Archive</h3>
+        <div id="noResults" class="brand-font italic text-zinc-600">
+            <p class="text-lg">No studies match your current search.</p>
+            <button onclick="resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
+        </div>
         <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"></div>
     </div>
 
@@ -103,6 +116,13 @@
             const about = document.getElementById('aboutPage');
             about.classList.toggle('hidden');
             document.body.style.overflow = about.classList.contains('hidden') ? 'auto' : 'hidden';
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            currentFilter = 'All';
+            currentSideFilter = 'Any Side';
+            createFilters(); createSideFilters(); renderArchive();
         }
 
         async function loadData() {
@@ -117,6 +137,7 @@
                     author: c[4]?.replace(/"/g, '') || "Anonymous",
                     link: c[5]?.replace(/"/g, '') || "#",
                     notes: c[6]?.replace(/"/g, '') || "",
+                    viewerNote: c[7]?.replace(/"/g, '') || "", // Column H
                     image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80"
                 })).filter(i => i.title !== "").reverse();
                 
@@ -139,8 +160,16 @@
 
         function cardHtml(i) {
             const isStar = i.notes.toUpperCase().includes("STAR");
-            return `<a href="${i.link}" target="_blank" class="chess-card overflow-hidden flex flex-col relative group">
-                ${isStar ? `<div class="absolute top-0 right-0 z-20 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
+            const noteText = i.viewerNote ? i.viewerNote : "Community contributors are still reviewing this study.";
+            
+            return `<a href="${i.link}" target="_blank" class="chess-card flex flex-col group">
+                ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
+                
+                <div class="hover-note">
+                    <span class="gold-accent brand-font text-[9px] uppercase tracking-[0.2em] mb-4">Community Note</span>
+                    <p class="parchment-text italic text-sm leading-relaxed">${noteText}</p>
+                </div>
+
                 <div class="h-40 w-full overflow-hidden relative grayscale group-hover:grayscale-0 transition-all duration-700">
                     <img src="${i.image}" class="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity">
                     <div class="absolute top-4 left-4 forest-tag brand-font z-10">${i.side}</div>
@@ -157,10 +186,14 @@
         function renderArchive() {
             const term = document.getElementById('searchInput').value.toLowerCase();
             const latestSec = document.getElementById('latestSection');
+            const noRes = document.getElementById('noResults');
+            const grid = document.getElementById('resultsGrid');
             
-            if (term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side') {
+            const isSearching = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
+
+            if (isSearching) {
                 latestSec.classList.add('opacity-0', 'pointer-events-none');
-                setTimeout(() => latestSec.style.display = 'none', 500);
+                setTimeout(() => { if(isSearching) latestSec.style.display = 'none'; }, 500);
             } else {
                 latestSec.style.display = 'block';
                 setTimeout(() => latestSec.classList.remove('opacity-0', 'pointer-events-none'), 10);
@@ -171,7 +204,15 @@
                        (currentFilter === 'All' || i.category === currentFilter) &&
                        (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
             });
-            document.getElementById('resultsGrid').innerHTML = filtered.map(i => cardHtml(i)).join('');
+
+            if (filtered.length === 0) {
+                grid.style.display = 'none';
+                noRes.style.display = 'block';
+            } else {
+                grid.style.display = 'grid';
+                noRes.style.display = 'none';
+                grid.innerHTML = filtered.map(i => cardHtml(i)).join('');
+            }
         }
 
         function createFilters() {
