@@ -56,7 +56,7 @@
         .chess-card:hover { 
             border-color: #c5a059; 
             transform: translateY(-8px); 
-            box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.25); /* Stronger gold glow */
+            box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.25); 
         }
         
         .note-overlay {
@@ -66,8 +66,21 @@
         }
         .chess-card:hover .note-overlay { transform: translateY(0); }
 
-        .filter-chip { border: 1px solid var(--border); transition: all 0.3s; cursor: pointer; color: #52525b; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em; }
-        .filter-chip.active { border-color: #c5a059; color: var(--heading); background: var(--card); }
+        /* Filter Chip Hover Effects */
+        .filter-chip { 
+            border: 1px solid var(--border); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            cursor: pointer; color: #52525b; padding: 4px 12px; 
+            border-radius: 9999px; text-transform: uppercase; 
+            font-size: 10px; letter-spacing: 0.1em; 
+        }
+        .filter-chip:hover {
+            border-color: #c5a059;
+            color: #c5a059;
+            transform: translateY(-1px);
+        }
+        .filter-chip.active { border-color: #c5a059; color: var(--heading); background: var(--card); box-shadow: 0 0 15px rgba(197, 160, 89, 0.1); }
+        
         .forest-tag { background-color: #143224; color: #a7f3d0; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; }
         
         .modal-overlay { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; background-color: rgba(10, 10, 10, 0.9); }
@@ -89,9 +102,19 @@
         #toTopBtn:hover svg, #themeToggle:hover svg, #surpriseBtn:hover svg { transform: rotate(-45deg); color: #c5a059; }
 
         #liveCounter { font-size: 10px; letter-spacing: 0.3em; transition: all 0.3s ease; }
+
+        .copy-toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #c5a059; color: #0a0a0a; padding: 8px 16px; 
+            font-size: 10px; font-weight: bold; border-radius: 2px;
+            z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .copy-toast.show { opacity: 1; }
     </style>
 </head>
 <body class="min-h-screen p-8 md:p-16">
+
+    <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
     <button id="surpriseBtn" onclick="surpriseMe()" title="Surprise Me (Random Study)">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -199,7 +222,6 @@
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
         let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0;
 
-        // UNCHANGED LOGIC
         function toggleAbout() {
             const el = document.getElementById('aboutPage');
             el.classList.toggle('hidden');
@@ -222,14 +244,20 @@
                 : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
         }
 
-        // Surprise Me Logic
         function surpriseMe() {
             if(!window.chessData || window.chessData.length === 0) return;
             const randomStudy = window.chessData[Math.floor(Math.random() * window.chessData.length)];
             window.open(randomStudy.link, '_blank');
         }
 
-        // Scroll Reveal Observer
+        function copyLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -273,8 +301,8 @@
             carouselPos = (carouselPos + dir);
             if (carouselPos > maxPos) carouselPos = 0;
             if (carouselPos < 0) carouselPos = maxPos;
-            const gap = 40; 
             const itemWidth = grid.querySelector('.carousel-item').offsetWidth;
+            const gap = 40; 
             grid.style.transform = `translateX(-${carouselPos * (itemWidth + gap)}px)`;
         }
 
@@ -292,7 +320,14 @@
                 </a>
 
                 <div class="p-8 flex-grow flex flex-col">
-                    <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase mb-2 block italic">${i.category}</span>
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase block italic">${i.category}</span>
+                        <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors" title="Copy Study Link">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+                    </div>
                     <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
                     
                     <p onclick="filterByAuthor('${i.author}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
@@ -334,6 +369,21 @@
                 grid.innerHTML = filtered.map(i => cardHtml(i)).join('');
                 grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
             }
+        }
+
+        function filterByAuthor(author) {
+            document.getElementById('searchInput').value = author;
+            renderArchive();
+            window.scrollTo({ top: document.getElementById('searchInput').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            currentFilter = 'All';
+            currentSideFilter = 'Any Side';
+            createFilters();
+            createSideFilters();
+            renderArchive();
         }
 
         window.onscroll = function() {
