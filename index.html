@@ -29,11 +29,9 @@
         .header-btn { transition: all 0.3s ease; }
         .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); }
 
-        /* Card Setup */
         .chess-card { background: #121212; border: 1px solid #262626; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; position: relative; overflow: hidden; }
         .chess-card:hover { border-color: #c5a059; background: #171717; transform: translateY(-8px); box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.15); }
         
-        /* The Sliding Note Logic */
         .note-overlay {
             position: absolute; bottom: 0; left: 0; right: 0; background: #c5a059; color: #0a0a0a;
             padding: 1.5rem; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -48,15 +46,27 @@
         #aboutPage { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; }
         #noResults { display: none; text-align: center; padding: 80px 20px; border: 1px dashed #262626; border-radius: 4px; }
 
-        /* Scroll To Top Styling */
+        /* Stylish Scroll To Top Button */
+        #toTopBtn {
+            position: fixed; bottom: 40px; right: 40px; width: 45px; height: 45px;
+            background: #0a0a0a; border: 1px solid #262626; display: flex;
+            align-items: center; justify-content: center; z-index: 100;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; transform: translateY(20px);
+            pointer-events: none;
+        }
         #toTopBtn.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        #toTopBtn:hover { border-color: #c5a059; transform: rotate(45deg); }
+        #toTopBtn svg { transition: transform 0.5s; transform: rotate(0deg); }
+        #toTopBtn:hover svg { transform: rotate(-45deg); color: #c5a059; }
+
+        /* The Live Count Styling */
+        #liveCounter { font-size: 10px; letter-spacing: 0.3em; transition: all 0.3s ease; }
     </style>
 </head>
 <body class="min-h-screen p-8 md:p-16">
 
-    <button id="toTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
-        class="fixed bottom-8 right-8 bg-[#121212] border border-zinc-800 p-4 rounded-full opacity-0 translate-y-10 transition-all duration-500 hover:border-[#c5a059] group z-[100] pointer-events-none shadow-2xl">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-zinc-500 group-hover:text-[#c5a059] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <button id="toTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
@@ -67,8 +77,7 @@
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
                 <p>We’re a community dedicated to creating and sharing original, high-quality work—completely free and accessible to all.</p>
-                <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, instructive work remains buried. At the same time, the number of likes doesn’t always reflect true quality, allowing copied or less meaningful content to gain visibility.</p>
-                <p>Our community was created to address this. We aim to support high-quality creators and promote work that offers real value. Every study we share is carefully reviewed, with the goal of making high-quality, educational content easier to find and appreciate.</p>
+                <p>On Lichess, many excellent studies can be difficult to find. Our community aims to promote work that offers real value.</p>
             </div>
         </div>
     </div>
@@ -88,12 +97,14 @@
             </div>
         </header>
 
-        <div class="max-w-2xl mx-auto mb-24">
+        <div class="max-w-2xl mx-auto mb-24 text-center">
             <div class="search-container relative mb-8">
                 <input type="text" id="searchInput" placeholder="Search by author, opening, or game stage..." class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic">
             </div>
             <div id="filterContainer" class="flex flex-wrap justify-center gap-2 mb-4"></div>
             <div id="sideFilterContainer" class="flex flex-wrap justify-center gap-2 pt-4 border-t border-zinc-900"></div>
+            
+            <div id="liveCounter" class="mt-8 gold-accent brand-font font-bold uppercase"></div>
         </div>
 
         <div id="latestSection" class="mb-32 transition-opacity duration-500">
@@ -168,13 +179,7 @@
 
         function cardHtml(i) {
             const isStar = i.notes.toUpperCase().includes("STAR");
-            const noteOverlay = i.viewerNote 
-                ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider">
-                     <span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>
-                     ${i.viewerNote}
-                   </div>` 
-                : '';
-            
+            const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
             return `<a href="${i.link}" target="_blank" class="chess-card flex flex-col group">
                 ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
                 ${noteOverlay}
@@ -193,12 +198,15 @@
 
         function renderArchive() {
             const term = document.getElementById('searchInput').value.toLowerCase();
-            const latestSec = document.getElementById('latestSection');
-            const noRes = document.getElementById('noResults');
-            const grid = document.getElementById('resultsGrid');
-            const header = document.getElementById('archiveHeader');
-            const isSearching = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
+            const filtered = window.chessData.filter(i => {
+                return (i.title.toLowerCase().includes(term) || i.author.toLowerCase().includes(term)) &&
+                       (currentFilter === 'All' || i.category === currentFilter) &&
+                       (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
+            });
 
+            // Handle Visibility
+            const isSearching = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
+            const latestSec = document.getElementById('latestSection');
             if (isSearching) {
                 latestSec.classList.add('opacity-0', 'pointer-events-none');
                 setTimeout(() => { if(isSearching) latestSec.style.display = 'none'; }, 500);
@@ -207,15 +215,12 @@
                 setTimeout(() => latestSec.classList.remove('opacity-0', 'pointer-events-none'), 10);
             }
 
-            const filtered = window.chessData.filter(i => {
-                return (i.title.toLowerCase().includes(term) || i.author.toLowerCase().includes(term)) &&
-                       (currentFilter === 'All' || i.category === currentFilter) &&
-                       (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
-            });
-
-            // Update Archive Header with Count
-            header.innerText = isSearching ? `Found ${filtered.length} matching studies` : `Full Archive (${filtered.length})`;
-
+            // UPDATE LIVE COUNTER AND ARCHIVE
+            const counter = document.getElementById('liveCounter');
+            counter.innerText = isSearching ? `FOUND ${filtered.length} MATCHING STUDIES` : `LIBRARY TOTAL: ${filtered.length}`;
+            
+            const grid = document.getElementById('resultsGrid');
+            const noRes = document.getElementById('noResults');
             if (filtered.length === 0) {
                 grid.style.display = 'none';
                 noRes.style.display = 'block';
@@ -226,14 +231,10 @@
             }
         }
 
-        // Scroll Logic
         window.onscroll = function() {
             const btn = document.getElementById('toTopBtn');
-            if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
-                btn.classList.add('visible');
-            } else {
-                btn.classList.remove('visible');
-            }
+            if (window.scrollY > 600) btn.classList.add('visible');
+            else btn.classList.remove('visible');
         };
 
         function createFilters() {
