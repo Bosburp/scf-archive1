@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Chess Study Library | SC&F</title>
+    <title>The Chess Study Library | SCF</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZyBmaWxsPSIjYzVhMDU5Ij48cGF0aCBkPSJNNTAgMTBsLTUgNWgtMTBsLTUgNSAxMCAxMGgtMTBsLTUgNSAyMCAyMEgyNWwtNSA1aDYwbC01LTVINTVsMjAtMjAtMTAtMTBoLTEwbDEwLTEwLTUtNS0xMC01LTUtNXoiLz48cmVjdCB4PSIzMCIgeT0iNzUiIHdpZHRoPSI0MCIgaGVpZ2h0PSIxMCIgcng9IjIiLz48L2c+PC9zdmc+">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
@@ -56,8 +56,9 @@
             <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
-                <p>We’re a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
-                <p>On Lichess, many excellent studies can be difficult to find. Our community was created to support high-quality creators and promote work that offers real value. Every study we share has been reviewed to ensure it offers meaningful instruction.</p>
+                <p>We’re a community dedicated to creating and sharing original, high-quality work—completely free and accessible to all.</p>
+                <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, instructive work remains buried. At the same time, the number of likes doesn’t always reflect true quality, allowing copied or less meaningful content to gain visibility.</p>
+                <p>Our community was created to address this. We aim to support high-quality creators and promote work that offers real value. Every study we share is carefully reviewed, with the goal of making high-quality, educational content easier to find and appreciate.</p>
             </div>
         </div>
     </div>
@@ -160,7 +161,7 @@
             // Only create the overlay if there is actually a note in Column H
             const noteOverlay = i.viewerNote 
                 ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider">
-                     <span class="block text-[8px] mb-1 opacity-60">Curator's Note:</span>
+                     <span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>
                      ${i.viewerNote}
                    </div>` 
                 : '';
