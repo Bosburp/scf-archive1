@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Chess Study Library | SC&F</title>
+    <title>The Chess Study Library | SCF</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZyBmaWxsPSIjYzVhMDU5Ij48cGF0aCBkPSJNNTAgMTBsLTUgNWgtMTBsLTUgNSAxMCAxMGgtMTBsLTUgNSAyMCAyMEgyNWwtNSA1aDYwbC01LTVINTVsMjAtMjAtMTAtMTBoLTEwbDEwLTEwLTUtNS0xMC01LTUtNXoiLz48cmVjdCB4PSIzMCIgeT0iNzUiIHdpZHRoPSI0MCIgaGVpZ2h0PSIxMCIgcng9IjIiLz48L2c+PC9zdmc+">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
@@ -26,27 +26,26 @@
         @media (max-width: 1024px) { .carousel-item { min-width: calc(50% - 1.25rem); } }
         @media (max-width: 640px) { .carousel-item { min-width: 100%; } }
 
-        /* Header Button Hover */
         .header-btn { transition: all 0.3s ease; }
         .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); }
 
-        /* Card & Hover Note Logic */
+        /* Card Setup */
         .chess-card { background: #121212; border: 1px solid #262626; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; position: relative; overflow: hidden; }
         .chess-card:hover { border-color: #c5a059; background: #171717; transform: translateY(-8px); box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.15); }
         
-        .hover-note {
-            position: absolute; inset: 0; background: rgba(10, 10, 10, 0.95); padding: 2rem;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            opacity: 0; transition: opacity 0.4s ease; z-index: 30; pointer-events: none;
+        /* The Sliding Note Logic */
+        .note-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0; background: #c5a059; color: #0a0a0a;
+            padding: 1.5rem; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 50; font-size: 11px; font-style: italic; line-height: 1.4;
         }
-        .chess-card:hover .hover-note { opacity: 1; }
+        .chess-card:hover .note-overlay { transform: translateY(0); }
 
         .filter-chip { border: 1px solid #262626; transition: all 0.3s; cursor: pointer; color: #52525b; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em; }
         .filter-chip.active { border-color: #c5a059; color: #f5f5dc; background: #1a1a1a; }
         .forest-tag { background-color: #143224; color: #a7f3d0; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; }
         
         #aboutPage { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; }
-        
         #noResults { display: none; text-align: center; padding: 80px 20px; border: 1px dashed #262626; border-radius: 4px; }
     </style>
 </head>
@@ -58,8 +57,7 @@
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
                 <p>We’re a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
-                <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, instructive studies remain buried. At the same time, the number of likes don’t always reflect quality, allowing copied or less meaningful work to gain visibility.</p>
-                <p>Our community was created to address this. We aim to support high-quality creators and promote work that offers real value. Every study we share has been reviewed, and this website was made with the goal of making high-quality content easier to find and appreciate.</p>
+                <p>On Lichess, many excellent studies can be difficult to find. Our community was created to support high-quality creators and promote work that offers real value. Every study we share has been reviewed to ensure it offers meaningful instruction.</p>
             </div>
         </div>
     </div>
@@ -120,8 +118,7 @@
 
         function resetFilters() {
             document.getElementById('searchInput').value = '';
-            currentFilter = 'All';
-            currentSideFilter = 'Any Side';
+            currentFilter = 'All'; currentSideFilter = 'Any Side';
             createFilters(); createSideFilters(); renderArchive();
         }
 
@@ -137,7 +134,7 @@
                     author: c[4]?.replace(/"/g, '') || "Anonymous",
                     link: c[5]?.replace(/"/g, '') || "#",
                     notes: c[6]?.replace(/"/g, '') || "",
-                    viewerNote: c[7]?.replace(/"/g, '') || "", // Column H
+                    viewerNote: c[7]?.replace(/"/g, '')?.trim() || "", // Column H
                     image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80"
                 })).filter(i => i.title !== "").reverse();
                 
@@ -160,18 +157,21 @@
 
         function cardHtml(i) {
             const isStar = i.notes.toUpperCase().includes("STAR");
-            const noteText = i.viewerNote ? i.viewerNote : "Community contributors are still reviewing this study.";
+            // Only create the overlay if there is actually a note in Column H
+            const noteOverlay = i.viewerNote 
+                ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider">
+                     <span class="block text-[8px] mb-1 opacity-60">Curator's Note:</span>
+                     ${i.viewerNote}
+                   </div>` 
+                : '';
             
             return `<a href="${i.link}" target="_blank" class="chess-card flex flex-col group">
                 ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
                 
-                <div class="hover-note">
-                    <span class="gold-accent brand-font text-[9px] uppercase tracking-[0.2em] mb-4">Community Note</span>
-                    <p class="parchment-text italic text-sm leading-relaxed">${noteText}</p>
-                </div>
+                ${noteOverlay}
 
                 <div class="h-40 w-full overflow-hidden relative grayscale group-hover:grayscale-0 transition-all duration-700">
-                    <img src="${i.image}" class="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity">
+                    <img src="${i.image}" class="w-full h-full object-cover opacity-40 group-hover:opacity-70 transition-all">
                     <div class="absolute top-4 left-4 forest-tag brand-font z-10">${i.side}</div>
                 </div>
                 <div class="p-8 flex-grow flex flex-col">
@@ -188,7 +188,6 @@
             const latestSec = document.getElementById('latestSection');
             const noRes = document.getElementById('noResults');
             const grid = document.getElementById('resultsGrid');
-            
             const isSearching = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
 
             if (isSearching) {
