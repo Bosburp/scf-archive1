@@ -49,7 +49,6 @@
         .modal-overlay { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; background-color: rgba(10, 10, 10, 0.9); }
         body.light-mode .modal-overlay { background-color: rgba(253, 251, 247, 0.9); }
 
-        /* THE ANIMATED BUTTONS */
         #toTopBtn, #themeToggle {
             position: fixed; bottom: 40px; width: 45px; height: 45px;
             background: var(--bg); border: 1px solid var(--border); display: flex;
@@ -60,7 +59,6 @@
         #toTopBtn.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
         #themeToggle { right: 95px; }
 
-        /* The 45-degree stylish rotation */
         #toTopBtn:hover, #themeToggle:hover { border-color: #c5a059; transform: rotate(45deg); }
         #toTopBtn svg, #themeToggle svg { transition: transform 0.5s; transform: rotate(0deg); }
         #toTopBtn:hover svg, #themeToggle:hover svg { transform: rotate(-45deg); color: #c5a059; }
@@ -128,7 +126,7 @@
                 </button>
 
                 <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] flex items-center gap-3 border transition-all">
-                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 22H5V20H19V22M17 10C15.6 10 14.3 10.8 13.6 12H13V7H16V5H13V2H11V5H8V7H11V19H17V10Z"/></svg>
                     Lichess
                 </a>
                 <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] border transition-all">About Us</button>
