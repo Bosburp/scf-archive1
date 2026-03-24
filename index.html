@@ -9,17 +9,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        body { background-color: #0a0a0a; color: #d1d5db; font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        body { background-color: #0a0a0a; color: #d1d5db; font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
         .brand-font { font-family: 'Josefin Sans', sans-serif; }
         .parchment-text { color: #f5f5dc; }
         .gold-accent { color: #c5a059; }
         
+        /* Search Bar */
         .search-container input { 
             background-color: #121212; border: 1px solid #262626; color: #f5f5dc; 
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); outline: none; }
 
+        /* Carousel */
         .carousel-viewport { overflow: hidden; width: 100%; }
         #latestGrid { display: flex; gap: 2.5rem; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
         .carousel-item { min-width: calc(33.333% - 1.67rem); flex-shrink: 0; }
@@ -29,17 +31,27 @@
         .header-btn { transition: all 0.3s ease; }
         .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); }
 
-        /* Card Setup */
+        /* Card Styling */
         .chess-card { background: #121212; border: 1px solid #262626; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; position: relative; overflow: hidden; }
         .chess-card:hover { border-color: #c5a059; background: #171717; transform: translateY(-8px); box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.15); }
         
-        /* The Sliding Note Logic */
+        /* The Sliding Peek-a-Boo Note */
         .note-overlay {
             position: absolute; bottom: 0; left: 0; right: 0; background: #c5a059; color: #0a0a0a;
             padding: 1.5rem; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 50; font-size: 11px; font-style: italic; line-height: 1.4;
         }
         .chess-card:hover .note-overlay { transform: translateY(0); }
+
+        /* Back to Top Button */
+        #backToTop {
+            position: fixed; bottom: 40px; right: 40px; 
+            background: #121212; border: 1px solid #c5a059; color: #c5a059;
+            width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.4s ease; z-index: 1000;
+        }
+        #backToTop.visible { opacity: 1; visibility: visible; }
+        #backToTop:hover { background: #c5a059; color: #0a0a0a; transform: translateY(-5px); }
 
         .filter-chip { border: 1px solid #262626; transition: all 0.3s; cursor: pointer; color: #52525b; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em; }
         .filter-chip.active { border-color: #c5a059; color: #f5f5dc; background: #1a1a1a; }
@@ -51,15 +63,18 @@
 </head>
 <body class="min-h-screen p-8 md:p-16">
 
+    <button id="backToTop" onclick="window.scrollTo(0,0)" aria-label="Back to Top">
+        <span class="text-xl">↑</span>
+    </button>
+
     <div id="aboutPage" class="fixed inset-0 bg-[#0a0a0a]/90 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center">
             <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
-                <p>We’re a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
-                <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, instructive work remains buried. At the same time, the number of likes doesn’t always reflect true quality, allowing copied or less meaningful content to gain visibility.</p>
-                <p>Our community was created to address this. We aim to support high-quality creators and promote work that offers real value. Every study we share has been reviewed, with the goal of making high-quality content easier to find and appreciate.</p>
-            </div>
+              <p>We’re a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
+              <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, instructive work remains buried. At the same time, the number of likes doesn’t always reflect true quality, allowing copied or less meaningful content to gain visibility.</p>
+              <p>Our community was created to address this. We aim to support high-quality creators and promote work that offers real value. Every study we share has been reviewed, with the goal of making high-quality content easier to find and appreciate.</p> 
         </div>
     </div>
 
@@ -99,7 +114,7 @@
             </div>
         </div>
 
-        <h3 id="archiveHeader" class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px] mb-8 border-b border-zinc-900 pb-2">Full Archive</h3>
+        <h3 id="archiveHeader" class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px] mb-8 border-b border-zinc-900 pb-2">Full Collection</h3>
         <div id="noResults" class="brand-font italic text-zinc-600">
             <p class="text-lg">No studies match your current search.</p>
             <button onclick="resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
@@ -110,6 +125,16 @@
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
         let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0;
+
+        // Scroll Button Visibility
+        window.onscroll = function() {
+            const btn = document.getElementById("backToTop");
+            if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+                btn.classList.add("visible");
+            } else {
+                btn.classList.remove("visible");
+            }
+        };
 
         function toggleAbout() {
             const about = document.getElementById('aboutPage');
@@ -128,16 +153,20 @@
                 const res = await fetch(sheetUrl);
                 const csv = await res.text();
                 const rows = csv.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+                
                 window.chessData = rows.slice(1).map(c => ({
                     side: c[1]?.replace(/"/g, '') || "Universal",
                     category: c[2]?.replace(/"/g, '') || "General",
-                    title: c[3]?.replace(/"/g, '') || "Untitled",
+                    title: c[3]?.replace(/"/g, '')?.trim() || "",
                     author: c[4]?.replace(/"/g, '') || "Anonymous",
-                    link: c[5]?.replace(/"/g, '') || "#",
+                    link: c[5]?.replace(/"/g, '') || "",
                     notes: c[6]?.replace(/"/g, '') || "",
-                    viewerNote: c[7]?.replace(/"/g, '')?.trim() || "", // Column H
+                    viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
                     image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80"
-                })).filter(i => i.title !== "").reverse();
+                }))
+                // FIX: Filter out "ghost" cards from empty spreadsheet rows
+                .filter(i => i.title !== "" && i.link !== "" && i.link.includes('lichess.org'))
+                .reverse();
                 
                 renderLatest(); createFilters(); createSideFilters(); renderArchive();
                 setInterval(() => moveCarousel(1), 8000);
@@ -158,10 +187,9 @@
 
         function cardHtml(i) {
             const isStar = i.notes.toUpperCase().includes("STAR");
-            // Only create the overlay if there is actually a note in Column H
             const noteOverlay = i.viewerNote 
                 ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider">
-                     <span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>
+                     <span class="block text-[8px] mb-1 opacity-60">Curator's Note:</span>
                      ${i.viewerNote}
                    </div>` 
                 : '';
