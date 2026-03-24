@@ -20,11 +20,15 @@
         }
         .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); outline: none; }
 
+        /* FIX: Carousel items now match the 3-column archive grid width exactly */
         .carousel-viewport { overflow: hidden; width: 100%; }
         #latestGrid { display: flex; gap: 2.5rem; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
-        .carousel-item { min-width: calc(33.333% - 1.67rem); flex-shrink: 0; }
-        @media (max-width: 1024px) { .carousel-item { min-width: calc(50% - 1.25rem); } }
-        @media (max-width: 640px) { .carousel-item { min-width: 100%; } }
+        
+        /* This calculation (100% - total gaps) / items ensures perfect 1:1 sizing with the archive */
+        .carousel-item { width: calc((100% - 5rem) / 3); flex: 0 0 auto; }
+        
+        @media (max-width: 1024px) { .carousel-item { width: calc((100% - 2.5rem) / 2); } }
+        @media (max-width: 640px) { .carousel-item { width: 100%; } }
 
         .header-btn { transition: all 0.3s ease; }
         .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); }
@@ -46,7 +50,6 @@
         #aboutPage { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; }
         #noResults { display: none; text-align: center; padding: 80px 20px; border: 1px dashed #262626; border-radius: 4px; }
 
-        /* Stylish Scroll To Top Button */
         #toTopBtn {
             position: fixed; bottom: 40px; right: 40px; width: 45px; height: 45px;
             background: #0a0a0a; border: 1px solid #262626; display: flex;
@@ -59,7 +62,6 @@
         #toTopBtn svg { transition: transform 0.5s; transform: rotate(0deg); }
         #toTopBtn:hover svg { transform: rotate(-45deg); color: #c5a059; }
 
-        /* The Live Count Styling */
         #liveCounter { font-size: 10px; letter-spacing: 0.3em; transition: all 0.3s ease; }
     </style>
 </head>
@@ -76,8 +78,9 @@
             <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
-                <p>We’re a community dedicated to creating and sharing original, high-quality work—completely free and accessible to all.</p>
-                <p>On Lichess, many excellent studies can be difficult to find. Our community aims to promote work that offers real value.</p>
+              <p>We’re a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
+              <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, educational work remains buried. At the same time, the number of likes doesn’t always reflect true quality, allowing copied or less meaningful content to gain visibility.</p>
+              <p>Our community was created to address this. We aim to support high-quality creators and promote work that offers real value. Every study we share has been reviewed, with the goal of making high-quality content easier to find and appreciate.</p>
             </div>
         </div>
     </div>
@@ -103,7 +106,6 @@
             </div>
             <div id="filterContainer" class="flex flex-wrap justify-center gap-2 mb-4"></div>
             <div id="sideFilterContainer" class="flex flex-wrap justify-center gap-2 pt-4 border-t border-zinc-900"></div>
-            
             <div id="liveCounter" class="mt-8 gold-accent brand-font font-bold uppercase"></div>
         </div>
 
@@ -172,9 +174,18 @@
 
         function moveCarousel(dir) {
             const grid = document.getElementById('latestGrid');
-            const maxPos = 2; 
-            carouselPos = (carouselPos + dir + (maxPos + 1)) % (maxPos + 1);
-            grid.style.transform = `translateX(calc(-${carouselPos * 100}% - ${carouselPos * 2.5}rem))`;
+            const totalItems = 9;
+            const itemsInView = window.innerWidth > 1024 ? 3 : (window.innerWidth > 640 ? 2 : 1);
+            const maxPos = totalItems - itemsInView;
+            
+            carouselPos = (carouselPos + dir);
+            if (carouselPos > maxPos) carouselPos = 0;
+            if (carouselPos < 0) carouselPos = maxPos;
+
+            // Updated smooth translation logic
+            const gap = 40; // 2.5rem = 40px
+            const itemWidth = grid.querySelector('.carousel-item').offsetWidth;
+            grid.style.transform = `translateX(-${carouselPos * (itemWidth + gap)}px)`;
         }
 
         function cardHtml(i) {
@@ -204,7 +215,6 @@
                        (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
             });
 
-            // Handle Visibility
             const isSearching = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
             const latestSec = document.getElementById('latestSection');
             if (isSearching) {
@@ -215,7 +225,6 @@
                 setTimeout(() => latestSec.classList.remove('opacity-0', 'pointer-events-none'), 10);
             }
 
-            // UPDATE LIVE COUNTER AND ARCHIVE
             const counter = document.getElementById('liveCounter');
             counter.innerText = isSearching ? `FOUND ${filtered.length} MATCHING STUDIES` : `LIBRARY TOTAL: ${filtered.length}`;
             
