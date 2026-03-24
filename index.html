@@ -9,30 +9,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        body { background-color: #0a0a0a; color: #d1d5db; font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        :root { --bg: #0a0a0a; --card: #121212; --text: #d1d5db; --border: #262626; --heading: #f5f5dc; }
+        
+        body.light-mode { --bg: #fdfbf7; --card: #ffffff; --text: #4b5563; --border: #e5e7eb; --heading: #1a1a1a; }
+
+        body { background-color: var(--bg); color: var(--text); font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background 0.5s ease, color 0.5s ease; }
         .brand-font { font-family: 'Josefin Sans', sans-serif; }
-        .parchment-text { color: #f5f5dc; }
+        .parchment-text { color: var(--heading); }
         .gold-accent { color: #c5a059; }
         
         .search-container input { 
-            background-color: #121212; border: 1px solid #262626; color: #f5f5dc; 
+            background-color: var(--card); border: 1px solid var(--border); color: var(--heading); 
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); outline: none; }
 
         .carousel-viewport { overflow: hidden; width: 100%; }
         #latestGrid { display: flex; gap: 2.5rem; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
-        
         .carousel-item { width: calc((100% - 5rem) / 3); flex: 0 0 auto; }
-        
         @media (max-width: 1024px) { .carousel-item { width: calc((100% - 2.5rem) / 2); } }
         @media (max-width: 640px) { .carousel-item { width: 100%; } }
 
-        .header-btn { transition: all 0.3s ease; }
-        .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); }
+        .header-btn { transition: all 0.3s ease; background-color: var(--card); border-color: var(--border); color: var(--text); }
+        .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); color: var(--heading); }
 
-        .chess-card { background: #121212; border: 1px solid #262626; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; position: relative; overflow: hidden; }
-        .chess-card:hover { border-color: #c5a059; background: #171717; transform: translateY(-8px); box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.15); }
+        .chess-card { background: var(--card); border: 1px solid var(--border); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; position: relative; overflow: hidden; }
+        .chess-card:hover { border-color: #c5a059; transform: translateY(-8px); box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.15); }
         
         .note-overlay {
             position: absolute; bottom: 0; left: 0; right: 0; background: #c5a059; color: #0a0a0a;
@@ -41,37 +43,42 @@
         }
         .chess-card:hover .note-overlay { transform: translateY(0); }
 
-        .filter-chip { border: 1px solid #262626; transition: all 0.3s; cursor: pointer; color: #52525b; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em; }
-        .filter-chip.active { border-color: #c5a059; color: #f5f5dc; background: #1a1a1a; }
+        .filter-chip { border: 1px solid var(--border); transition: all 0.3s; cursor: pointer; color: #52525b; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em; }
+        .filter-chip.active { border-color: #c5a059; color: var(--heading); background: var(--card); }
         .forest-tag { background-color: #143224; color: #a7f3d0; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; }
         
-        #aboutPage { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; }
-        #noResults { display: none; text-align: center; padding: 80px 20px; border: 1px dashed #262626; border-radius: 4px; }
+        .modal-overlay { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; background-color: rgba(10, 10, 10, 0.9); }
+        body.light-mode .modal-overlay { background-color: rgba(253, 251, 247, 0.9); }
 
-        #toTopBtn {
-            position: fixed; bottom: 40px; right: 40px; width: 45px; height: 45px;
-            background: #0a0a0a; border: 1px solid #262626; display: flex;
+        #toTopBtn, #themeToggle {
+            position: fixed; bottom: 40px; width: 45px; height: 45px;
+            background: var(--bg); border: 1px solid var(--border); display: flex;
             align-items: center; justify-content: center; z-index: 100;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; transform: translateY(20px);
-            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        #toTopBtn { right: 40px; opacity: 0; transform: translateY(20px); pointer-events: none; }
         #toTopBtn.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        #toTopBtn:hover { border-color: #c5a059; transform: rotate(45deg); }
-        #toTopBtn svg { transition: transform 0.5s; transform: rotate(0deg); }
-        #toTopBtn:hover svg { transform: rotate(-45deg); color: #c5a059; }
+        #themeToggle { right: 95px; }
+        #toTopBtn:hover, #themeToggle:hover { border-color: #c5a059; color: #c5a059; }
 
         #liveCounter { font-size: 10px; letter-spacing: 0.3em; transition: all 0.3s ease; }
     </style>
 </head>
 <body class="min-h-screen p-8 md:p-16">
 
+    <button id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+        <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+    </button>
+
     <button id="toTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
 
-    <div id="aboutPage" class="fixed inset-0 bg-[#0a0a0a]/90 hidden flex items-center justify-center p-8">
+    <div id="aboutPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center">
             <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
@@ -83,23 +90,43 @@
         </div>
     </div>
 
+    <div id="submitPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
+            <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
+            <div class="space-y-8 text-zinc-400 italic text-md leading-relaxed text-center max-w-2xl mx-auto">
+                <p>We are always looking for high-quality, educational chess studies to add to our archive.</p>
+                <div class="border border-zinc-900 p-8 rounded-sm bg-black/20">
+                    <h4 class="gold-accent brand-font font-bold uppercase tracking-widest text-xs mb-4">How to contribute:</h4>
+                    <p class="text-sm mb-6">All submissions are handled via our Discord server to ensure a proper review process.</p>
+                    <ol class="text-left text-sm space-y-4 max-w-sm mx-auto list-decimal">
+                        <li>Join our <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="underline hover:text-[#c5a059]">Discord Server</a>.</li>
+                        <li>Navigate to the <span class="text-white">#study-submissions</span> channel.</li>
+                        <li>Follow the pinned template to post your link.</li>
+                    </ol>
+                </div>
+                <p class="text-[10px] uppercase tracking-[0.2em] opacity-50">Our curators review every study for depth, accuracy, and annotations.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="max-w-6xl mx-auto">
         <header class="text-center mb-20">
             <h1 class="text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.4em] parchment-text mb-6 uppercase">The Chess Study Library</h1>
             <p class="gold-accent brand-font font-semibold tracking-[0.2em] uppercase text-[10px] mb-12">Hosted by Study Creators & Friends</p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-indigo-500 text-zinc-400 hover:text-white px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all group">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" class="w-3 h-3 invert opacity-50 group-hover:opacity-100" alt="Discord"> Discord
+                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] flex items-center gap-3 border transition-all">
+                    Discord
                 </a>
                 
-                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn flex items-center gap-3 bg-[#c5a059] border border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all hover:bg-transparent hover:text-[#c5a059]">
-                    <span class="text-lg leading-none">+</span> Submit Study
-                </a>
+                <button onclick="toggleSubmit()" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all hover:bg-transparent hover:text-[#c5a059]">
+                    Submit Study
+                </button>
 
-                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-emerald-700 text-zinc-400 hover:text-white px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all group">
-                    <img src="https://lichess1.org/assets/_6m999D/logo/lichess-favicon-256.png" class="w-3 h-3" alt="Lichess"> Lichess
+                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] flex items-center gap-3 border transition-all">
+                    Lichess
                 </a>
-                <button onclick="toggleAbout()" class="header-btn bg-zinc-900 border border-zinc-800 hover:border-[#c5a059] text-zinc-400 hover:text-white px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] transition-all">About Us</button>
+                <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.2em] border transition-all">About Us</button>
             </div>
         </header>
 
@@ -138,9 +165,25 @@
         let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0;
 
         function toggleAbout() {
-            const about = document.getElementById('aboutPage');
-            about.classList.toggle('hidden');
-            document.body.style.overflow = about.classList.contains('hidden') ? 'auto' : 'hidden';
+            const el = document.getElementById('aboutPage');
+            el.classList.toggle('hidden');
+            document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+        }
+
+        function toggleSubmit() {
+            const el = document.getElementById('submitPage');
+            el.classList.toggle('hidden');
+            document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            icon.innerHTML = isLight 
+                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />'
+                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
         }
 
         function resetFilters() {
@@ -180,17 +223,14 @@
             const totalItems = 9;
             const itemsInView = window.innerWidth > 1024 ? 3 : (window.innerWidth > 640 ? 2 : 1);
             const maxPos = totalItems - itemsInView;
-            
             carouselPos = (carouselPos + dir);
             if (carouselPos > maxPos) carouselPos = 0;
             if (carouselPos < 0) carouselPos = maxPos;
-
             const gap = 40; 
             const itemWidth = grid.querySelector('.carousel-item').offsetWidth;
             grid.style.transform = `translateX(-${carouselPos * (itemWidth + gap)}px)`;
         }
 
-        // UPDATED: Author is now clickable
         function cardHtml(i) {
             const isStar = i.notes.toUpperCase().includes("STAR");
             const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
@@ -208,16 +248,13 @@
                     <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase mb-2 block italic">${i.category}</span>
                     <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
                     
-                    <button onclick="filterByAuthor('${i.author}')" class="gold-accent text-[11px] brand-font mb-6 font-medium text-left hover:underline w-fit uppercase tracking-wider">
-                        By ${i.author}
-                    </button>
+                    <p onclick="filterByAuthor('${i.author}')" class="gold-accent text-[11px] brand-font mb-6 font-medium cursor-pointer hover:underline w-fit uppercase tracking-wider">By ${i.author}</p>
                     
                     <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
                 </div>
             </div>`;
         }
 
-        // NEW: Helper for author clicks
         window.filterByAuthor = (author) => {
             const input = document.getElementById('searchInput');
             input.value = author;
