@@ -83,6 +83,9 @@
         
         .forest-tag { background-color: #143224; color: #a7f3d0; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; }
         
+        /* New Skill Tag Style */
+        .skill-tag { background-color: rgba(10, 10, 10, 0.8); border: 1px solid #c5a059; color: #c5a059; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; backdrop-filter: blur(4px); }
+
         .modal-overlay { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; background-color: rgba(10, 10, 10, 0.9); }
         body.light-mode .modal-overlay { background-color: rgba(253, 251, 247, 0.9); }
 
@@ -279,7 +282,8 @@
                     link: c[5]?.replace(/"/g, '') || "#",
                     notes: c[6]?.replace(/"/g, '') || "",
                     viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
-                    image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80"
+                    image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
+                    difficulty: c[9]?.replace(/"/g, '').trim() || "" // PULLING FROM COLUMN J
                 })).filter(i => i.title !== "").reverse();
                 
                 renderLatest(); createFilters(); createSideFilters(); renderArchive();
@@ -316,7 +320,10 @@
                 
                 <a href="${i.link}" target="_blank" class="h-40 w-full overflow-hidden relative grayscale group-hover:grayscale-0 transition-all duration-700 block">
                     <img src="${i.image}" class="w-full h-full object-cover opacity-40 group-hover:opacity-70 transition-all">
-                    <div class="absolute top-4 left-4 forest-tag brand-font z-10">${i.side}</div>
+                    <div class="absolute top-4 left-4 flex gap-2 z-10">
+                        <div class="forest-tag brand-font">${i.side}</div>
+                        ${i.difficulty ? `<div class="skill-tag brand-font">${i.difficulty}</div>` : ''}
+                    </div>
                 </a>
 
                 <div class="p-8 flex-grow flex flex-col">
@@ -340,9 +347,9 @@
         function renderArchive() {
             const term = document.getElementById('searchInput').value.toLowerCase();
             const filtered = window.chessData.filter(i => {
-                return (i.title.toLowerCase().includes(term) || i.author.toLowerCase().includes(term)) &&
-                       (currentFilter === 'All' || i.category === currentFilter) &&
-                       (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
+                return (i.title.toLowerCase().includes(term) || i.author.toLowerCase().includes(term) || i.difficulty.toLowerCase().includes(term)) &&
+                        (currentFilter === 'All' || i.category === currentFilter) &&
+                        (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
             });
 
             const isSearching = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
