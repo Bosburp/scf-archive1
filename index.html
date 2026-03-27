@@ -14,13 +14,12 @@
 
         body { background-color: var(--bg); color: var(--text); font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background 0.5s ease, color 0.5s ease; position: relative; }
         
-        /* Atmospheric Grain Overlay - Preserving the academic feel */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-            opacity: 0.05;
+            opacity: 0.03;
             pointer-events: none;
             z-index: 9999;
         }
@@ -45,31 +44,34 @@
         .header-btn { transition: all 0.3s ease; background-color: var(--card); border-color: var(--border); color: var(--text); letter-spacing: 0.3em; }
         .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); color: var(--heading); }
 
-        /* Solid Chess Card - No 3D tilt */
+        /* Enhanced Chess Card */
         .chess-card { 
             background: var(--card); 
             border: 1px solid var(--border); 
-            transition: border-color 0.4s ease, box-shadow 0.4s ease; 
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
             height: 100%; position: relative; overflow: hidden; 
             opacity: 0; transform: translateY(20px);
         }
         .chess-card.reveal { opacity: 1; transform: translateY(0); }
         .chess-card:hover { 
             border-color: #c5a059; 
-            box-shadow: 0 15px 30px -10px rgba(197, 160, 89, 0.2); 
-        }
-        
-        /* Internal Image Parallax */
-        .parallax-wrapper { width: 100%; height: 10rem; overflow: hidden; position: relative; }
-        .parallax-img { 
-            width: 115%; height: 115%; /* Oversized to allow movement */
-            object-cover: cover;
-            position: absolute;
-            top: -7.5%; left: -7.5%;
-            transition: transform 0.15s ease-out; 
-            will-change: transform;
+            transform: translateY(-8px); 
+            box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.25); 
         }
 
+        /* PARALLAX IMAGE EFFECT */
+        .card-image-wrapper { height: 10rem; width: 100%; overflow: hidden; position: relative; background: #000; }
+        .card-image-wrapper img { 
+            width: 100%; h-full; object-cover; opacity: 0.4; filter: grayscale(100%);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease, filter 0.8s ease;
+            transform: scale(1.0);
+        }
+        .chess-card:hover .card-image-wrapper img { 
+            transform: scale(1.1) translateY(-5px); 
+            opacity: 0.7; 
+            filter: grayscale(0%);
+        }
+        
         .note-overlay {
             position: absolute; bottom: 0; left: 0; right: 0; background: #c5a059; color: #0a0a0a;
             padding: 1.5rem; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -108,6 +110,8 @@
         #toTopBtn svg, #themeToggle svg, #surpriseBtn svg { transition: transform 0.5s; transform: rotate(0deg); }
         #toTopBtn:hover svg, #themeToggle:hover svg, #surpriseBtn:hover svg { transform: rotate(-45deg); color: #c5a059; }
 
+        #liveCounter { font-size: 10px; letter-spacing: 0.3em; transition: all 0.3s ease; }
+
         .copy-toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: #c5a059; color: #0a0a0a; padding: 8px 16px; 
@@ -119,18 +123,20 @@
 </head>
 <body class="min-h-screen p-8 md:p-16">
 
-    <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
+    <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied</div>
 
-    <button id="surpriseBtn" onclick="surpriseMe()" title="Surprise Me (Random Study)">
+    <button id="surpriseBtn" onclick="surpriseMe()" title="Surprise Me">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
         </svg>
     </button>
-    <button id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+
+    <button id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
         <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
     </button>
+
     <button id="toTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -143,8 +149,7 @@
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
               <p>We’re a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
-              <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, educational work remains buried. At the same time, the number of likes doesn’t always reflect true quality, allowing copied or less meaningful content to gain visibility.</p>
-              <p>Our community was created to address this. We aim to support high-quality creators and promote work that offers real value. Every study we share has been reviewed, with the goal of making high-quality content easier to find and appreciate.</p>
+              <p>Our community aims to support creators and promote work that offers real value. Every study we share has been reviewed to make high-quality content easier to find.</p>
             </div>
         </div>
     </div>
@@ -153,17 +158,9 @@
         <div class="max-w-3xl mx-auto text-center">
             <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
-            <div class="space-y-8 text-zinc-400 italic text-md leading-relaxed text-center max-w-2xl mx-auto">
-                <p>We are always looking for high-quality, educational chess studies to add to our archive.</p>
-                <div class="border border-zinc-900 p-8 rounded-sm bg-black/20">
-                    <h4 class="gold-accent brand-font font-bold uppercase tracking-widest text-xs mb-4">How to contribute:</h4>
-                    <p class="text-sm mb-6">All submissions are handled via our Discord server to ensure a proper review process.</p>
-                    <ol class="text-left text-sm space-y-4 max-w-sm mx-auto list-decimal">
-                        <li>Join our <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="underline hover:text-[#c5a059]">Discord Server</a>.</li>
-                        <li>Navigate to the <span class="text-white">#study-submissions</span> channel.</li>
-                        <li>Follow the pinned template to post your link.</li>
-                    </ol>
-                </div>
+            <div class="border border-zinc-900 p-8 rounded-sm bg-black/20 max-w-2xl mx-auto">
+                <p class="text-sm mb-6">Join our Discord to submit your study for review.</p>
+                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="gold-accent underline">Discord Server</a>
             </div>
         </div>
     </div>
@@ -173,20 +170,20 @@
             <h1 class="text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.4em] parchment-text mb-6 uppercase">The Chess Study Library</h1>
             <p class="gold-accent brand-font font-semibold tracking-[0.2em] uppercase text-[10px] mb-12">Hosted by Study Creators & Friends</p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border">Discord</a>
-                <button onclick="toggleSubmit()" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase transition-all hover:bg-transparent hover:text-[#c5a059]">Submit Study</button>
-                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border">Lichess</a>
+                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-3 border">Discord</a>
+                <button onclick="toggleSubmit()" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase">Submit Study</button>
+                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-3 border">Lichess</a>
                 <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border">About Us</button>
             </div>
         </header>
 
         <div class="max-w-2xl mx-auto mb-24 text-center">
             <div class="search-container relative mb-8">
-                <input type="text" id="searchInput" placeholder="Search by author, opening, or game stage..." class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic">
+                <input type="text" id="searchInput" placeholder="Search author, opening..." class="w-full rounded-sm py-4 px-8 text-sm italic">
             </div>
             <div id="filterContainer" class="flex flex-wrap justify-center gap-2 mb-4"></div>
             <div id="sideFilterContainer" class="flex flex-wrap justify-center gap-2 pt-4 border-t border-zinc-900"></div>
-            <div id="liveCounter" class="mt-8 gold-accent brand-font font-bold uppercase text-[10px] tracking-[0.3em]"></div>
+            <div id="liveCounter" class="mt-8 gold-accent brand-font font-bold uppercase"></div>
         </div>
 
         <div id="latestSection" class="mb-32">
@@ -203,10 +200,7 @@
         </div>
 
         <h3 id="archiveHeader" class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px] mb-8 border-b border-zinc-900 pb-2">Full Archive</h3>
-        <div id="noResults" class="brand-font italic text-zinc-600" style="display:none;">
-            <p class="text-lg">No studies match your current search.</p>
-            <button onclick="resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
-        </div>
+        <div id="noResults" class="brand-font italic text-zinc-600 hidden">No studies match your search.</div>
         <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"></div>
     </div>
 
@@ -214,69 +208,54 @@
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
         let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0;
 
-        // UI Handlers
         function toggleAbout() { document.getElementById('aboutPage').classList.toggle('hidden'); }
         function toggleSubmit() { document.getElementById('submitPage').classList.toggle('hidden'); }
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            document.getElementById('themeIcon').innerHTML = isLight 
+                ? '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />'
+                : '<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+        }
+
         function surpriseMe() {
-            if(!window.chessData) return;
-            const rand = window.chessData[Math.floor(Math.random() * window.chessData.length)];
-            window.open(rand.link, '_blank');
+            const randomStudy = window.chessData[Math.floor(Math.random() * window.chessData.length)];
+            window.open(randomStudy.link, '_blank');
         }
+
         function copyLink(url) {
-            navigator.clipboard.writeText(url);
-            const t = document.getElementById('copyToast');
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
-
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('reveal'); });
-        }, { threshold: 0.1 });
-
-        // Parallax Engine - Opposite direction movement
-        function initParallax() {
-            document.addEventListener('mousemove', (e) => {
-                const cards = document.querySelectorAll('.chess-card');
-                cards.forEach(card => {
-                    const img = card.querySelector('.parallax-img');
-                    if (!img) return;
-
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-
-                    // If mouse is near/over card
-                    if (x > -50 && x < rect.width + 50 && y > -50 && y < rect.height + 50) {
-                        const moveX = (x - rect.width / 2) / 15;
-                        const moveY = (y - rect.height / 2) / 15;
-                        // Moving OPPOSITE to cursor
-                        img.style.transform = `translate(${-moveX}px, ${-moveY}px) scale(1.15)`;
-                    } else {
-                        img.style.transform = `translate(0, 0) scale(1.15)`;
-                    }
-                });
+            navigator.clipboard.writeText(url).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
             });
         }
 
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal'); });
+        }, { threshold: 0.1 });
+
         async function loadData() {
-            const res = await fetch(sheetUrl);
-            const csv = await res.text();
-            const rows = csv.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
-            window.chessData = rows.slice(1).map(c => ({
-                side: c[1]?.replace(/"/g, '') || "Universal",
-                category: c[2]?.replace(/"/g, '') || "General",
-                title: c[3]?.replace(/"/g, '') || "Untitled",
-                author: c[4]?.replace(/"/g, '') || "Anonymous",
-                link: c[5]?.replace(/"/g, '') || "#",
-                notes: c[6]?.replace(/"/g, '') || "",
-                viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
-                image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
-                difficulty: c[9]?.replace(/"/g, '').trim() || ""
-            })).filter(i => i.title !== "").reverse();
-            
-            renderLatest(); createFilters(); createSideFilters(); renderArchive();
-            initParallax();
+            try {
+                const res = await fetch(sheetUrl);
+                const csv = await res.text();
+                const rows = csv.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+                window.chessData = rows.slice(1).map(c => ({
+                    side: c[1]?.replace(/"/g, '') || "Universal",
+                    category: c[2]?.replace(/"/g, '') || "General",
+                    title: c[3]?.replace(/"/g, '') || "Untitled",
+                    author: c[4]?.replace(/"/g, '') || "Anonymous",
+                    link: c[5]?.replace(/"/g, '') || "#",
+                    notes: c[6]?.replace(/"/g, '') || "",
+                    viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
+                    image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
+                    difficulty: c[9]?.replace(/"/g, '').trim() || ""
+                })).filter(i => i.title !== "").reverse();
+                
+                renderLatest(); createFilters(); createSideFilters(); renderArchive();
+                setInterval(() => moveCarousel(1), 8000);
+            } catch (err) { console.error(err); }
         }
 
         function renderLatest() {
@@ -288,32 +267,36 @@
         function moveCarousel(dir) {
             const grid = document.getElementById('latestGrid');
             const itemsInView = window.innerWidth > 1024 ? 3 : (window.innerWidth > 640 ? 2 : 1);
-            carouselPos = (carouselPos + dir + 10) % (10 - itemsInView);
-            const itemWidth = grid.querySelector('.carousel-item').offsetWidth + 40;
-            grid.style.transform = `translateX(-${carouselPos * itemWidth}px)`;
+            carouselPos = (carouselPos + dir);
+            if (carouselPos > (9 - itemsInView)) carouselPos = 0;
+            if (carouselPos < 0) carouselPos = 9 - itemsInView;
+            grid.style.transform = `translateX(-${carouselPos * (grid.querySelector('.carousel-item').offsetWidth + 40)}px)`;
         }
 
         function cardHtml(i) {
             const isStar = i.notes.toUpperCase().includes("STAR");
-            const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
-            return `<div class="chess-card flex flex-col group relative">
-                ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
+            const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font uppercase tracking-wider text-[10px]">${i.viewerNote}</div>` : '';
+            
+            return `<div class="chess-card flex flex-col group">
+                ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] uppercase">★ Staff Pick</div>` : ''}
                 ${noteOverlay}
-                <a href="${i.link}" target="_blank" class="parallax-wrapper grayscale group-hover:grayscale-0 transition-all duration-700 block">
-                    <img src="${i.image}" class="parallax-img opacity-40 group-hover:opacity-70">
+                <div class="card-image-wrapper">
+                    <a href="${i.link}" target="_blank">
+                        <img src="${i.image}" alt="Board">
+                    </a>
                     <div class="absolute top-4 left-4 flex gap-2 z-10">
                         <div class="forest-tag brand-font">${i.side}</div>
                         ${i.difficulty ? `<div class="skill-tag brand-font">${i.difficulty}</div>` : ''}
                     </div>
-                </a>
-                <div class="p-8 flex-grow flex flex-col">
+                </div>
+                <div class="p-8 flex-grow">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase block italic">${i.category}</span>
-                        <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg></button>
+                        <span class="text-[9px] tracking-[0.2em] text-zinc-600 uppercase italic">${i.category}</span>
+                        <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059]">🔗</button>
                     </div>
-                    <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
-                    <p class="gold-accent brand-font text-[13px] mb-6">By ${i.author}</p>
-                    <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
+                    <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text hover:text-[#c5a059] block mb-2">${i.title}</a>
+                    <p class="gold-accent text-[12px] mb-4">By ${i.author}</p>
+                    <p class="text-zinc-500 text-[10px] italic line-clamp-2">${i.notes.replace(/STAR/gi, '')}</p>
                 </div>
             </div>`;
         }
@@ -325,24 +308,29 @@
                 (currentFilter === 'All' || i.category === currentFilter) &&
                 (currentSideFilter === 'Any Side' || i.side === currentSideFilter)
             );
-            document.getElementById('liveCounter').innerText = `LIBRARY TOTAL: ${window.chessData.length}`;
-            const grid = document.getElementById('resultsGrid');
-            grid.innerHTML = filtered.map(i => cardHtml(i)).join('');
-            grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
+            document.getElementById('liveCounter').innerText = `LIBRARY TOTAL: ${filtered.length}`;
+            document.getElementById('resultsGrid').innerHTML = filtered.map(i => cardHtml(i)).join('');
+            document.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
         }
 
         function createFilters() {
             const cats = ['All', ...new Set(window.chessData.map(i => i.category))].filter(c => c !== 'General');
-            document.getElementById('filterContainer').innerHTML = cats.map(c => `<div onclick="setFilter('${c}')" class="filter-chip brand-font ${currentFilter === c ? 'active' : ''}">${c}</div>`).join('');
+            document.getElementById('filterContainer').innerHTML = cats.map(c => `<div onclick="setFilter('${c}')" class="filter-chip ${currentFilter === c ? 'active' : ''}">${c}</div>`).join('');
         }
         function createSideFilters() {
             const sides = ['Any Side', 'White', 'Black', 'Universal'];
-            document.getElementById('sideFilterContainer').innerHTML = sides.map(s => `<div onclick="setSideFilter('${s}')" class="filter-chip brand-font ${currentSideFilter === s ? 'active' : ''}">${s}</div>`).join('');
+            document.getElementById('sideFilterContainer').innerHTML = sides.map(s => `<div onclick="setSideFilter('${s}')" class="filter-chip ${currentSideFilter === s ? 'active' : ''}">${s}</div>`).join('');
         }
         window.setFilter = (cat) => { currentFilter = cat; createFilters(); renderArchive(); };
         window.setSideFilter = (side) => { currentSideFilter = side; createSideFilters(); renderArchive(); };
         document.getElementById('searchInput').addEventListener('input', renderArchive);
         loadData();
+
+        window.onscroll = function() {
+            const btn = document.getElementById('toTopBtn');
+            if (window.scrollY > 600) btn.classList.add('visible');
+            else btn.classList.remove('visible');
+        };
     </script>
 </body>
 </html>
