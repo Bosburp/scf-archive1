@@ -35,7 +35,9 @@
         }
         .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); outline: none; }
 
-        .carousel-viewport { overflow: hidden; width: 100%; }
+        /* FIXED: Added vertical padding and negative margin to prevent hover clipping */
+        .carousel-viewport { overflow: hidden; width: 100%; padding: 20px 0; margin: -20px 0; }
+        
         #latestGrid { display: flex; gap: 2.5rem; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
         .carousel-item { width: calc((100% - 5rem) / 3); flex: 0 0 auto; }
         @media (max-width: 1024px) { .carousel-item { width: calc((100% - 2.5rem) / 2); } }
