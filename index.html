@@ -14,47 +14,26 @@
 
         body { background-color: var(--bg); color: var(--text); font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background 0.5s ease, color 0.5s ease; position: relative; }
         
-      /* --- UPDATED: Atmospheric Grain Overlay --- */
+        /* Atmospheric Grain Overlay */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-            opacity: 0.04;
+            opacity: 0.03;
             pointer-events: none;
-            z-index: 9999; /* Top layer */
+            z-index: 9999;
         }
 
-        /* --- NEW: Dust Motes Layer --- */
-        .dust-container {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 100; /* Above cards (10), below grain (9999) */
-            overflow: hidden;
+        .brand-font { font-family: 'Josefin Sans', sans-serif; }
+        .parchment-text { color: var(--heading); }
+        .gold-accent { color: #c5a059; }
+        
+        .search-container input { 
+            background-color: var(--card); border: 1px solid var(--border); color: var(--heading); 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
         }
-
-        .mote {
-            position: absolute;
-            background: rgba(197, 160, 89, 0.4); 
-            border-radius: 50%;
-            filter: blur(1px);
-            animation: float linear infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0); opacity: 0; }
-            20% { opacity: 0.5; }
-            80% { opacity: 0.5; }
-            100% { transform: translate(150px, -100vh); opacity: 0; }
-        }
-
-        /* --- NEW: Parallax Image Setup --- */
-        .chess-card img {
-            transition: transform 0.1s ease-out;
-            transform: scale(1.15); /* Room to move */
-            will-change: transform;
-        }
+        .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); outline: none; }
 
         /* FIXED: Added vertical padding and negative margin to prevent hover clipping */
         .carousel-viewport { overflow: hidden; width: 100%; padding: 20px 0; margin: -20px 0; }
@@ -216,7 +195,7 @@
 
         <div class="max-w-2xl mx-auto mb-24 text-center">
             <div class="search-container relative mb-8">
-                <input type="text" id="searchInput" placeholder="Search by author, opening, or game stage..." class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic">
+                <input type="text" id="searchInput" placeholder="Search by author, opening, stage, or difficulty..." class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic">
             </div>
             <div id="filterContainer" class="flex flex-wrap justify-center gap-2 mb-4"></div>
             <div id="sideFilterContainer" class="flex flex-wrap justify-center gap-2 pt-4 border-t border-zinc-900"></div>
@@ -306,7 +285,7 @@
                     notes: c[6]?.replace(/"/g, '') || "",
                     viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
                     image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
-                    difficulty: c[9]?.replace(/"/g, '').trim() || "" // PULLING FROM COLUMN J
+                    difficulty: c[9]?.replace(/"/g, '').trim() || ""
                 })).filter(i => i.title !== "").reverse();
                 
                 renderLatest(); createFilters(); createSideFilters(); renderArchive();
@@ -370,7 +349,10 @@
         function renderArchive() {
             const term = document.getElementById('searchInput').value.toLowerCase();
             const filtered = window.chessData.filter(i => {
-                return (i.title.toLowerCase().includes(term) || i.author.toLowerCase().includes(term) || i.difficulty.toLowerCase().includes(term)) &&
+                return (i.title.toLowerCase().includes(term) || 
+                        i.author.toLowerCase().includes(term) || 
+                        i.difficulty.toLowerCase().includes(term) ||
+                        i.category.toLowerCase().includes(term)) &&
                         (currentFilter === 'All' || i.category === currentFilter) &&
                         (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
             });
@@ -433,47 +415,6 @@
         window.setFilter = (cat) => { currentFilter = cat; createFilters(); renderArchive(); };
         window.setSideFilter = (side) => { currentSideFilter = side; createSideFilters(); renderArchive(); };
         document.getElementById('searchInput').addEventListener('input', renderArchive);
-        loadData();
-        // --- NEW: Parallax Effect Logic ---
-        document.addEventListener('mousemove', (e) => {
-            const cards = document.querySelectorAll('.chess-card');
-            cards.forEach(card => {
-                const img = card.querySelector('img');
-                if (!img) return;
-
-                const rect = card.getBoundingClientRect();
-                const cardX = rect.left + rect.width / 2;
-                const cardY = rect.top + rect.height / 2;
-
-                const moveX = (e.clientX - cardX) / 25;
-                const moveY = (e.clientY - cardY) / 25;
-
-                img.style.transform = `scale(1.15) translate(${-moveX}px, ${-moveY}px)`;
-            });
-        });
-
-        // --- NEW: Dust Mote Generation ---
-        function initDust() {
-            const container = document.getElementById('dustContainer');
-            if (!container) return;
-            for (let i = 0; i < 40; i++) {
-                const mote = document.createElement('div');
-                mote.className = 'mote';
-                const size = Math.random() * 3 + 1;
-                mote.style.width = `${size}px`;
-                mote.style.height = `${size}px`;
-                mote.style.left = `${Math.random() * 100}%`;
-                mote.style.top = `${Math.random() * 100}%`;
-                mote.style.animationDuration = `${Math.random() * 15 + 10}s`;
-                mote.style.animationDelay = `${Math.random() * 10}s`;
-                container.appendChild(mote);
-            }
-        }
-
-        // Call it immediately
-        initDust();
-        
-        // This is your existing last line
         loadData();
     </script>
 </body>
