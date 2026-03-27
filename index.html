@@ -14,49 +14,49 @@
 
         body { background-color: var(--bg); color: var(--text); font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background 0.5s ease, color 0.5s ease; position: relative; }
         
-        /* Atmospheric Grain Overlay */
+      /* --- UPDATED: Atmospheric Grain Overlay --- */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-            opacity: 0.03;
+            opacity: 0.04;
             pointer-events: none;
-            z-index: 9999;
+            z-index: 9999; /* Top layer */
         }
 
-        /* --- NEW: Dust Motes Background --- */
+        /* --- NEW: Dust Motes Layer --- */
         .dust-container {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 1; /* Above background, below content */
+            z-index: 100; /* Above cards (10), below grain (9999) */
             overflow: hidden;
         }
+
         .mote {
             position: absolute;
-            background: rgba(197, 160, 89, 0.2);
+            background: rgba(197, 160, 89, 0.4); 
             border-radius: 50%;
             filter: blur(1px);
             animation: float linear infinite;
         }
+
         @keyframes float {
-            0% { transform: translate(0, 0) translateY(0); opacity: 0; }
-            20% { opacity: 0.3; }
-            80% { opacity: 0.3; }
-            100% { transform: translate(100px, -100vh); opacity: 0; }
+            0% { transform: translate(0, 0); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translate(150px, -100vh); opacity: 0; }
         }
 
-        .brand-font { font-family: 'Josefin Sans', sans-serif; }
-        .parchment-text { color: var(--heading); }
-        .gold-accent { color: #c5a059; }
-        
-        .search-container input { 
-            background-color: var(--card); border: 1px solid var(--border); color: var(--heading); 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        /* --- NEW: Parallax Image Setup --- */
+        .chess-card img {
+            transition: transform 0.1s ease-out;
+            transform: scale(1.15); /* Room to move */
+            will-change: transform;
         }
-        .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); outline: none; }
 
+        /* FIXED: Added vertical padding and negative margin to prevent hover clipping */
         .carousel-viewport { overflow: hidden; width: 100%; padding: 20px 0; margin: -20px 0; }
         
         #latestGrid { display: flex; gap: 2.5rem; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
@@ -73,8 +73,7 @@
             border: 1px solid var(--border); 
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
             height: 100%; position: relative; overflow: hidden; 
-            opacity: 0; transform: translateY(20px);
-            z-index: 10;
+            opacity: 0; transform: translateY(20px); /* For Scroll Reveal */
         }
         .chess-card.reveal { opacity: 1; transform: translateY(0); }
         .chess-card:hover { 
@@ -83,13 +82,6 @@
             box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.25); 
         }
         
-        /* --- NEW: Parallax Image Style --- */
-        .chess-card img {
-            transition: transform 0.2s ease-out, opacity 0.7s;
-            transform: scale(1.15); /* Slightly larger to allow movement without edges showing */
-            will-change: transform;
-        }
-
         .note-overlay {
             position: absolute; bottom: 0; left: 0; right: 0; background: #c5a059; color: #0a0a0a;
             padding: 1.5rem; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -97,6 +89,7 @@
         }
         .chess-card:hover .note-overlay { transform: translateY(0); }
 
+        /* Filter Chip Hover Effects */
         .filter-chip { 
             border: 1px solid var(--border); 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -104,10 +97,16 @@
             border-radius: 9999px; text-transform: uppercase; 
             font-size: 10px; letter-spacing: 0.1em; 
         }
-        .filter-chip:hover { border-color: #c5a059; color: #c5a059; transform: translateY(-1px); }
+        .filter-chip:hover {
+            border-color: #c5a059;
+            color: #c5a059;
+            transform: translateY(-1px);
+        }
         .filter-chip.active { border-color: #c5a059; color: var(--heading); background: var(--card); box-shadow: 0 0 15px rgba(197, 160, 89, 0.1); }
         
         .forest-tag { background-color: #143224; color: #a7f3d0; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; }
+        
+        /* New Skill Tag Style */
         .skill-tag { background-color: rgba(10, 10, 10, 0.8); border: 1px solid #c5a059; color: #c5a059; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; backdrop-filter: blur(4px); }
 
         .modal-overlay { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; background-color: rgba(10, 10, 10, 0.9); }
@@ -141,8 +140,6 @@
 </head>
 <body class="min-h-screen p-8 md:p-16">
 
-    <div class="dust-container" id="dustContainer"></div>
-
     <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
     <button id="surpriseBtn" onclick="surpriseMe()" title="Surprise Me (Random Study)">
@@ -150,11 +147,13 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
         </svg>
     </button>
+
     <button id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
         <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
     </button>
+
     <button id="toTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -167,8 +166,8 @@
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
               <p>We’re a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
-              <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, educational work remains buried.</p>
-              <p>Our community was created to address this. We aim to support high-quality creators and promote work that offers real value.</p>
+              <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, educational work remains buried. At the same time, the number of likes doesn’t always reflect true quality, allowing copied or less meaningful content to gain visibility.</p>
+              <p>Our community was created to address this. We aim to support high-quality creators and promote work that offers real value. Every study we share has been reviewed, with the goal of making high-quality content easier to find and appreciate.</p>
             </div>
         </div>
     </div>
@@ -178,9 +177,15 @@
             <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
             <div class="space-y-8 text-zinc-400 italic text-md leading-relaxed text-center max-w-2xl mx-auto">
-                <p>Join our Discord to contribute high-quality work to the library.</p>
+                <p>We are always looking for high-quality, educational chess studies to add to our archive.</p>
                 <div class="border border-zinc-900 p-8 rounded-sm bg-black/20">
-                    <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="underline hover:text-[#c5a059] block mb-4">Discord Server Link</a>
+                    <h4 class="gold-accent brand-font font-bold uppercase tracking-widest text-xs mb-4">How to contribute:</h4>
+                    <p class="text-sm mb-6">All submissions are handled via our Discord server to ensure a proper review process.</p>
+                    <ol class="text-left text-sm space-y-4 max-w-sm mx-auto list-decimal">
+                        <li>Join our <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="underline hover:text-[#c5a059]">Discord Server</a>.</li>
+                        <li>Navigate to the <span class="text-white">#study-submissions</span> channel.</li>
+                        <li>Follow the pinned template to post your link.</li>
+                    </ol>
                 </div>
             </div>
         </div>
@@ -191,10 +196,21 @@
             <h1 class="text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.4em] parchment-text mb-6 uppercase">The Chess Study Library</h1>
             <p class="gold-accent brand-font font-semibold tracking-[0.2em] uppercase text-[10px] mb-12">Hosted by Study Creators & Friends</p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-3 border">Discord</a>
-                <button onclick="toggleSubmit()" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase transition-all hover:bg-transparent hover:text-[#c5a059]">Submit Study</button>
-                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-3 border">Lichess</a>
-                <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border">About Us</button>
+                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-3 border transition-all">
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                    Discord
+                </a>
+                
+                <button onclick="toggleSubmit()" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase transition-all hover:bg-transparent hover:text-[#c5a059]">
+                    Submit Study
+                </button>
+
+                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-3 border transition-all group">
+                    <img src="https://lichess1.org/assets/_6m999D/logo/lichess-favicon-256.png" class="w-3 h-3" alt="Lichess">
+                    Lichess
+                </a>
+
+                <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">About Us</button>
             </div>
         </header>
 
@@ -231,44 +247,6 @@
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
         let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0;
-
-        // --- NEW: Atmosphere Dust Motes Generation ---
-        function createDustMotes() {
-            const container = document.getElementById('dustContainer');
-            const moteCount = 30;
-            for (let i = 0; i < moteCount; i++) {
-                const mote = document.createElement('div');
-                mote.className = 'mote';
-                const size = Math.random() * 3 + 1;
-                mote.style.width = `${size}px`;
-                mote.style.height = `${size}px`;
-                mote.style.left = `${Math.random() * 100}%`;
-                mote.style.top = `${Math.random() * 100}%`;
-                mote.style.animationDuration = `${Math.random() * 20 + 10}s`;
-                mote.style.animationDelay = `${Math.random() * 10}s`;
-                container.appendChild(mote);
-            }
-        }
-
-        // --- NEW: Parallax Logic ---
-        function initParallax() {
-            const cards = document.querySelectorAll('.chess-card');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const img = card.querySelector('img');
-                    if (!img) return;
-                    const rect = card.getBoundingClientRect();
-                    const x = (e.clientX - rect.left) / rect.width - 0.5;
-                    const y = (e.clientY - rect.top) / rect.height - 0.5;
-                    // Move slightly in opposite direction
-                    img.style.transform = `scale(1.15) translate(${x * -20}px, ${y * -20}px)`;
-                });
-                card.addEventListener('mouseleave', () => {
-                    const img = card.querySelector('img');
-                    if (img) img.style.transform = `scale(1.15) translate(0, 0)`;
-                });
-            });
-        }
 
         function toggleAbout() {
             const el = document.getElementById('aboutPage');
@@ -328,11 +306,10 @@
                     notes: c[6]?.replace(/"/g, '') || "",
                     viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
                     image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
-                    difficulty: c[9]?.replace(/"/g, '').trim() || ""
+                    difficulty: c[9]?.replace(/"/g, '').trim() || "" // PULLING FROM COLUMN J
                 })).filter(i => i.title !== "").reverse();
                 
                 renderLatest(); createFilters(); createSideFilters(); renderArchive();
-                createDustMotes(); // Init dust on load
                 setInterval(() => moveCarousel(1), 8000);
             } catch (err) { console.error(err); }
         }
@@ -341,7 +318,6 @@
             const grid = document.getElementById('latestGrid');
             grid.innerHTML = window.chessData.slice(0, 9).map(i => `<div class="carousel-item">${cardHtml(i)}</div>`).join('');
             grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
-            initParallax(); // Re-init parallax on new cards
         }
 
         function moveCarousel(dir) {
@@ -366,7 +342,7 @@
                 ${noteOverlay}
                 
                 <a href="${i.link}" target="_blank" class="h-40 w-full overflow-hidden relative grayscale group-hover:grayscale-0 transition-all duration-700 block">
-                    <img src="${i.image}" class="w-full h-full object-cover opacity-40 group-hover:opacity-70">
+                    <img src="${i.image}" class="w-full h-full object-cover opacity-40 group-hover:opacity-70 transition-all">
                     <div class="absolute top-4 left-4 flex gap-2 z-10">
                         <div class="forest-tag brand-font">${i.side}</div>
                         ${i.difficulty ? `<div class="skill-tag brand-font">${i.difficulty}</div>` : ''}
@@ -383,7 +359,9 @@
                         </button>
                     </div>
                     <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
+                    
                     <p onclick="filterByAuthor('${i.author}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
+                    
                     <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
                 </div>
             </div>`;
@@ -420,7 +398,6 @@
                 noRes.style.display = 'none';
                 grid.innerHTML = filtered.map(i => cardHtml(i)).join('');
                 grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
-                initParallax(); // Re-init parallax on archive render
             }
         }
 
@@ -456,6 +433,47 @@
         window.setFilter = (cat) => { currentFilter = cat; createFilters(); renderArchive(); };
         window.setSideFilter = (side) => { currentSideFilter = side; createSideFilters(); renderArchive(); };
         document.getElementById('searchInput').addEventListener('input', renderArchive);
+        loadData();
+        // --- NEW: Parallax Effect Logic ---
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.chess-card');
+            cards.forEach(card => {
+                const img = card.querySelector('img');
+                if (!img) return;
+
+                const rect = card.getBoundingClientRect();
+                const cardX = rect.left + rect.width / 2;
+                const cardY = rect.top + rect.height / 2;
+
+                const moveX = (e.clientX - cardX) / 25;
+                const moveY = (e.clientY - cardY) / 25;
+
+                img.style.transform = `scale(1.15) translate(${-moveX}px, ${-moveY}px)`;
+            });
+        });
+
+        // --- NEW: Dust Mote Generation ---
+        function initDust() {
+            const container = document.getElementById('dustContainer');
+            if (!container) return;
+            for (let i = 0; i < 40; i++) {
+                const mote = document.createElement('div');
+                mote.className = 'mote';
+                const size = Math.random() * 3 + 1;
+                mote.style.width = `${size}px`;
+                mote.style.height = `${size}px`;
+                mote.style.left = `${Math.random() * 100}%`;
+                mote.style.top = `${Math.random() * 100}%`;
+                mote.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                mote.style.animationDelay = `${Math.random() * 10}s`;
+                container.appendChild(mote);
+            }
+        }
+
+        // Call it immediately
+        initDust();
+        
+        // This is your existing last line
         loadData();
     </script>
 </body>
