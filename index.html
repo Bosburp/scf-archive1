@@ -12,17 +12,45 @@
         :root { --bg: #0a0a0a; --card: #121212; --text: #d1d5db; --border: #262626; --heading: #f5f5dc; }
         body.light-mode { --bg: #fdfbf7; --card: #ffffff; --text: #4b5563; --border: #e5e7eb; --heading: #1a1a1a; }
 
-        body { background-color: var(--bg); color: var(--text); font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background 0.5s ease, color 0.5s ease; position: relative; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Georgia', serif; 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased; 
+            transition: background 0.5s ease, color 0.5s ease; 
+            position: relative; 
+        }
         
-        /* Atmospheric Grain Overlay */
+        /* Atmospheric Grain Overlay with subtle movement */
         body::before {
             content: "";
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: -50%; left: -50%; width: 200%; height: 200%;
             background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-            opacity: 0.03;
+            opacity: 0.08; /* Increased visibility */
             pointer-events: none;
             z-index: 9999;
+            animation: grain-shift 8s steps(10) infinite;
+        }
+
+        @keyframes grain-shift {
+            0%, 100% { transform: translate(0,0); }
+            10% { transform: translate(-1%,-1%); }
+            30% { transform: translate(1%,1%); }
+            50% { transform: translate(-0.5%, 2%); }
+            70% { transform: translate(2%, -1%); }
+        }
+
+        /* Subtle glow behind the header */
+        header::after {
+            content: "";
+            position: absolute;
+            top: -100px; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 400px;
+            background: radial-gradient(circle, rgba(197, 160, 89, 0.05) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         .brand-font { font-family: 'Josefin Sans', sans-serif; }
@@ -35,7 +63,6 @@
         }
         .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); outline: none; }
 
-        /* FIXED: Added vertical padding and negative margin to prevent hover clipping */
         .carousel-viewport { overflow: hidden; width: 100%; padding: 20px 0; margin: -20px 0; }
         
         #latestGrid { display: flex; gap: 2.5rem; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
@@ -46,18 +73,19 @@
         .header-btn { transition: all 0.3s ease; background-color: var(--card); border-color: var(--border); color: var(--text); letter-spacing: 0.3em; }
         .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); color: var(--heading); }
 
-        /* Enhanced Chess Card */
+        /* Enhanced Chess Card with Parallax Tilt */
+        .chess-card-container { perspective: 1000px; }
         .chess-card { 
             background: var(--card); 
             border: 1px solid var(--border); 
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+            transition: transform 0.1s ease-out, border-color 0.6s ease, box-shadow 0.6s ease;
             height: 100%; position: relative; overflow: hidden; 
-            opacity: 0; transform: translateY(20px); /* For Scroll Reveal */
+            opacity: 0; transform: translateY(20px); 
+            transform-style: preserve-3d;
         }
         .chess-card.reveal { opacity: 1; transform: translateY(0); }
         .chess-card:hover { 
             border-color: #c5a059; 
-            transform: translateY(-8px); 
             box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.25); 
         }
         
@@ -68,7 +96,6 @@
         }
         .chess-card:hover .note-overlay { transform: translateY(0); }
 
-        /* Filter Chip Hover Effects */
         .filter-chip { 
             border: 1px solid var(--border); 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -76,16 +103,10 @@
             border-radius: 9999px; text-transform: uppercase; 
             font-size: 10px; letter-spacing: 0.1em; 
         }
-        .filter-chip:hover {
-            border-color: #c5a059;
-            color: #c5a059;
-            transform: translateY(-1px);
-        }
+        .filter-chip:hover { border-color: #c5a059; color: #c5a059; transform: translateY(-1px); }
         .filter-chip.active { border-color: #c5a059; color: var(--heading); background: var(--card); box-shadow: 0 0 15px rgba(197, 160, 89, 0.1); }
         
         .forest-tag { background-color: #143224; color: #a7f3d0; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; }
-        
-        /* New Skill Tag Style */
         .skill-tag { background-color: rgba(10, 10, 10, 0.8); border: 1px solid #c5a059; color: #c5a059; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; backdrop-filter: blur(4px); }
 
         .modal-overlay { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; background-color: rgba(10, 10, 10, 0.9); }
@@ -171,7 +192,7 @@
     </div>
 
     <div class="max-w-6xl mx-auto">
-        <header class="text-center mb-20">
+        <header class="text-center mb-20 relative">
             <h1 class="text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.4em] parchment-text mb-6 uppercase">The Chess Study Library</h1>
             <p class="gold-accent brand-font font-semibold tracking-[0.2em] uppercase text-[10px] mb-12">Hosted by Study Creators & Friends</p>
             <div class="flex flex-wrap justify-center gap-4">
@@ -227,6 +248,7 @@
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
         let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0;
 
+        // Toggle Functions
         function toggleAbout() {
             const el = document.getElementById('aboutPage');
             el.classList.toggle('hidden');
@@ -263,6 +285,7 @@
             });
         }
 
+        // Intersection Observer for Reveal
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -270,6 +293,26 @@
                 }
             });
         }, { threshold: 0.1 });
+
+        // Parallax Tilt Effect for cards
+        function handleTilt(e) {
+            const card = e.currentTarget;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 15;
+            const rotateY = (centerX - x) / 15;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        }
+
+        function resetTilt(e) {
+            e.currentTarget.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        }
 
         async function loadData() {
             try {
@@ -295,8 +338,8 @@
 
         function renderLatest() {
             const grid = document.getElementById('latestGrid');
-            grid.innerHTML = window.chessData.slice(0, 9).map(i => `<div class="carousel-item">${cardHtml(i)}</div>`).join('');
-            grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
+            grid.innerHTML = window.chessData.slice(0, 9).map(i => `<div class="carousel-item chess-card-container">${cardHtml(i)}</div>`).join('');
+            attachCardEvents();
         }
 
         function moveCarousel(dir) {
@@ -338,9 +381,7 @@
                         </button>
                     </div>
                     <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
-                    
                     <p onclick="filterByAuthor('${i.author}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
-                    
                     <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
                 </div>
             </div>`;
@@ -378,9 +419,17 @@
             } else {
                 grid.style.display = 'grid';
                 noRes.style.display = 'none';
-                grid.innerHTML = filtered.map(i => cardHtml(i)).join('');
-                grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
+                grid.innerHTML = filtered.map(i => `<div class="chess-card-container">${cardHtml(i)}</div>`).join('');
+                attachCardEvents();
             }
+        }
+
+        function attachCardEvents() {
+            document.querySelectorAll('.chess-card').forEach(el => {
+                revealObserver.observe(el);
+                el.addEventListener('mousemove', handleTilt);
+                el.addEventListener('mouseleave', resetTilt);
+            });
         }
 
         function filterByAuthor(author) {
