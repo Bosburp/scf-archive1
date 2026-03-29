@@ -246,7 +246,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(10,10,10,0.72), rgba(10,10,10,0.06));
+            background: linear-gradient(to top, rgba(10,10,10,0.56), rgba(10,10,10,0.04));
             pointer-events: none;
         }
 
@@ -549,7 +549,7 @@
 
     <button id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
         <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
     </button>
 
@@ -679,7 +679,7 @@
 
             icon.innerHTML = isLight 
                 ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />'
-                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
         }
 
         function surpriseMe() {
@@ -731,7 +731,8 @@
                 study.side,
                 study.notes,
                 study.viewerNote,
-                study.keyword
+                study.keyword,
+                study.featuredDescription
             ].some(field => normalizeText(field).includes(t));
         }
 
@@ -750,7 +751,8 @@
                     viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
                     image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
                     difficulty: c[9]?.replace(/"/g, '').trim() || "",
-                    keyword: c[11]?.replace(/"/g, '').trim() || ""
+                    keyword: c[11]?.replace(/"/g, '').trim() || "",
+                    featuredDescription: c[12]?.replace(/"/g, '').trim() || ""
                 })).filter(i => i.title !== "").reverse();
                 
                 renderFeaturedStudy();
@@ -798,7 +800,7 @@
             section.classList.remove('hidden');
 
             const cleanNotes = featured.notes.replace(/STAR/gi, '').trim();
-            const spotlightText = featured.viewerNote || cleanNotes || "A carefully selected study from the archive.";
+            const spotlightText = featured.featuredDescription || featured.viewerNote || cleanNotes || "A carefully selected study from the archive.";
 
             container.innerHTML = `
                 <div class="featured-shell rounded-sm">
