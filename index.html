@@ -248,10 +248,11 @@
         }
 
         .featured-badge {
-            border: 1px solid rgba(197,160,89,0.45);
-            color: var(--gold);
-            background: rgba(10,10,10,0.45);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #ffffff;
+            background: #143224;
             backdrop-filter: blur(6px);
+            box-shadow: 0 10px 20px -16px rgba(0,0,0,0.45);
         }
 
         .featured-btn {
@@ -519,6 +520,10 @@
             #toTopBtn { right: 20px; }
             #themeToggle { right: 75px; }
             #surpriseBtn { right: 130px; }
+
+            .featured-shell {
+                border-radius: 0.125rem;
+            }
         }
     </style>
 </head>
@@ -643,7 +648,8 @@
 
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
-        let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0, carouselInterval;
+        const FEATURED_KEYWORD = 'FEATURED'; // Put this keyword in Column L for the study you want featured
+        let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0, carouselInterval, searchTimer;
 
         function toggleAbout() {
             const el = document.getElementById('aboutPage');
@@ -690,6 +696,33 @@
             });
         }, { threshold: 0.1 });
 
+        function normalizeText(value) {
+            return (value || '').toString().trim().toLowerCase();
+        }
+
+        function splitKeywords(value) {
+            return normalizeText(value)
+                .toUpperCase()
+                .split(/[,|;]/)
+                .map(v => v.trim())
+                .filter(Boolean);
+        }
+
+        function matchesSearch(study, term) {
+            if (!term) return false;
+            const t = term.toLowerCase();
+            return [
+                study.title,
+                study.author,
+                study.difficulty,
+                study.category,
+                study.side,
+                study.notes,
+                study.viewerNote,
+                study.keyword
+            ].some(field => normalizeText(field).includes(t));
+        }
+
         async function loadData() {
             try {
                 const res = await fetch(sheetUrl);
@@ -704,7 +737,8 @@
                     notes: c[6]?.replace(/"/g, '') || "",
                     viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
                     image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
-                    difficulty: c[9]?.replace(/"/g, '').trim() || ""
+                    difficulty: c[9]?.replace(/"/g, '').trim() || "",
+                    keyword: c[11]?.replace(/"/g, '').trim().toUpperCase() || ""
                 })).filter(i => i.title !== "").reverse();
                 
                 renderFeaturedStudy();
@@ -726,6 +760,9 @@
         function getFeaturedStudy() {
             if (!window.chessData || window.chessData.length === 0) return null;
 
+            const manual = window.chessData.find(i => splitKeywords(i.keyword).includes(FEATURED_KEYWORD));
+            if (manual) return manual;
+
             const staffPicks = window.chessData.filter(i => i.notes.toUpperCase().includes("STAR"));
             if (staffPicks.length > 0) return staffPicks[0];
 
@@ -737,10 +774,15 @@
 
         function renderFeaturedStudy() {
             const featured = getFeaturedStudy();
-            if (!featured) return;
-
             const container = document.getElementById('featuredStudyContainer');
             const section = document.getElementById('featuredSection');
+
+            if (!featured) {
+                section.classList.add('hidden');
+                container.innerHTML = '';
+                return;
+            }
+
             section.classList.remove('hidden');
 
             const cleanNotes = featured.notes.replace(/STAR/gi, '').trim();
@@ -748,23 +790,25 @@
 
             container.innerHTML = `
                 <div class="featured-shell rounded-sm">
-                    <div class="grid lg:grid-cols-[1.2fr_1fr] min-h-[460px]">
-                        <a href="${featured.link}" target="_blank" class="featured-image block relative">
+                    <div class="grid lg:grid-cols-[1.15fr_0.85fr] min-h-[520px]">
+                        <a href="${featured.link}" target="_blank" class="featured-image block relative min-h-[320px] lg:min-h-[520px]">
                             <img src="${featured.image}" alt="${featured.title}">
-                            <div class="absolute top-6 left-6 flex flex-wrap gap-2 z-10">
-                                <div class="featured-badge brand-font px-3 py-1 text-[9px] uppercase tracking-[0.2em]">Featured Study</div>
+                            <div class="absolute top-5 left-5 sm:top-6 sm:left-6 flex flex-wrap gap-2 z-10 max-w-[calc(100%-2.5rem)]">
+                                <div class="featured-badge brand-font px-4 py-2 text-[9px] uppercase tracking-[0.2em] rounded-sm">
+                                    Featured Study
+                                </div>
                                 <div class="forest-tag brand-font">${featured.side}</div>
                                 ${featured.difficulty ? `<div class="skill-tag brand-font">${featured.difficulty}</div>` : ''}
                             </div>
                         </a>
 
-                        <div class="p-10 md:p-12 flex flex-col justify-center relative z-10">
+                        <div class="p-10 md:p-12 lg:p-14 flex flex-col justify-center relative z-10">
                             <p class="gold-accent brand-font uppercase tracking-[0.35em] text-[10px] mb-5">Weekly Spotlight</p>
                             <h2 class="text-3xl md:text-4xl brand-font parchment-text leading-tight mb-5">${featured.title}</h2>
                             <p onclick="filterByAuthor('${featured.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-sm mb-8 cursor-pointer hover:underline w-fit">By ${featured.author}</p>
 
                             <div class="space-y-5 mb-10">
-                                <p class="text-zinc-400 italic leading-relaxed text-sm">
+                                <p class="text-zinc-400 italic leading-relaxed text-sm max-w-xl">
                                     ${spotlightText}
                                 </p>
                                 <p class="text-zinc-500 text-[11px] italic leading-relaxed">
@@ -850,7 +894,10 @@
         }
 
         function renderArchive() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
+            const term = document.getElementById('searchInput').value.trim().toLowerCase();
+            const featured = getFeaturedStudy();
+            const featuredMatchesSearch = !!featured && matchesSearch(featured, term);
+
             const filtered = window.chessData.filter(i => {
                 return (i.title.toLowerCase().includes(term) || 
                         i.author.toLowerCase().includes(term) || 
@@ -861,31 +908,24 @@
                         (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
             });
 
-            const isSearching = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
+            const isSearchingOrFiltering = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
             const latestSec = document.getElementById('latestSection');
             const featuredSec = document.getElementById('featuredSection');
 
-            if (isSearching) {
-                latestSec.classList.add('opacity-0', 'pointer-events-none');
-                featuredSec.classList.add('opacity-0', 'pointer-events-none');
-
-                setTimeout(() => { 
-                    if (term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side') {
-                        latestSec.style.display = 'none'; 
-                        featuredSec.style.display = 'none'; 
-                    }
-                }, 500);
+            if (isSearchingOrFiltering) {
+                latestSec.style.display = 'none';
             } else {
                 latestSec.style.display = 'block';
+            }
+
+            if (term.length === 0) {
                 featuredSec.style.display = 'block';
-                setTimeout(() => {
-                    latestSec.classList.remove('opacity-0', 'pointer-events-none');
-                    featuredSec.classList.remove('opacity-0', 'pointer-events-none');
-                }, 10);
+            } else {
+                featuredSec.style.display = featuredMatchesSearch ? 'none' : 'block';
             }
 
             const counter = document.getElementById('liveCounter');
-            counter.innerText = isSearching ? `FOUND ${filtered.length} MATCHING STUDIES` : `LIBRARY TOTAL: ${window.chessData.length}`;
+            counter.innerText = isSearchingOrFiltering ? `FOUND ${filtered.length} MATCHING STUDIES` : `LIBRARY TOTAL: ${window.chessData.length}`;
             
             const grid = document.getElementById('resultsGrid');
             const noRes = document.getElementById('noResults');
@@ -944,7 +984,10 @@
             renderArchive(); 
         };
 
-        document.getElementById('searchInput').addEventListener('input', renderArchive);
+        document.getElementById('searchInput').addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(renderArchive, 40);
+        });
 
         document.addEventListener('mousemove', (e) => {
             const glow = document.getElementById('cursorGlow');
