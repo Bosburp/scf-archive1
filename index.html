@@ -9,11 +9,52 @@
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        :root { --bg: #0a0a0a; --card: #121212; --text: #d1d5db; --border: #262626; --heading: #f5f5dc; }
-        body.light-mode { --bg: #fdfbf7; --card: #ffffff; --text: #4b5563; --border: #e5e7eb; --heading: #1a1a1a; }
+        :root { 
+            --bg: #0a0a0a; 
+            --card: #121212; 
+            --text: #d1d5db; 
+            --border: #262626; 
+            --heading: #f5f5dc; 
+            --gold: #c5a059;
+        }
 
-        body { background-color: var(--bg); color: var(--text); font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background 0.5s ease, color 0.5s ease; position: relative; }
-        
+        body.light-mode { 
+            --bg: #fdfbf7; 
+            --card: #ffffff; 
+            --text: #4b5563; 
+            --border: #e5e7eb; 
+            --heading: #1a1a1a; 
+            --gold: #b88d3b;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Georgia', serif; 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased; 
+            transition: background 0.5s ease, color 0.5s ease; 
+            position: relative;
+        }
+
+        /* Cursor Glow */
+        #cursorGlow {
+            position: fixed;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(197,160,89,0.08) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            filter: blur(45px);
+            transition: transform 0.08s linear;
+        }
+
         /* Atmospheric Grain Overlay */
         body::before {
             content: "";
@@ -27,97 +68,393 @@
 
         .brand-font { font-family: 'Josefin Sans', sans-serif; }
         .parchment-text { color: var(--heading); }
-        .gold-accent { color: #c5a059; }
+        .gold-accent { color: var(--gold); }
+
+        .site-layer {
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .hero-title {
+            animation: heroFloat 7s ease-in-out infinite;
+        }
         
         .search-container input { 
-            background-color: var(--card); border: 1px solid var(--border); color: var(--heading); 
+            background-color: var(--card); 
+            border: 1px solid var(--border); 
+            color: var(--heading); 
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
         }
-        .search-container input:focus { border-color: #c5a059; box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); outline: none; }
 
-        /* FIXED: Added vertical padding and negative margin to prevent hover clipping */
-        .carousel-viewport { overflow: hidden; width: 100%; padding: 20px 0; margin: -20px 0; }
+        .search-container input:focus { 
+            border-color: var(--gold); 
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); 
+            outline: none; 
+            transform: translateY(-1px);
+        }
+
+        .carousel-viewport { 
+            position: relative;
+            overflow: hidden; 
+            width: 100%; 
+            padding: 20px 0; 
+            margin: -20px 0; 
+        }
+
+        .carousel-viewport::before,
+        .carousel-viewport::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 80px;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .carousel-viewport::before {
+            left: 0;
+            background: linear-gradient(to right, var(--bg), transparent);
+        }
+
+        .carousel-viewport::after {
+            right: 0;
+            background: linear-gradient(to left, var(--bg), transparent);
+        }
         
-        #latestGrid { display: flex; gap: 2.5rem; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
+        #latestGrid { 
+            display: flex; 
+            gap: 2.5rem; 
+            transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1); 
+            will-change: transform; 
+        }
+
         .carousel-item { width: calc((100% - 5rem) / 3); flex: 0 0 auto; }
         @media (max-width: 1024px) { .carousel-item { width: calc((100% - 2.5rem) / 2); } }
         @media (max-width: 640px) { .carousel-item { width: 100%; } }
 
-        .header-btn { transition: all 0.3s ease; background-color: var(--card); border-color: var(--border); color: var(--text); letter-spacing: 0.3em; }
-        .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); color: var(--heading); }
+        .header-btn { 
+            transition: all 0.35s ease; 
+            background-color: var(--card); 
+            border-color: var(--border); 
+            color: var(--text); 
+            letter-spacing: 0.3em; 
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-btn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 20%, rgba(197,160,89,0.12) 50%, transparent 80%);
+            transform: translateX(-120%);
+            transition: transform 0.8s ease;
+        }
+
+        .header-btn:hover::before {
+            transform: translateX(120%);
+        }
+
+        .header-btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); 
+            color: var(--heading); 
+            border-color: var(--gold);
+        }
+
+        .header-btn:active,
+        #toTopBtn:active,
+        #themeToggle:active,
+        #surpriseBtn:active,
+        .filter-chip:active {
+            transform: scale(0.96);
+        }
 
         /* Enhanced Chess Card */
         .chess-card { 
             background: var(--card); 
             border: 1px solid var(--border); 
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
-            height: 100%; position: relative; overflow: hidden; 
-            opacity: 0; transform: translateY(20px); /* For Scroll Reveal */
+            height: 100%; 
+            position: relative; 
+            overflow: hidden; 
+            opacity: 0; 
+            transform: translateY(20px);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            will-change: transform;
+            border-radius: 2px;
         }
-        .chess-card.reveal { opacity: 1; transform: translateY(0); }
+
+        .chess-card.reveal { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+
         .chess-card:hover { 
-            border-color: #c5a059; 
-            transform: translateY(-8px); 
+            border-color: var(--gold); 
             box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.25); 
+        }
+
+        .chess-card-inner {
+            height: 100%;
+            transition: transform 0.22s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            z-index: 2;
+        }
+
+        .chess-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                120deg,
+                transparent 20%,
+                rgba(197, 160, 89, 0.05) 40%,
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(197, 160, 89, 0.05) 60%,
+                transparent 80%
+            );
+            transform: translateX(-120%);
+            transition: transform 1.2s ease;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .chess-card:hover::before {
+            transform: translateX(120%);
+        }
+
+        /* Card image movement */
+        .card-image-wrap {
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.42;
+            transform: scale(1.02);
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.8s ease,
+                        filter 0.8s ease;
+            filter: grayscale(100%);
+        }
+
+        .chess-card:hover .card-image {
+            transform: scale(1.08);
+            opacity: 0.72;
+            filter: grayscale(0%);
+        }
+
+        .image-vignette {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10,10,10,0.55), rgba(10,10,10,0.05));
+            pointer-events: none;
         }
         
         .note-overlay {
-            position: absolute; bottom: 0; left: 0; right: 0; background: #c5a059; color: #0a0a0a;
-            padding: 1.5rem; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 50; font-size: 11px; font-style: italic; line-height: 1.4;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(197,160,89,0.96), rgba(197,160,89,0.88));
+            color: #0a0a0a;
+            padding: 1.5rem;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 50;
+            font-size: 11px;
+            font-style: italic;
+            line-height: 1.4;
         }
-        .chess-card:hover .note-overlay { transform: translateY(0); }
+
+        .chess-card:hover .note-overlay { 
+            transform: translateY(0); 
+            opacity: 1; 
+        }
 
         /* Filter Chip Hover Effects */
         .filter-chip { 
             border: 1px solid var(--border); 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            cursor: pointer; color: #52525b; padding: 4px 12px; 
-            border-radius: 9999px; text-transform: uppercase; 
-            font-size: 10px; letter-spacing: 0.1em; 
+            cursor: pointer; 
+            color: #52525b; 
+            padding: 4px 12px; 
+            border-radius: 9999px; 
+            text-transform: uppercase; 
+            font-size: 10px; 
+            letter-spacing: 0.1em; 
+            position: relative;
+            overflow: hidden;
         }
-        .filter-chip:hover {
-            border-color: #c5a059;
-            color: #c5a059;
-            transform: translateY(-1px);
-        }
-        .filter-chip.active { border-color: #c5a059; color: var(--heading); background: var(--card); box-shadow: 0 0 15px rgba(197, 160, 89, 0.1); }
-        
-        .forest-tag { background-color: #143224; color: #a7f3d0; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; }
-        
-        /* New Skill Tag Style */
-        .skill-tag { background-color: rgba(10, 10, 10, 0.8); border: 1px solid #c5a059; color: #c5a059; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; backdrop-filter: blur(4px); }
 
-        .modal-overlay { backdrop-filter: blur(20px); transition: opacity 0.5s ease; z-index: 2000; background-color: rgba(10, 10, 10, 0.9); }
-        body.light-mode .modal-overlay { background-color: rgba(253, 251, 247, 0.9); }
+        .filter-chip:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translateY(-1px);
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.08);
+        }
+
+        .filter-chip.active { 
+            border-color: var(--gold); 
+            color: var(--heading); 
+            background: var(--card); 
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.1); 
+        }
+        
+        .forest-tag { 
+            background-color: #143224; 
+            color: #a7f3d0; 
+            padding: 2px 8px; 
+            font-size: 8px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            border-radius: 999px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .skill-tag { 
+            background-color: rgba(10, 10, 10, 0.8); 
+            border: 1px solid var(--gold); 
+            color: var(--gold); 
+            padding: 2px 8px; 
+            font-size: 8px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            backdrop-filter: blur(4px); 
+            border-radius: 999px;
+        }
+
+        .modal-overlay { 
+            backdrop-filter: blur(20px); 
+            transition: opacity 0.4s ease, transform 0.4s ease; 
+            z-index: 2000; 
+            background-color: rgba(10, 10, 10, 0.9);
+            opacity: 1;
+        }
+
+        .modal-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body.light-mode .modal-overlay { 
+            background-color: rgba(253, 251, 247, 0.9); 
+        }
 
         #toTopBtn, #themeToggle, #surpriseBtn {
-            position: fixed; bottom: 40px; width: 45px; height: 45px;
-            background: var(--bg); border: 1px solid var(--border); display: flex;
-            align-items: center; justify-content: center; z-index: 100;
+            position: fixed; 
+            bottom: 40px; 
+            width: 45px; 
+            height: 45px;
+            background: var(--bg); 
+            border: 1px solid var(--border); 
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            z-index: 100;
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
         }
-        #toTopBtn { right: 40px; opacity: 0; transform: translateY(20px); pointer-events: none; }
-        #toTopBtn.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+        #toTopBtn { 
+            right: 40px; 
+            opacity: 0; 
+            transform: translateY(20px); 
+            pointer-events: none; 
+        }
+
+        #toTopBtn.visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+            pointer-events: auto; 
+        }
+
         #themeToggle { right: 95px; }
         #surpriseBtn { right: 150px; }
 
-        #toTopBtn:hover, #themeToggle:hover, #surpriseBtn:hover { border-color: #c5a059; transform: rotate(45deg); }
-        #toTopBtn svg, #themeToggle svg, #surpriseBtn svg { transition: transform 0.5s; transform: rotate(0deg); }
-        #toTopBtn:hover svg, #themeToggle:hover svg, #surpriseBtn:hover svg { transform: rotate(-45deg); color: #c5a059; }
+        #toTopBtn:hover, #themeToggle:hover, #surpriseBtn:hover { 
+            border-color: var(--gold); 
+            transform: rotate(45deg); 
+            box-shadow: 0 12px 25px -12px rgba(197, 160, 89, 0.35);
+        }
 
-        #liveCounter { font-size: 10px; letter-spacing: 0.3em; transition: all 0.3s ease; }
+        #toTopBtn svg, #themeToggle svg, #surpriseBtn svg { 
+            transition: transform 0.5s; 
+            transform: rotate(0deg); 
+        }
+
+        #toTopBtn:hover svg, #themeToggle:hover svg, #surpriseBtn:hover svg { 
+            transform: rotate(-45deg); 
+            color: var(--gold); 
+        }
+
+        #liveCounter { 
+            font-size: 10px; 
+            letter-spacing: 0.3em; 
+            transition: all 0.3s ease; 
+        }
 
         .copy-toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #c5a059; color: #0a0a0a; padding: 8px 16px; 
-            font-size: 10px; font-weight: bold; border-radius: 2px;
-            z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            position: fixed; 
+            bottom: 20px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            background: var(--gold); 
+            color: #0a0a0a; 
+            padding: 8px 16px; 
+            font-size: 10px; 
+            font-weight: bold; 
+            border-radius: 2px;
+            z-index: 5000; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.3s, transform 0.3s;
         }
-        .copy-toast.show { opacity: 1; }
+
+        .copy-toast.show { 
+            opacity: 1; 
+            transform: translateX(-50%) translateY(-4px);
+        }
+
+        .fade-divider {
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+            height: 1px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            #cursorGlow {
+                display: none;
+            }
+
+            #toTopBtn, #themeToggle, #surpriseBtn {
+                bottom: 20px;
+            }
+
+            #toTopBtn { right: 20px; }
+            #themeToggle { right: 75px; }
+            #surpriseBtn { right: 130px; }
+        }
     </style>
 </head>
 <body class="min-h-screen p-8 md:p-16">
+
+    <div id="cursorGlow"></div>
 
     <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
@@ -140,7 +477,7 @@
     </button>
 
     <div id="aboutPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
-        <div class="max-w-3xl mx-auto text-center">
+        <div class="max-w-3xl mx-auto text-center site-layer">
             <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
@@ -152,7 +489,7 @@
     </div>
 
     <div id="submitPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
-        <div class="max-w-3xl mx-auto text-center">
+        <div class="max-w-3xl mx-auto text-center site-layer">
             <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
             <div class="space-y-8 text-zinc-400 italic text-md leading-relaxed text-center max-w-2xl mx-auto">
@@ -170,26 +507,28 @@
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-6xl mx-auto site-layer">
         <header class="text-center mb-20">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.4em] parchment-text mb-6 uppercase">The Chess Study Library</h1>
+            <h1 class="hero-title text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.4em] parchment-text mb-6 uppercase">The Chess Study Library</h1>
             <p class="gold-accent brand-font font-semibold tracking-[0.2em] uppercase text-[10px] mb-12">Hosted by Study Creators & Friends</p>
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-3 border transition-all">
-                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-                    Discord
+                    <svg class="h-4 w-4 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                    <span class="relative z-10">Discord</span>
                 </a>
                 
                 <button onclick="toggleSubmit()" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase transition-all hover:bg-transparent hover:text-[#c5a059]">
-                    Submit Study
+                    <span class="relative z-10">Submit Study</span>
                 </button>
 
                 <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-3 border transition-all group">
-                    <img src="https://lichess1.org/assets/_6m999D/logo/lichess-favicon-256.png" class="w-3 h-3" alt="Lichess">
-                    Lichess
+                    <img src="https://lichess1.org/assets/_6m999D/logo/lichess-favicon-256.png" class="w-3 h-3 relative z-10" alt="Lichess">
+                    <span class="relative z-10">Lichess</span>
                 </a>
 
-                <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">About Us</button>
+                <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
+                    <span class="relative z-10">About Us</span>
+                </button>
             </div>
         </header>
 
@@ -206,8 +545,8 @@
             <div class="flex justify-between items-end mb-8 border-b border-zinc-900 pb-2">
                 <h3 class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px]">Latest Additions</h3>
                 <div class="flex gap-4">
-                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-gold-accent transition-colors text-xs">←</button>
-                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-gold-accent transition-colors text-xs">→</button>
+                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">←</button>
+                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">→</button>
                 </div>
             </div>
             <div class="carousel-viewport">
@@ -225,7 +564,7 @@
 
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
-        let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0;
+        let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0, carouselInterval;
 
         function toggleAbout() {
             const el = document.getElementById('aboutPage');
@@ -244,6 +583,7 @@
             const icon = document.getElementById('themeIcon');
             body.classList.toggle('light-mode');
             const isLight = body.classList.contains('light-mode');
+
             icon.innerHTML = isLight 
                 ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />'
                 : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
@@ -261,6 +601,27 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 2000);
             });
+        }
+
+        function tiltCard(e, card) {
+            if (window.innerWidth < 768) return;
+            const inner = card.querySelector('.chess-card-inner');
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = ((y - centerY) / centerY) * -4;
+            const rotateY = ((x - centerX) / centerX) * 4;
+
+            inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+        }
+
+        function resetTilt(card) {
+            const inner = card.querySelector('.chess-card-inner');
+            inner.style.transform = 'rotateX(0deg) rotateY(0deg) translateY(0px)';
         }
 
         const revealObserver = new IntersectionObserver((entries) => {
@@ -285,12 +646,22 @@
                     notes: c[6]?.replace(/"/g, '') || "",
                     viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
                     image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
-                    difficulty: c[9]?.replace(/"/g, '').trim() || "" // PULLING FROM COLUMN J
+                    difficulty: c[9]?.replace(/"/g, '').trim() || ""
                 })).filter(i => i.title !== "").reverse();
                 
-                renderLatest(); createFilters(); createSideFilters(); renderArchive();
-                setInterval(() => moveCarousel(1), 8000);
-            } catch (err) { console.error(err); }
+                renderLatest();
+                createFilters();
+                createSideFilters();
+                renderArchive();
+                startCarouselAutoplay();
+            } catch (err) { 
+                console.error(err); 
+            }
+        }
+
+        function startCarouselAutoplay() {
+            clearInterval(carouselInterval);
+            carouselInterval = setInterval(() => moveCarousel(1), 8000);
         }
 
         function renderLatest() {
@@ -302,13 +673,17 @@
         function moveCarousel(dir) {
             const grid = document.getElementById('latestGrid');
             if (!grid || !grid.querySelector('.carousel-item')) return;
+
             const itemsInView = window.innerWidth > 1024 ? 3 : (window.innerWidth > 640 ? 2 : 1);
-            const maxPos = 9 - itemsInView;
+            const totalItems = Math.min(9, window.chessData.length);
+            const maxPos = Math.max(0, totalItems - itemsInView);
+
             carouselPos = (carouselPos + dir);
             if (carouselPos > maxPos) carouselPos = 0;
             if (carouselPos < 0) carouselPos = maxPos;
+
             const itemWidth = grid.querySelector('.carousel-item').offsetWidth;
-            const gap = 40; 
+            const gap = 40;
             grid.style.transform = `translateX(-${carouselPos * (itemWidth + gap)}px)`;
         }
 
@@ -316,32 +691,39 @@
             const isStar = i.notes.toUpperCase().includes("STAR");
             const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
             
-            return `<div class="chess-card flex flex-col group relative">
-                ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
-                ${noteOverlay}
-                
-                <a href="${i.link}" target="_blank" class="h-40 w-full overflow-hidden relative grayscale group-hover:grayscale-0 transition-all duration-700 block">
-                    <img src="${i.image}" class="w-full h-full object-cover opacity-40 group-hover:opacity-70 transition-all">
-                    <div class="absolute top-4 left-4 flex gap-2 z-10">
-                        <div class="forest-tag brand-font">${i.side}</div>
-                        ${i.difficulty ? `<div class="skill-tag brand-font">${i.difficulty}</div>` : ''}
-                    </div>
-                </a>
+            return `
+            <div class="chess-card group relative" onmousemove="tiltCard(event, this)" onmouseleave="resetTilt(this)">
+                <div class="chess-card-inner flex flex-col h-full">
+                    ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
+                    ${noteOverlay}
+                    
+                    <a href="${i.link}" target="_blank" class="h-40 w-full relative block">
+                        <div class="card-image-wrap">
+                            <img src="${i.image}" class="card-image" alt="${i.title}">
+                            <div class="image-vignette"></div>
+                            <div class="absolute top-4 left-4 flex gap-2 z-10">
+                                <div class="forest-tag brand-font">${i.side}</div>
+                                ${i.difficulty ? `<div class="skill-tag brand-font">${i.difficulty}</div>` : ''}
+                            </div>
+                        </div>
+                    </a>
 
-                <div class="p-8 flex-grow flex flex-col">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase block italic">${i.category}</span>
-                        <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors" title="Copy Study Link">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                        </button>
+                    <div class="p-8 flex-grow flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase block italic">${i.category}</span>
+                            <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors" title="Copy Study Link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
+                        
+                        <p onclick="filterByAuthor('${i.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
+                        
+                        <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
                     </div>
-                    <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
-                    
-                    <p onclick="filterByAuthor('${i.author}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
-                    
-                    <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
                 </div>
             </div>`;
         }
@@ -349,16 +731,25 @@
         function renderArchive() {
             const term = document.getElementById('searchInput').value.toLowerCase();
             const filtered = window.chessData.filter(i => {
-                return (i.title.toLowerCase().includes(term) || i.author.toLowerCase().includes(term) || i.difficulty.toLowerCase().includes(term)) &&
+                return (i.title.toLowerCase().includes(term) || 
+                        i.author.toLowerCase().includes(term) || 
+                        i.difficulty.toLowerCase().includes(term) ||
+                        i.category.toLowerCase().includes(term) ||
+                        i.side.toLowerCase().includes(term)) &&
                         (currentFilter === 'All' || i.category === currentFilter) &&
                         (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
             });
 
             const isSearching = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
             const latestSec = document.getElementById('latestSection');
+
             if (isSearching) {
                 latestSec.classList.add('opacity-0', 'pointer-events-none');
-                setTimeout(() => { if(isSearching) latestSec.style.display = 'none'; }, 500);
+                setTimeout(() => { 
+                    if (term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side') {
+                        latestSec.style.display = 'none'; 
+                    }
+                }, 500);
             } else {
                 latestSec.style.display = 'block';
                 setTimeout(() => latestSec.classList.remove('opacity-0', 'pointer-events-none'), 10);
@@ -369,6 +760,7 @@
             
             const grid = document.getElementById('resultsGrid');
             const noRes = document.getElementById('noResults');
+
             if (filtered.length === 0) {
                 grid.style.display = 'none';
                 noRes.style.display = 'block';
@@ -403,15 +795,39 @@
 
         function createFilters() {
             const cats = ['All', ...new Set(window.chessData.map(i => i.category))].filter(c => c !== 'General');
-            document.getElementById('filterContainer').innerHTML = cats.map(c => `<div onclick="setFilter('${c}')" class="filter-chip brand-font ${currentFilter === c ? 'active' : ''}">${c}</div>`).join('');
+            document.getElementById('filterContainer').innerHTML = cats.map(c => `<div onclick="setFilter('${c.replace(/'/g, "\\'")}')" class="filter-chip brand-font ${currentFilter === c ? 'active' : ''}">${c}</div>`).join('');
         }
+
         function createSideFilters() {
             const sides = ['Any Side', 'White', 'Black', 'Universal'];
             document.getElementById('sideFilterContainer').innerHTML = sides.map(s => `<div onclick="setSideFilter('${s}')" class="filter-chip brand-font ${currentSideFilter === s ? 'active' : ''}">${s}</div>`).join('');
         }
-        window.setFilter = (cat) => { currentFilter = cat; createFilters(); renderArchive(); };
-        window.setSideFilter = (side) => { currentSideFilter = side; createSideFilters(); renderArchive(); };
+
+        window.setFilter = (cat) => { 
+            currentFilter = cat; 
+            createFilters(); 
+            renderArchive(); 
+        };
+
+        window.setSideFilter = (side) => { 
+            currentSideFilter = side; 
+            createSideFilters(); 
+            renderArchive(); 
+        };
+
         document.getElementById('searchInput').addEventListener('input', renderArchive);
+
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.getElementById('cursorGlow');
+            if (!glow || window.innerWidth < 768) return;
+            glow.style.left = `${e.clientX}px`;
+            glow.style.top = `${e.clientY}px`;
+        });
+
+        window.addEventListener('resize', () => {
+            moveCarousel(0);
+        });
+
         loadData();
     </script>
 </body>
