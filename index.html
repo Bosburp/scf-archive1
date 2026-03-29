@@ -14,7 +14,6 @@
 
         body { background-color: var(--bg); color: var(--text); font-family: 'Georgia', serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background 0.5s ease, color 0.5s ease; position: relative; }
         
-        /* Atmospheric Grain Overlay */
         body::before {
             content: "";
             position: fixed;
@@ -45,7 +44,6 @@
         .header-btn { transition: all 0.3s ease; background-color: var(--card); border-color: var(--border); color: var(--text); letter-spacing: 0.3em; }
         .header-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3); color: var(--heading); }
 
-        /* Enhanced Chess Card */
         .chess-card { 
             background: var(--card); 
             border: 1px solid var(--border); 
@@ -60,14 +58,16 @@
             box-shadow: 0 20px 40px -15px rgba(197, 160, 89, 0.25); 
         }
 
-        /* INVERSE INTERACTION: Board recedes and sinks as card lifts */
+        /* NEW INTERACTION: Parallax Zoom */
         .chess-card img { 
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease !important; 
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease !important; 
             transform-origin: center;
+            will-change: transform;
         }
+        /* Card goes UP (-8px), Image zooms and slides DOWN (+10px) to compensate */
         .chess-card:hover img { 
-            transform: translateY(8px) scale(0.97); 
-            opacity: 0.8 !important;
+            transform: scale(1.15) translateY(10px); 
+            opacity: 0.9 !important;
         }
         
         .note-overlay {
@@ -84,11 +84,7 @@
             border-radius: 9999px; text-transform: uppercase; 
             font-size: 10px; letter-spacing: 0.1em; 
         }
-        .filter-chip:hover {
-            border-color: #c5a059;
-            color: #c5a059;
-            transform: translateY(-1px);
-        }
+        .filter-chip:hover { border-color: #c5a059; color: #c5a059; transform: translateY(-1px); }
         .filter-chip.active { border-color: #c5a059; color: var(--heading); background: var(--card); box-shadow: 0 0 15px rgba(197, 160, 89, 0.1); }
         
         .forest-tag { background-color: #143224; color: #a7f3d0; padding: 2px 8px; font-size: 8px; font-weight: bold; text-transform: uppercase; }
