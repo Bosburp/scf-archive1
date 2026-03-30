@@ -97,14 +97,15 @@
             outline: none; 
             transform: translateY(-1px);
         }
-
-        .carousel-viewport { 
-            position: relative;
-            overflow: hidden; 
-            width: 100%; 
-            padding: 20px 0; 
-            margin: -20px 0; 
-        }
+.carousel-viewport { 
+    position: relative;
+    overflow: hidden; 
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    padding: 20px 20px; 
+    margin-top: -20px;
+    margin-bottom: -20px;
+}
 
         .carousel-viewport::before,
         .carousel-viewport::after {
