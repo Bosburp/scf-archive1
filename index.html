@@ -157,18 +157,20 @@
         }
 
         /* Featured Study */
-        .featured-shell {
-            position: relative;
-            border: 1px solid rgba(197, 160, 89, 0.16);
-            background:
-                linear-gradient(135deg, rgba(197, 160, 89, 0.08), transparent 35%),
-                linear-gradient(180deg, rgba(255,255,255,0.02), transparent 28%),
-                var(--card);
-            overflow: hidden;
-            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
-            max-width: 980px;
-            margin: 0 auto;
-        }
+    .featured-shell {
+    position: relative;
+    border: 1px solid rgba(197, 160, 89, 0.22);
+    background:
+        radial-gradient(circle at top right, rgba(197,160,89,0.14), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(197,160,89,0.08), transparent 24%),
+        linear-gradient(135deg, rgba(255,255,255,0.02), transparent 45%),
+        linear-gradient(180deg, rgba(18,18,18,0.96), rgba(10,10,10,0.98));
+    overflow: hidden;
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    max-width: 980px;
+    margin: 0 auto;
+    box-shadow: 0 24px 60px -35px rgba(197,160,89,0.22);
+}
 
         .featured-shell:hover {
             border-color: rgba(197, 160, 89, 0.28);
@@ -207,14 +209,14 @@
             pointer-events: none;
         }
 
-        .featured-badge {
-            border: 1px solid rgba(255,255,255,0.14);
-            color: #ffffff;
-            background: #143224;
-            backdrop-filter: blur(6px);
-            letter-spacing: 0.22em;
-            box-shadow: 0 10px 20px -16px rgba(0,0,0,0.45);
-        }
+      .featured-badge {
+    border: 1px solid rgba(197,160,89,0.35);
+    color: #f5f5dc;
+    background: rgba(197,160,89,0.12);
+    backdrop-filter: blur(8px);
+    letter-spacing: 0.22em;
+    box-shadow: 0 10px 24px -18px rgba(197,160,89,0.35);
+}
 
         .featured-badge,
         .forest-tag,
@@ -750,7 +752,7 @@
                         <a href="${featured.link}" target="_blank" class="featured-image block relative">
                             <img src="${featured.image}" alt="${featured.title}">
                             <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap items-center gap-2 z-10 max-w-[calc(100%-2rem)]">
-                                <div class="featured-badge brand-font px-3 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] rounded-sm">Featured Study</div>
+                               <div class="featured-badge brand-font px-4 py-1.5 text-[8px] sm:text-[9px] uppercase tracking-[0.28em] rounded-sm">
                                 <div class="forest-tag brand-font">${featured.side}</div>
                                 ${featured.difficulty ? `<div class="skill-tag brand-font">${featured.difficulty}</div>` : ''}
                             </div>
