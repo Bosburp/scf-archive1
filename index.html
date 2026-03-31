@@ -454,17 +454,282 @@
             transform: translateX(-50%) translateY(-4px);
         }
 
-        .author-profile-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            padding: 2rem;
-            margin-bottom: 3rem;
+        /* AUTHOR PROFILE SECTION */
+        .author-profile-shell {
+            width: 100%;
+            margin: 0 auto 3rem auto;
+            border: 1px solid rgba(197,160,89,0.14);
+            background:
+                linear-gradient(135deg, rgba(197,160,89,0.12), transparent 42%),
+                linear-gradient(180deg, rgba(255,255,255,0.03), transparent 28%),
+                var(--card);
+            overflow: hidden;
+            box-shadow: 0 18px 40px -28px rgba(0,0,0,0.55);
         }
 
-        .author-link {
+        .author-profile-header {
+            position: relative;
+            padding: 2.5rem 1.25rem;
+            border-bottom: 1px solid rgba(197,160,89,0.12);
+            background:
+                radial-gradient(circle at top left, rgba(197,160,89,0.18), transparent 32%),
+                linear-gradient(135deg, rgba(197,160,89,0.08), transparent 52%);
+        }
+
+        .author-profile-header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .author-profile-kicker {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.32em;
             color: var(--gold);
-            text-decoration: underline;
+            margin-bottom: 0.75rem;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+
+        .author-profile-top-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.85rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .author-profile-name {
+            font-family: 'Josefin Sans', sans-serif;
+            color: var(--heading);
+            font-size: clamp(2rem, 4vw, 3.6rem);
+            line-height: 1.05;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .author-profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.55rem 0.85rem;
+            border: 1px solid rgba(197,160,89,0.22);
+            background: rgba(10,10,10,0.32);
+            color: var(--heading);
+            border-radius: 999px;
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+        }
+
+        .author-profile-badge .flag {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .author-profile-subtitle {
+            margin-top: 0.75rem;
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(197,160,89,0.9);
+            font-family: 'Josefin Sans', sans-serif;
+        }
+
+        .author-profile-body {
+            padding: 1.25rem;
+        }
+
+        .author-profile-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .author-profile-card {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.03), transparent 28%),
+                var(--card);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 1.2rem 1.25rem;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .author-profile-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(197,160,89,0.28);
+            box-shadow: 0 14px 28px -22px rgba(197,160,89,0.22);
+        }
+
+        .author-card-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 10px;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.9rem;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+
+        .author-card-label .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--gold);
+            opacity: 0.9;
+            flex: 0 0 auto;
+        }
+
+        .author-card-text {
+            color: var(--text);
+            line-height: 1.8;
+            font-style: italic;
+            font-size: 15px;
+            white-space: pre-line;
+        }
+
+        .author-bio-card {
+            grid-column: 1 / -1;
+        }
+
+        .author-country-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .author-country-flag {
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(197,160,89,0.12);
+            border: 1px solid rgba(197,160,89,0.22);
+            font-size: 1.3rem;
+            flex: 0 0 auto;
+        }
+
+        .author-country-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .author-country-name {
+            color: var(--heading);
+            font-style: normal;
+            font-size: 16px;
+            line-height: 1.35;
+        }
+
+        .author-country-sub {
+            font-size: 12px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(197,160,89,0.88);
+            font-family: 'Josefin Sans', sans-serif;
+        }
+
+        .author-links-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+        }
+
+        .author-link-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            max-width: 100%;
+            padding: 0.62rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(197,160,89,0.22);
+            background: rgba(197,160,89,0.06);
+            color: var(--heading);
+            text-decoration: none;
             word-break: break-word;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+            font-style: normal;
+            font-size: 13px;
+            line-height: 1.2;
+        }
+
+        .author-link-chip:hover {
+            transform: translateY(-2px);
+            border-color: var(--gold);
+            background: rgba(197,160,89,0.12);
+            color: var(--gold);
+        }
+
+        .author-link-chip svg {
+            flex: 0 0 auto;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-bottom: 1.15rem;
+            font-size: 10px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--gold);
+            transition: color 0.25s ease, transform 0.25s ease;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+
+        .back-btn:hover {
+            color: var(--heading);
+            transform: translateX(-2px);
+        }
+
+        .author-profile-footer {
+            max-width: 1100px;
+            margin: 1rem auto 0 auto;
+            padding: 0 1.25rem 1.25rem 1.25rem;
+            color: rgba(197,160,89,0.7);
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+
+        @media (min-width: 768px) {
+            .author-profile-header {
+                padding: 3.5rem 2rem;
+            }
+
+            .author-profile-body {
+                padding: 1.6rem 2rem 2rem 2rem;
+            }
+
+            .author-profile-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1.15rem;
+            }
+
+            .author-bio-card {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .author-profile-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .author-bio-card {
+                grid-column: 1 / -1;
+            }
         }
 
         @media (max-width: 768px) {
@@ -487,6 +752,20 @@
             .featured-image {
                 min-height: 260px;
             }
+
+            .author-profile-body {
+                padding: 1rem;
+            }
+
+            .author-profile-header {
+                padding: 2rem 1rem;
+            }
+        }
+
+        .author-link {
+            color: var(--gold);
+            text-decoration: underline;
+            word-break: break-word;
         }
     </style>
 </head>
@@ -601,10 +880,24 @@
         </div>
 
         <div id="authorProfileSection" class="hidden mb-20">
-            <div class="author-profile-card rounded-sm">
-                <button onclick="backToArchive()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-8 hover:text-white transition-colors">← Back to Archive</button>
-                <div id="authorProfileContent"></div>
-            </div>
+            <section class="author-profile-shell">
+                <div class="author-profile-header">
+                    <div class="author-profile-header-inner">
+                        <button onclick="backToArchive()" class="back-btn">← Back to Archive</button>
+                        <div class="author-profile-kicker">Author Profile</div>
+                        <div class="author-profile-top-row">
+                            <h2 id="authorProfileName" class="author-profile-name"></h2>
+                            <div id="authorProfileBadge" class="author-profile-badge hidden"></div>
+                        </div>
+                        <p id="authorProfileSubtitle" class="author-profile-subtitle"></p>
+                    </div>
+                </div>
+
+                <div class="author-profile-body">
+                    <div id="authorProfileContent" class="author-profile-grid"></div>
+                    <div id="authorProfileFooter" class="author-profile-footer"></div>
+                </div>
+            </section>
         </div>
 
         <div id="latestSection" class="mb-32 transition-opacity duration-500">
@@ -659,7 +952,7 @@
 
             icon.innerHTML = isLight 
                 ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />'
-                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9 0 008.354-5.646z" />';
+                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
         }
 
         function surpriseMe() {
@@ -694,6 +987,15 @@
                 .trim()
                 .toLowerCase()
                 .replace(/\s+/g, ' ');
+        }
+
+        function escapeHTML(value) {
+            return (value || '').toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
 
         function getKeywordList(value) {
@@ -975,9 +1277,166 @@
             }
         }
 
+        function normalizeCountryKey(value) {
+            return (value || '')
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/\([^)]*\)/g, '')
+                .replace(/\s+/g, ' ')
+                .replace(/[^a-z0-9\s.-]/g, '');
+        }
+
+        function countryToCode(country) {
+            const raw = (country || '').toString().trim();
+            if (!raw) return '';
+
+            const first = raw.split(/[\/,;|]/)[0].trim();
+            const normalized = normalizeCountryKey(first);
+
+            if (/^[a-z]{2}$/i.test(first)) return first.toUpperCase();
+            if (/^[a-z]{2}$/i.test(normalized)) return normalized.toUpperCase();
+
+            const map = {
+                'afghanistan': 'AF',
+                'albania': 'AL',
+                'algeria': 'DZ',
+                'andorra': 'AD',
+                'angola': 'AO',
+                'argentina': 'AR',
+                'armenia': 'AM',
+                'australia': 'AU',
+                'austria': 'AT',
+                'azerbaijan': 'AZ',
+                'bahamas': 'BS',
+                'bahrain': 'BH',
+                'bangladesh': 'BD',
+                'belarus': 'BY',
+                'belgium': 'BE',
+                'bolivia': 'BO',
+                'bosnia and herzegovina': 'BA',
+                'botswana': 'BW',
+                'brazil': 'BR',
+                'bulgaria': 'BG',
+                'canada': 'CA',
+                'chile': 'CL',
+                'china': 'CN',
+                'colombia': 'CO',
+                'croatia': 'HR',
+                'cuba': 'CU',
+                'cyprus': 'CY',
+                'czech republic': 'CZ',
+                'czechia': 'CZ',
+                'denmark': 'DK',
+                'dominican republic': 'DO',
+                'ecuador': 'EC',
+                'egypt': 'EG',
+                'england': 'GB',
+                'estonia': 'EE',
+                'ethiopia': 'ET',
+                'finland': 'FI',
+                'france': 'FR',
+                'georgia': 'GE',
+                'germany': 'DE',
+                'greece': 'GR',
+                'hungary': 'HU',
+                'iceland': 'IS',
+                'india': 'IN',
+                'indonesia': 'ID',
+                'iran': 'IR',
+                'iraq': 'IQ',
+                'ireland': 'IE',
+                'israel': 'IL',
+                'italy': 'IT',
+                'japan': 'JP',
+                'kazakhstan': 'KZ',
+                'kenya': 'KE',
+                'kyrgyzstan': 'KG',
+                'latvia': 'LV',
+                'lebanon': 'LB',
+                'lithuania': 'LT',
+                'luxembourg': 'LU',
+                'malaysia': 'MY',
+                'mexico': 'MX',
+                'moldova': 'MD',
+                'monaco': 'MC',
+                'mongolia': 'MN',
+                'morocco': 'MA',
+                'netherlands': 'NL',
+                'new zealand': 'NZ',
+                'nigeria': 'NG',
+                'north korea': 'KP',
+                'norway': 'NO',
+                'pakistan': 'PK',
+                'peru': 'PE',
+                'philippines': 'PH',
+                'poland': 'PL',
+                'portugal': 'PT',
+                'qatar': 'QA',
+                'romania': 'RO',
+                'russia': 'RU',
+                'russian federation': 'RU',
+                'saudi arabia': 'SA',
+                'scotland': 'GB',
+                'serbia': 'RS',
+                'singapore': 'SG',
+                'slovakia': 'SK',
+                'slovenia': 'SI',
+                'south africa': 'ZA',
+                'south korea': 'KR',
+                'spain': 'ES',
+                'sweden': 'SE',
+                'switzerland': 'CH',
+                'taiwan': 'TW',
+                'tajikistan': 'TJ',
+                'thailand': 'TH',
+                'tunisia': 'TN',
+                'turkey': 'TR',
+                'uae': 'AE',
+                'uk': 'GB',
+                'united arab emirates': 'AE',
+                'united kingdom': 'GB',
+                'united states': 'US',
+                'united states of america': 'US',
+                'usa': 'US',
+                'uruguay': 'UY',
+                'uzbekistan': 'UZ',
+                'venezuela': 'VE',
+                'vietnam': 'VN',
+                'wales': 'GB'
+            };
+
+            return map[normalized] || '';
+        }
+
+        function getCountryFlag(country) {
+            const code = countryToCode(country);
+            if (!code || code.length !== 2) return '🌍';
+            return code.toUpperCase().replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt(0)));
+        }
+
+        function splitLinks(raw) {
+            return (raw || '')
+                .toString()
+                .split(/[\n,;|]+/g)
+                .map(v => v.trim())
+                .filter(Boolean);
+        }
+
+        function normalizeHref(url) {
+            const trimmed = (url || '').trim();
+            if (!trimmed) return '';
+            if (/^(https?:\/\/|mailto:|tel:)/i.test(trimmed)) return trimmed;
+            return `https://${trimmed}`;
+        }
+
         function renderAuthorProfile(authorName, studies) {
             const section = document.getElementById('authorProfileSection');
             const content = document.getElementById('authorProfileContent');
+            const title = document.getElementById('authorProfileName');
+            const badge = document.getElementById('authorProfileBadge');
+            const subtitle = document.getElementById('authorProfileSubtitle');
+            const footer = document.getElementById('authorProfileFooter');
 
             const profile = (window.authorData || []).find(a => normalizeAuthorName(a.author) === normalizeAuthorName(authorName));
 
@@ -987,39 +1446,83 @@
             const bio = profile?.bio?.trim() || 'No author profile has been added yet.';
             const country = profile?.country?.trim() || '';
             const style = profile?.style?.trim() || '';
-            const links = profile?.links?.trim() || '';
+            const linksRaw = profile?.links?.trim() || '';
+            const links = splitLinks(linksRaw);
+            const flag = getCountryFlag(country);
 
-            content.innerHTML = `
-                <div class="mb-10">
-                    <h2 class="text-3xl md:text-4xl brand-font parchment-text mb-4">${authorName}</h2>
-                    <p class="gold-accent brand-font uppercase tracking-[0.25em] text-[10px]">${studyCount} ${studyWord} in the library</p>
-                </div>
+            title.textContent = authorName;
+            subtitle.textContent = `${studyCount} ${studyWord} in the library`;
 
-                <div class="space-y-6 text-zinc-400 italic leading-relaxed max-w-3xl">
-                    <div>
-                        <h4 class="gold-accent brand-font uppercase tracking-[0.25em] text-[10px] mb-2">Bio</h4>
-                        <p class="whitespace-pre-line">${bio}</p>
-                    </div>
+            if (country) {
+                badge.classList.remove('hidden');
+                badge.innerHTML = `<span class="flag">${flag}</span><span>${escapeHTML(country)}</span>`;
+            } else {
+                badge.classList.add('hidden');
+                badge.innerHTML = '';
+            }
 
-                    ${country ? `
-                    <div>
-                        <h4 class="gold-accent brand-font uppercase tracking-[0.25em] text-[10px] mb-2">Country</h4>
-                        <p>${country}</p>
-                    </div>` : ''}
-
-                    ${style ? `
-                    <div>
-                        <h4 class="gold-accent brand-font uppercase tracking-[0.25em] text-[10px] mb-2">Style</h4>
-                        <p class="whitespace-pre-line">${style}</p>
-                    </div>` : ''}
-
-                    ${links ? `
-                    <div>
-                        <h4 class="gold-accent brand-font uppercase tracking-[0.25em] text-[10px] mb-2">Links</h4>
-                        <p><a href="${links}" target="_blank" class="author-link">${links}</a></p>
-                    </div>` : ''}
-                </div>
+            const svgIcon = (path) => `
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    ${path}
+                </svg>
             `;
+
+            const cards = [];
+
+            cards.push(`
+                <div class="author-profile-card author-bio-card">
+                    <div class="author-card-label"><span class="dot"></span> Bio</div>
+                    <div class="author-card-text">${escapeHTML(bio).replace(/\n/g, '<br>')}</div>
+                </div>
+            `);
+
+            if (country) {
+                cards.push(`
+                    <div class="author-profile-card">
+                        <div class="author-card-label"><span class="dot"></span> Country</div>
+                        <div class="author-country-row">
+                            <div class="author-country-flag" aria-hidden="true">${flag}</div>
+                            <div class="author-country-text">
+                                <div class="author-country-name">${escapeHTML(country)}</div>
+                                <div class="author-country-sub">Region / nationality</div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+
+            if (style) {
+                cards.push(`
+                    <div class="author-profile-card">
+                        <div class="author-card-label"><span class="dot"></span> Style</div>
+                        <div class="author-card-text">${escapeHTML(style).replace(/\n/g, '<br>')}</div>
+                    </div>
+                `);
+            }
+
+            if (links.length) {
+                cards.push(`
+                    <div class="author-profile-card author-bio-card">
+                        <div class="author-card-label"><span class="dot"></span> Links</div>
+                        <div class="author-links-list">
+                            ${links.map(link => {
+                                const href = normalizeHref(link);
+                                return `<a href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer" class="author-link-chip">${svgIcon('<path d="M10 13a5 5 0 0 1 0-7.07l1.5-1.5a5 5 0 0 1 7.07 7.07l-1 1" /><path d="M14 11a5 5 0 0 1 0 7.07l-1.5 1.5a5 5 0 0 1-7.07-7.07l1-1" />')}<span>${escapeHTML(link)}</span></a>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                `);
+            } else if (linksRaw) {
+                cards.push(`
+                    <div class="author-profile-card author-bio-card">
+                        <div class="author-card-label"><span class="dot"></span> Links</div>
+                        <div class="author-card-text"><a href="${escapeHTML(normalizeHref(linksRaw))}" target="_blank" rel="noopener noreferrer" class="author-link">${escapeHTML(linksRaw)}</a></div>
+                    </div>
+                `);
+            }
+
+            content.innerHTML = cards.join('');
+            footer.textContent = country ? `${flag} ${country}` : '';
 
             section.classList.remove('hidden');
         }
