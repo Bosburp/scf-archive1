@@ -653,7 +653,7 @@
 
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
-        const AUTHORS_SHEET_URL = 'PASTE_YOUR_AUTHORS_TAB_PUBLISHED_CSV_URL_HERE';
+        const AUTHORS_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1nJ34Jl6Y7WLs5ErqA22dlZ8ig-FqAK25CPkwedPj8n0/export?format=csv&gid=1246433755';
         const FEATURED_KEYWORD = 'FEATURED'; // Put this keyword in Column L to feature a study
         let currentFilter = 'All', currentSideFilter = 'Any Side', currentSort = 'Newest', carouselPos = 0, carouselInterval, searchTimer, currentAuthor = '';
 
@@ -713,6 +713,10 @@
             return (value || '').toString().trim().toLowerCase();
         }
 
+        function normalizeAuthorName(value) {
+            return (value || '').toString().trim().replace(/\s+/g, ' ').toLowerCase();
+        }
+
         function getKeywordList(value) {
             return (value || '')
                 .toString()
@@ -766,8 +770,8 @@
 
         function getAuthorProfile(author) {
             if (!window.authorData || window.authorData.length === 0) return null;
-            const target = normalizeText(author);
-            return window.authorData.find(a => normalizeText(a.author) === target) || null;
+            const target = normalizeAuthorName(author);
+            return window.authorData.find(a => normalizeAuthorName(a.author) === target) || null;
         }
 
         function getSortedData(data) {
@@ -850,7 +854,7 @@
             };
 
             const studies = getSortedData(
-                window.chessData.filter(i => normalizeText(i.author) === normalizeText(author))
+                window.chessData.filter(i => normalizeAuthorName(i.author) === normalizeAuthorName(author))
             );
 
             const profileShell = document.getElementById('authorProfileShell');
@@ -932,9 +936,7 @@
             try {
                 const [studiesCsv, authorsCsv] = await Promise.all([
                     fetch(sheetUrl).then(res => res.text()),
-                    AUTHORS_SHEET_URL.startsWith('http')
-                        ? fetch(AUTHORS_SHEET_URL).then(res => res.text()).catch(() => '')
-                        : Promise.resolve('')
+                    fetch(AUTHORS_SHEET_URL).then(res => res.text()).catch(() => '')
                 ]);
 
                 const rows = parseCsvRows(studiesCsv);
