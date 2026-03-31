@@ -456,6 +456,35 @@
             transform: translateX(-50%) translateY(-4px);
         }
 
+        .author-profile-shell {
+            border: 1px solid rgba(197, 160, 89, 0.16);
+            background:
+                linear-gradient(135deg, rgba(197, 160, 89, 0.08), transparent 35%),
+                linear-gradient(180deg, rgba(255,255,255,0.02), transparent 28%),
+                var(--card);
+        }
+
+        .author-link-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.03);
+            color: var(--heading);
+            font-size: 9px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            transition: all 0.25s ease;
+        }
+
+        .author-link-chip:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translateY(-1px);
+        }
+
         @media (max-width: 768px) {
             #cursorGlow {
                 display: none;
@@ -534,12 +563,18 @@
         </div>
     </div>
 
-    <div id="authorPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8 overflow-y-auto">
-        <div class="max-w-5xl w-full mx-auto text-center site-layer">
-            <button onclick="toggleAuthorPage()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-8 hover:text-white transition-colors">← Close</button>
-            <h2 id="authorName" class="text-3xl sm:text-4xl brand-font parchment-text mb-4 uppercase tracking-[0.35em]">AUTHOR</h2>
-            <p id="authorStudyCount" class="gold-accent brand-font font-bold tracking-[0.25em] uppercase text-[10px] mb-10"></p>
-            <div id="authorStudyList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left"></div>
+    <div id="authorPage" class="modal-overlay fixed inset-0 hidden flex items-start justify-center p-8 overflow-y-auto">
+        <div class="max-w-5xl mx-auto w-full site-layer">
+            <button onclick="toggleAuthorPage()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-8 hover:text-white transition-colors">← Back to Library</button>
+
+            <div id="authorProfileShell" class="author-profile-shell rounded-sm p-8 md:p-10 lg:p-12 mb-10"></div>
+
+            <div class="flex justify-between items-end mb-8 border-b border-zinc-900 pb-2">
+                <h3 id="authorStudiesHeader" class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px]">Studies by Author</h3>
+                <p class="gold-accent brand-font text-[9px] uppercase tracking-[0.25em]">Author View</p>
+            </div>
+
+            <div id="authorStudyList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
     </div>
 
@@ -618,8 +653,9 @@
 
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
+        const AUTHORS_SHEET_URL = 'PASTE_YOUR_AUTHORS_TAB_PUBLISHED_CSV_URL_HERE';
         const FEATURED_KEYWORD = 'FEATURED'; // Put this keyword in Column L to feature a study
-        let currentFilter = 'All', currentSideFilter = 'Any Side', currentSort = 'Newest', carouselPos = 0, carouselInterval, searchTimer;
+        let currentFilter = 'All', currentSideFilter = 'Any Side', currentSort = 'Newest', carouselPos = 0, carouselInterval, searchTimer, currentAuthor = '';
 
         function toggleAbout() {
             const el = document.getElementById('aboutPage');
@@ -637,6 +673,7 @@
             const el = document.getElementById('authorPage');
             el.classList.toggle('hidden');
             document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+            if (!el.classList.contains('hidden')) el.scrollTop = 0;
         }
 
         function toggleTheme() {
@@ -708,6 +745,31 @@
             ].some(field => normalizeText(field).includes(t));
         }
 
+        function parseCsvRows(csv) {
+            return csv
+                .split('\n')
+                .map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/))
+                .filter(row => row.some(cell => (cell || '').trim() !== ''));
+        }
+
+        function parseAuthorLinks(value) {
+            return (value || '')
+                .toString()
+                .split(/[,;|]/)
+                .map(v => v.trim())
+                .filter(Boolean)
+                .map(v => ({
+                    label: v,
+                    href: /^https?:\/\//i.test(v) ? v : ''
+                }));
+        }
+
+        function getAuthorProfile(author) {
+            if (!window.authorData || window.authorData.length === 0) return null;
+            const target = normalizeText(author);
+            return window.authorData.find(a => normalizeText(a.author) === target) || null;
+        }
+
         function getSortedData(data) {
             const arr = [...data];
 
@@ -740,9 +802,13 @@
         }
 
         function authorStudyCardHtml(i) {
+            const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
+
             return `
-                <div class="chess-card reveal flex flex-col group relative opacity-100 transform-none">
+                <div class="chess-card flex flex-col group relative">
                     ${isStaffPick(i) ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
+                    ${noteOverlay}
+                    
                     <a href="${i.link}" target="_blank" class="h-40 w-full relative block">
                         <div class="card-image-wrap">
                             <img src="${i.image}" class="card-image" alt="${i.title}">
@@ -754,7 +820,7 @@
                         </div>
                     </a>
 
-                    <div class="p-6 flex-grow flex flex-col">
+                    <div class="p-8 flex-grow flex flex-col">
                         <div class="flex justify-between items-start mb-2">
                             <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase block italic">${i.category}</span>
                             <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors" title="Copy Study Link">
@@ -764,23 +830,97 @@
                             </button>
                         </div>
 
-                        <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-3 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
-                        <p class="gold-accent brand-font text-[13px] mb-4 w-fit">By ${i.author}</p>
+                        <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
+                        
+                        <p class="gold-accent brand-font text-[13px] mb-6 w-fit">By ${i.author}</p>
+                        
                         <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
                     </div>
                 </div>
             `;
         }
 
-        function openAuthorPage(author) {
-            if (!window.chessData || !window.chessData.length) return;
-            const studies = window.chessData.filter(i => i.author === author);
-            const container = document.getElementById('authorStudyList');
+        function renderAuthorPage(author) {
+            const profile = getAuthorProfile(author) || {
+                author,
+                bio: 'No author profile has been added yet.',
+                country: '',
+                style: '',
+                links: ''
+            };
 
-            document.getElementById('authorName').textContent = author;
-            document.getElementById('authorStudyCount').textContent = `${studies.length} STUDY${studies.length === 1 ? '' : 'IES'}`;
-            container.innerHTML = studies.map(i => authorStudyCardHtml(i)).join('');
-            document.getElementById('authorPage').classList.remove('hidden');
+            const studies = getSortedData(
+                window.chessData.filter(i => normalizeText(i.author) === normalizeText(author))
+            );
+
+            const profileShell = document.getElementById('authorProfileShell');
+            const linkItems = parseAuthorLinks(profile.links);
+            const countryChip = profile.country ? `<div class="forest-tag brand-font">${profile.country}</div>` : '';
+            const styleChip = profile.style ? `<div class="skill-tag brand-font">${profile.style}</div>` : '';
+            const linksHtml = linkItems.length
+                ? `<div class="flex flex-wrap gap-2 mt-6">
+                        ${linkItems.map(item => item.href
+                            ? `<a href="${item.href}" target="_blank" class="author-link-chip">${item.label}</a>`
+                            : `<span class="author-link-chip">${item.label}</span>`
+                        ).join('')}
+                   </div>`
+                : '';
+
+            profileShell.innerHTML = `
+                <div class="flex flex-col gap-8">
+                    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+                        <div class="max-w-3xl text-left">
+                            <p class="gold-accent brand-font uppercase tracking-[0.3em] text-[9px] mb-4">Author Profile</p>
+                            <h2 class="text-3xl md:text-4xl brand-font parchment-text uppercase tracking-[0.25em] mb-4">${profile.author || author}</h2>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                ${countryChip}
+                                ${styleChip}
+                            </div>
+                            <p class="text-zinc-400 italic leading-relaxed text-sm md:text-base max-w-3xl">
+                                ${profile.bio || 'No bio has been added yet.'}
+                            </p>
+                            ${linksHtml}
+                        </div>
+
+                        <div class="flex flex-col items-start lg:items-end gap-3">
+                            <button onclick="toggleAuthorPage()" class="featured-btn bg-[#c5a059] text-[#0a0a0a] px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] hover:bg-transparent hover:text-[#c5a059] transition-all">
+                                Back to Library
+                            </button>
+                            <p class="gold-accent brand-font text-[9px] uppercase tracking-[0.25em]">Profile + Studies</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-zinc-900 pt-6 text-left">
+                        <p class="text-zinc-500 text-[11px] italic leading-relaxed">
+                            ${studies.length} study${studies.length === 1 ? '' : 'ies'} by ${profile.author || author}
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            const studyHeader = document.getElementById('authorStudiesHeader');
+            studyHeader.textContent = `${studies.length} Study${studies.length === 1 ? '' : 'ies'} by ${profile.author || author}`;
+
+            const list = document.getElementById('authorStudyList');
+            if (studies.length === 0) {
+                list.innerHTML = `
+                    <div class="col-span-full text-center text-zinc-500 italic brand-font">
+                        No studies found for this author.
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = studies.map(i => authorStudyCardHtml(i)).join('');
+            list.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
+        }
+
+        function openAuthorPage(author) {
+            currentAuthor = author;
+            renderAuthorPage(author);
+            const el = document.getElementById('authorPage');
+            el.classList.remove('hidden');
+            el.scrollTop = 0;
             document.body.style.overflow = 'hidden';
         }
 
@@ -790,9 +930,14 @@
 
         async function loadData() {
             try {
-                const res = await fetch(sheetUrl);
-                const csv = await res.text();
-                const rows = csv.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+                const [studiesCsv, authorsCsv] = await Promise.all([
+                    fetch(sheetUrl).then(res => res.text()),
+                    AUTHORS_SHEET_URL.startsWith('http')
+                        ? fetch(AUTHORS_SHEET_URL).then(res => res.text()).catch(() => '')
+                        : Promise.resolve('')
+                ]);
+
+                const rows = parseCsvRows(studiesCsv);
                 const dataRows = rows.slice(1).reverse();
 
                 window.chessData = dataRows.map((c, idx) => ({
@@ -809,6 +954,16 @@
                     keyword: c[11]?.replace(/"/g, '').trim() || "",
                     featuredDescription: c[12]?.replace(/"/g, '').trim() || ""
                 })).filter(i => i.title !== "");
+
+                window.authorData = authorsCsv
+                    ? parseCsvRows(authorsCsv).slice(1).map(c => ({
+                        author: c[0]?.replace(/"/g, '') || '',
+                        bio: c[1]?.replace(/"/g, '') || '',
+                        country: c[2]?.replace(/"/g, '') || '',
+                        style: c[3]?.replace(/"/g, '') || '',
+                        links: c[4]?.replace(/"/g, '') || ''
+                    })).filter(a => a.author)
+                    : [];
                 
                 renderFeaturedStudy();
                 renderLatest();
