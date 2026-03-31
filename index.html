@@ -209,8 +209,8 @@
 
         .featured-badge {
             border: 1px solid rgba(255,255,255,0.14);
-            color: #ffffff;
-            background: #143224;
+            color: #0a0a0a;
+            background: var(--gold);
             backdrop-filter: blur(6px);
             letter-spacing: 0.22em;
             box-shadow: 0 10px 20px -16px rgba(0,0,0,0.45);
@@ -662,6 +662,10 @@
             return getKeywordList(study.keyword).includes(FEATURED_KEYWORD);
         }
 
+        function isStaffPick(study) {
+            return (study.notes || '').toUpperCase().includes('STAR');
+        }
+
         function matchesSearch(study, term) {
             if (!term) return false;
             const t = term.toLowerCase();
@@ -853,13 +857,21 @@
             const featuredMatchesSearch = !!featured && matchesSearch(featured, term);
 
             const filtered = window.chessData.filter(i => {
-                return (i.title.toLowerCase().includes(term) || 
-                        i.author.toLowerCase().includes(term) || 
-                        i.difficulty.toLowerCase().includes(term) ||
-                        i.category.toLowerCase().includes(term) ||
-                        i.side.toLowerCase().includes(term)) &&
-                        (currentFilter === 'All' || i.category === currentFilter) &&
-                        (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
+                const matchesText = (
+                    i.title.toLowerCase().includes(term) || 
+                    i.author.toLowerCase().includes(term) || 
+                    i.difficulty.toLowerCase().includes(term) ||
+                    i.category.toLowerCase().includes(term) ||
+                    i.side.toLowerCase().includes(term)
+                );
+
+                const matchesFilter =
+                    currentFilter === 'All' ||
+                    (currentFilter === 'Staff Picks' ? isStaffPick(i) : i.category === currentFilter);
+
+                return matchesText &&
+                    matchesFilter &&
+                    (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
             });
 
             const isSearchingOrFiltering = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side';
@@ -919,7 +931,7 @@
         };
 
         function createFilters() {
-            const cats = ['All', ...new Set(window.chessData.map(i => i.category))].filter(c => c !== 'General');
+            const cats = ['All', 'Staff Picks', ...new Set(window.chessData.map(i => i.category))].filter(c => c !== 'General');
             document.getElementById('filterContainer').innerHTML = cats.map(c => `<div onclick="setFilter('${c.replace(/'/g, "\\'")}')" class="filter-chip brand-font ${currentFilter === c ? 'active' : ''}">${c}</div>`).join('');
         }
 
