@@ -41,7 +41,6 @@
             position: relative;
         }
 
-        /* Cursor Glow */
         #cursorGlow {
             position: fixed;
             width: 420px;
@@ -55,7 +54,6 @@
             transition: transform 0.08s linear;
         }
 
-        /* Atmospheric Grain Overlay */
         body::before {
             content: "";
             position: fixed;
@@ -158,7 +156,6 @@
             transform: scale(0.96);
         }
 
-        /* Featured Study */
         .featured-shell {
             position: relative;
             border: 1px solid rgba(197, 160, 89, 0.16);
@@ -238,7 +235,6 @@
             box-shadow: 0 14px 28px -16px rgba(197,160,89,0.38);
         }
 
-        /* Enhanced Chess Card */
         .chess-card { 
             background: var(--card); 
             border: 1px solid var(--border); 
@@ -603,7 +599,6 @@
             </div>
         </header>
 
-        <!-- FEATURED STUDY -->
         <section id="featuredSection" class="mb-20 hidden">
             <div class="flex justify-between items-end mb-8 border-b border-zinc-900 pb-2">
                 <h3 class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px]">Featured Study of the Week</h3>
@@ -653,8 +648,9 @@
 
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
-        const AUTHORS_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1nJ34Jl6Y7WLs5ErqA22dlZ8ig-FqAK25CPkwedPj8n0/export?format=csv&gid=1246433755';
-        const FEATURED_KEYWORD = 'FEATURED'; // Put this keyword in Column L to feature a study
+        const AUTHORS_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1nJ34Jl6Y7WLs5ErqA22dlZ8ig-FqAK25CPkwedPj8n0/gviz/tq?tqx=out:csv&gid=1246433755';
+        const AUTHORS_SHEET_FALLBACK_URL = 'https://docs.google.com/spreadsheets/d/1nJ34Jl6Y7WLs5ErqA22dlZ8ig-FqAK25CPkwedPj8n0/export?format=csv&gid=1246433755';
+        const FEATURED_KEYWORD = 'FEATURED';
         let currentFilter = 'All', currentSideFilter = 'Any Side', currentSort = 'Newest', carouselPos = 0, carouselInterval, searchTimer, currentAuthor = '';
 
         function toggleAbout() {
@@ -750,10 +746,21 @@
         }
 
         function parseCsvRows(csv) {
-            return csv
+            return (csv || '')
+                .replace(/\r/g, '')
                 .split('\n')
                 .map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/))
                 .filter(row => row.some(cell => (cell || '').trim() !== ''));
+        }
+
+        async function fetchCsv(url) {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) return '';
+                return await res.text();
+            } catch (e) {
+                return '';
+            }
         }
 
         function parseAuthorLinks(value) {
@@ -896,14 +903,14 @@
 
                     <div class="border-t border-zinc-900 pt-6 text-left">
                         <p class="text-zinc-500 text-[11px] italic leading-relaxed">
-                            ${studies.length} study${studies.length === 1 ? '' : 'ies'} by ${profile.author || author}
+                            ${studies.length} Stud${studies.length === 1 ? 'y' : 'ies'} by ${profile.author || author}
                         </p>
                     </div>
                 </div>
             `;
 
             const studyHeader = document.getElementById('authorStudiesHeader');
-            studyHeader.textContent = `${studies.length} Study${studies.length === 1 ? '' : 'ies'} by ${profile.author || author}`;
+            studyHeader.textContent = `${studies.length} Stud${studies.length === 1 ? 'y' : 'ies'} by ${profile.author || author}`;
 
             const list = document.getElementById('authorStudyList');
             if (studies.length === 0) {
@@ -934,10 +941,12 @@
 
         async function loadData() {
             try {
-                const [studiesCsv, authorsCsv] = await Promise.all([
-                    fetch(sheetUrl).then(res => res.text()),
-                    fetch(AUTHORS_SHEET_URL).then(res => res.text()).catch(() => '')
+                const [studiesCsv, authorsCsvRaw] = await Promise.all([
+                    fetchCsv(sheetUrl),
+                    fetchCsv(AUTHORS_SHEET_URL)
                 ]);
+
+                const authorsCsv = authorsCsvRaw || await fetchCsv(AUTHORS_SHEET_FALLBACK_URL);
 
                 const rows = parseCsvRows(studiesCsv);
                 const dataRows = rows.slice(1).reverse();
