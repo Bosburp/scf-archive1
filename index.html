@@ -84,28 +84,31 @@
             animation: heroFloat 7s ease-in-out infinite;
         }
 
-        .search-container input { 
+        .search-container input,
+        .search-container select { 
             background-color: var(--card); 
             border: 1px solid var(--border); 
             color: var(--heading); 
             transition: all 0.35s ease; 
         }
 
-        .search-container input:focus { 
+        .search-container input:focus,
+        .search-container select:focus { 
             border-color: var(--gold); 
             box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); 
             outline: none; 
             transform: translateY(-1px);
         }
-.carousel-viewport { 
-    position: relative;
-    overflow: hidden; 
-    width: calc(100% + 40px);
-    margin-left: -20px;
-    padding: 20px 20px; 
-    margin-top: -20px;
-    margin-bottom: -20px;
-}
+
+        .carousel-viewport { 
+            position: relative;
+            overflow: hidden; 
+            width: calc(100% + 40px);
+            margin-left: -20px;
+            padding: 20px 20px; 
+            margin-top: -20px;
+            margin-bottom: -20px;
+        }
 
         .carousel-viewport::before,
         .carousel-viewport::after {
@@ -117,7 +120,6 @@
             z-index: 20;
             pointer-events: none;
         }
-
 
         #latestGrid { 
             display: flex; 
@@ -285,9 +287,9 @@
             filter: grayscale(0%);
         }
 
-    .image-vignette {
-    display: none;
-}
+        .image-vignette {
+            display: none;
+        }
         
         .note-overlay {
             position: absolute;
@@ -532,6 +534,15 @@
         </div>
     </div>
 
+    <div id="authorPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8 overflow-y-auto">
+        <div class="max-w-5xl w-full mx-auto text-center site-layer">
+            <button onclick="toggleAuthorPage()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-8 hover:text-white transition-colors">← Close</button>
+            <h2 id="authorName" class="text-3xl sm:text-4xl brand-font parchment-text mb-4 uppercase tracking-[0.35em]">AUTHOR</h2>
+            <p id="authorStudyCount" class="gold-accent brand-font font-bold tracking-[0.25em] uppercase text-[10px] mb-10"></p>
+            <div id="authorStudyList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left"></div>
+        </div>
+    </div>
+
     <div class="max-w-6xl mx-auto site-layer">
         <header class="text-center mb-20">
             <h1 class="hero-title text-3xl sm:text-4xl md:text-5xl brand-font font-light tracking-[0.4em] parchment-text mb-6 uppercase">The Chess Study Library</h1>
@@ -567,8 +578,17 @@
         </section>
 
         <div class="max-w-2xl mx-auto mb-24 text-center">
-            <div class="search-container relative mb-8">
+            <div class="search-container relative mb-4">
                 <input type="text" id="searchInput" placeholder="Search by author, opening, or game stage..." class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic">
+            </div>
+            <div class="search-container relative mb-8">
+                <select id="sortSelect" class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic appearance-none">
+                    <option value="Newest">Sort: Newest</option>
+                    <option value="Oldest">Sort: Oldest</option>
+                    <option value="A-Z">Sort: A-Z</option>
+                    <option value="Author A-Z">Sort: Author A-Z</option>
+                    <option value="Staff Picks First">Sort: Staff Picks First</option>
+                </select>
             </div>
             <div id="filterContainer" class="flex flex-wrap justify-center gap-2 mb-4"></div>
             <div id="sideFilterContainer" class="flex flex-wrap justify-center gap-2 pt-4 border-t border-zinc-900"></div>
@@ -599,7 +619,7 @@
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
         const FEATURED_KEYWORD = 'FEATURED'; // Put this keyword in Column L to feature a study
-        let currentFilter = 'All', currentSideFilter = 'Any Side', carouselPos = 0, carouselInterval, searchTimer;
+        let currentFilter = 'All', currentSideFilter = 'Any Side', currentSort = 'Newest', carouselPos = 0, carouselInterval, searchTimer;
 
         function toggleAbout() {
             const el = document.getElementById('aboutPage');
@@ -609,6 +629,12 @@
 
         function toggleSubmit() {
             const el = document.getElementById('submitPage');
+            el.classList.toggle('hidden');
+            document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+        }
+
+        function toggleAuthorPage() {
+            const el = document.getElementById('authorPage');
             el.classList.toggle('hidden');
             document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
         }
@@ -682,12 +708,95 @@
             ].some(field => normalizeText(field).includes(t));
         }
 
+        function getSortedData(data) {
+            const arr = [...data];
+
+            if (currentSort === 'Newest') {
+                return arr.sort((a, b) => a.sortIndex - b.sortIndex);
+            }
+
+            if (currentSort === 'Oldest') {
+                return arr.sort((a, b) => b.sortIndex - a.sortIndex);
+            }
+
+            if (currentSort === 'A-Z') {
+                return arr.sort((a, b) => a.title.localeCompare(b.title));
+            }
+
+            if (currentSort === 'Author A-Z') {
+                return arr.sort((a, b) => a.author.localeCompare(b.author));
+            }
+
+            if (currentSort === 'Staff Picks First') {
+                return arr.sort((a, b) => {
+                    const staffA = isStaffPick(a) ? 0 : 1;
+                    const staffB = isStaffPick(b) ? 0 : 1;
+                    if (staffA !== staffB) return staffA - staffB;
+                    return a.sortIndex - b.sortIndex;
+                });
+            }
+
+            return arr;
+        }
+
+        function authorStudyCardHtml(i) {
+            return `
+                <div class="chess-card reveal flex flex-col group relative opacity-100 transform-none">
+                    ${isStaffPick(i) ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
+                    <a href="${i.link}" target="_blank" class="h-40 w-full relative block">
+                        <div class="card-image-wrap">
+                            <img src="${i.image}" class="card-image" alt="${i.title}">
+                            <div class="image-vignette"></div>
+                            <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
+                                <div class="forest-tag brand-font">${i.side}</div>
+                                ${i.difficulty ? `<div class="skill-tag brand-font">${i.difficulty}</div>` : ''}
+                            </div>
+                        </div>
+                    </a>
+
+                    <div class="p-6 flex-grow flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase block italic">${i.category}</span>
+                            <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors" title="Copy Study Link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-3 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
+                        <p class="gold-accent brand-font text-[13px] mb-4 w-fit">By ${i.author}</p>
+                        <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openAuthorPage(author) {
+            if (!window.chessData || !window.chessData.length) return;
+            const studies = window.chessData.filter(i => i.author === author);
+            const container = document.getElementById('authorStudyList');
+
+            document.getElementById('authorName').textContent = author;
+            document.getElementById('authorStudyCount').textContent = `${studies.length} STUDY${studies.length === 1 ? '' : 'IES'}`;
+            container.innerHTML = studies.map(i => authorStudyCardHtml(i)).join('');
+            document.getElementById('authorPage').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function filterByAuthor(author) {
+            openAuthorPage(author);
+        }
+
         async function loadData() {
             try {
                 const res = await fetch(sheetUrl);
                 const csv = await res.text();
                 const rows = csv.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
-                window.chessData = rows.slice(1).map(c => ({
+                const dataRows = rows.slice(1).reverse();
+
+                window.chessData = dataRows.map((c, idx) => ({
+                    sortIndex: idx,
                     side: c[1]?.replace(/"/g, '') || "Universal",
                     category: c[2]?.replace(/"/g, '') || "General",
                     title: c[3]?.replace(/"/g, '') || "Untitled",
@@ -699,7 +808,7 @@
                     difficulty: c[9]?.replace(/"/g, '').trim() || "",
                     keyword: c[11]?.replace(/"/g, '').trim() || "",
                     featuredDescription: c[12]?.replace(/"/g, '').trim() || ""
-                })).filter(i => i.title !== "").reverse();
+                })).filter(i => i.title !== "");
                 
                 renderFeaturedStudy();
                 renderLatest();
@@ -763,7 +872,7 @@
                         <div class="p-8 md:p-10 lg:p-12 flex flex-col justify-center relative z-10 border-t lg:border-t-0 lg:border-l border-zinc-900/70">
                             <p class="gold-accent brand-font uppercase tracking-[0.3em] text-[9px] mb-4">Weekly Spotlight</p>
                             <h2 class="text-2xl md:text-3xl lg:text-4xl brand-font parchment-text leading-tight mb-4">${featured.title}</h2>
-                            <p onclick="filterByAuthor('${featured.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-xs md:text-sm mb-6 cursor-pointer hover:underline w-fit">By ${featured.author}</p>
+                            <p onclick="openAuthorPage('${featured.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-xs md:text-sm mb-6 cursor-pointer hover:underline w-fit">By ${featured.author}</p>
 
                             <div class="space-y-4 mb-8">
                                 <p class="text-zinc-400 italic leading-relaxed text-sm max-w-xl">
@@ -844,7 +953,7 @@
 
                     <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
                     
-                    <p onclick="filterByAuthor('${i.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
+                    <p onclick="openAuthorPage('${i.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
                     
                     <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
                 </div>
@@ -856,7 +965,8 @@
             const featured = getFeaturedStudy();
             const featuredMatchesSearch = !!featured && matchesSearch(featured, term);
 
-            const filtered = window.chessData.filter(i => {
+            const sortedData = getSortedData(window.chessData);
+            const filtered = sortedData.filter(i => {
                 const matchesText = (
                     i.title.toLowerCase().includes(term) || 
                     i.author.toLowerCase().includes(term) || 
@@ -909,16 +1019,12 @@
             }
         }
 
-        function filterByAuthor(author) {
-            document.getElementById('searchInput').value = author;
-            renderArchive();
-            window.scrollTo({ top: document.getElementById('searchInput').offsetTop - 100, behavior: 'smooth' });
-        }
-
         function resetFilters() {
             document.getElementById('searchInput').value = '';
+            document.getElementById('sortSelect').value = 'Newest';
             currentFilter = 'All';
             currentSideFilter = 'Any Side';
+            currentSort = 'Newest';
             createFilters();
             createSideFilters();
             renderArchive();
@@ -955,6 +1061,11 @@
         document.getElementById('searchInput').addEventListener('input', () => {
             clearTimeout(searchTimer);
             searchTimer = setTimeout(renderArchive, 40);
+        });
+
+        document.getElementById('sortSelect').addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            renderArchive();
         });
 
         document.addEventListener('mousemove', (e) => {
