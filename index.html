@@ -1008,6 +1008,10 @@
             return getKeywordList(study.keyword).includes(FEATURED_KEYWORD);
         }
 
+        function isStaffPickStudy(study) {
+            return (study.notes || '').toString().toUpperCase().includes('STAR');
+        }
+
         function matchesSearch(study, term) {
             if (!term) return false;
             const t = term.toLowerCase();
@@ -1454,7 +1458,10 @@
                     i.category.toLowerCase().includes(term) ||
                     i.side.toLowerCase().includes(term);
 
-                const matchesCategory = (currentFilter === 'All' || i.category === currentFilter);
+                const matchesCategory =
+                    (currentFilter === 'All' ||
+                    (currentFilter === 'Staff Picks' ? isStaffPickStudy(i) : i.category === currentFilter));
+
                 const matchesSide = (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
                 const matchesAuthor = (!currentAuthor || normalizeAuthorName(i.author) === normalizeAuthorName(currentAuthor));
 
@@ -1540,7 +1547,7 @@
         };
 
         function createFilters() {
-            const cats = ['All', ...new Set(window.chessData.map(i => i.category))].filter(c => c !== 'General');
+            const cats = ['All', 'Staff Picks', ...new Set(window.chessData.map(i => i.category))].filter(c => c !== 'General');
             document.getElementById('filterContainer').innerHTML = cats.map(c => `<div onclick="setFilter('${c.replace(/'/g, "\\'")}')" class="filter-chip brand-font ${currentFilter === c ? 'active' : ''}">${c}</div>`).join('');
         }
 
