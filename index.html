@@ -4,10 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Chess Study Library | SCF</title>
+    <meta name="description" content="A curated archive of original, high-quality chess studies from Study Creators & Friends. Browse by author, category, and side, or search the archive instantly.">
+    <meta name="robots" content="index,follow">
+    <meta property="og:title" content="The Chess Study Library | SCF">
+    <meta property="og:description" content="A curated archive of original, high-quality chess studies from Study Creators & Friends.">
+    <meta name="theme-color" content="#0a0a0a">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZyBmaWxsPSIjYzVhMDU5Ij48cGF0aCBkPSJNNTAgMTBsLTUgNWgtMTBsLTUgNSAxMCAxMGgtMTBsLTUgNSAyMCAyMEgyNWwtNSA1aDYwbC01LTVINTVsMjAtMjAtMTAtMTBoLTEwbDEwLTEwLTUtNS0xMC01LTUtNXoiLz48cmVjdCB4PSIzMCIgeT0iNzUiIHdpZHRoPSI0MCIgaGVpZ2h0PSIxMCIgcng9IjIiLz48L2c+PC9zdmc+">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-    
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "The Chess Study Library",
+      "url": "https://studycreatorsandfriends.com",
+      "description": "A curated archive of original, high-quality chess studies from Study Creators & Friends.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://studycreatorsandfriends.com/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
     <style>
         :root { 
             --bg: #0a0a0a; 
@@ -698,6 +718,43 @@
             word-break: break-word;
         }
 
+        .archive-pagination {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.25rem;
+        }
+
+        .archive-pagination .page-chip {
+            appearance: none;
+            background: transparent;
+        }
+
+        .archive-pagination .page-chip[disabled] {
+            opacity: 0.35;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .archive-pagination .page-chip.active {
+            border-color: var(--gold);
+            color: var(--heading);
+            background: var(--card);
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.1);
+        }
+
+        .site-footer {
+            border-top: 1px solid var(--border);
+            margin-top: 6rem;
+            padding-top: 2rem;
+            text-align: center;
+        }
+
+        .site-footer p {
+            margin: 0;
+        }
+
         @media (min-width: 768px) {
             .author-profile-header {
                 padding: 3.2rem 2rem 2.6rem;
@@ -917,15 +974,25 @@
             <button onclick="resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
         </div>
         <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"></div>
+        <div id="paginationContainer" class="archive-pagination"></div>
+
+        <footer class="site-footer">
+            <p class="text-zinc-500 italic text-sm">A curated archive of original chess studies.</p>
+            <p class="gold-accent brand-font uppercase tracking-[0.25em] text-[9px] mt-3">Study Creators &amp; Friends</p>
+            <p class="text-zinc-600 text-[10px] uppercase tracking-[0.2em] mt-4">Use the search bar, filters, and pages above to browse the archive.</p>
+        </footer>
     </div>
 
     <script>
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
         const authorSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?gid=1246433755&single=true&output=csv';
         const FEATURED_KEYWORD = 'FEATURED';
+        const ITEMS_PER_PAGE = 12;
+
         let currentFilter = 'All',
             currentSideFilter = 'Any Side',
             currentAuthor = null,
+            currentPage = 1,
             carouselPos = 0,
             carouselInterval,
             searchTimer;
@@ -1159,7 +1226,7 @@
                 <div class="featured-shell rounded-sm">
                     <div class="grid lg:grid-cols-[1.05fr_0.95fr] min-h-[320px] lg:min-h-[420px]">
                         <a href="${featured.link}" target="_blank" class="featured-image block relative">
-                            <img src="${featured.image}" alt="${featured.title}">
+                            <img src="${featured.image}" alt="${featured.title}" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
                             <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap items-center gap-2 z-10 max-w-[calc(100%-2rem)]">
                                 <div class="featured-badge brand-font px-3 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] rounded-sm">Featured Study</div>
                                 <div class="forest-tag brand-font">${featured.side}</div>
@@ -1230,7 +1297,7 @@
                 
                 <a href="${i.link}" target="_blank" class="h-40 w-full relative block">
                     <div class="card-image-wrap">
-                        <img src="${i.image}" class="card-image" alt="${i.title}">
+                        <img src="${i.image}" class="card-image" alt="${i.title}" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
                         <div class="image-vignette"></div>
                         <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
                             <div class="forest-tag brand-font">${i.side}</div>
@@ -1445,6 +1512,56 @@
             section.classList.remove('hidden');
         }
 
+        function renderPagination(totalPages) {
+            const container = document.getElementById('paginationContainer');
+            if (!container) return;
+
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const pages = [];
+            const windowSize = 7;
+            let start = Math.max(1, currentPage - Math.floor(windowSize / 2));
+            let end = Math.min(totalPages, start + windowSize - 1);
+            start = Math.max(1, end - windowSize + 1);
+
+            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.max(1, currentPage - 1)}" ${currentPage === 1 ? 'disabled' : ''}>← Prev</button>`);
+
+            if (start > 1) {
+                pages.push(`<button class="filter-chip brand-font page-chip" data-page="1">1</button>`);
+                if (start > 2) {
+                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">…</span>`);
+                }
+            }
+
+            for (let p = start; p <= end; p++) {
+                pages.push(`<button class="filter-chip brand-font page-chip ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`);
+            }
+
+            if (end < totalPages) {
+                if (end < totalPages - 1) {
+                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">…</span>`);
+                }
+                pages.push(`<button class="filter-chip brand-font page-chip" data-page="${totalPages}">${totalPages}</button>`);
+            }
+
+            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.min(totalPages, currentPage + 1)}" ${currentPage === totalPages ? 'disabled' : ''}>Next →</button>`);
+
+            container.innerHTML = pages.join('');
+            container.querySelectorAll('button[data-page]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const page = parseInt(btn.getAttribute('data-page'), 10);
+                    if (!Number.isFinite(page) || page < 1 || page > totalPages) return;
+                    currentPage = page;
+                    renderArchive();
+                    const anchor = document.getElementById('archiveHeader');
+                    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+        }
+
         function renderArchive() {
             const term = document.getElementById('searchInput').value.trim().toLowerCase();
             const featured = getFeaturedStudy();
@@ -1469,6 +1586,13 @@
             });
 
             filtered = getSortedStudies(filtered);
+
+            const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
             const isSearchingOrFiltering = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side' || currentAuthor;
             const latestSec = document.getElementById('latestSection');
@@ -1496,11 +1620,13 @@
                 authorSec.classList.remove('hidden');
             } else {
                 authorSec.classList.add('hidden');
-                archiveHeader.textContent = 'Full Archive';
+                archiveHeader.textContent = totalPages > 1 ? `Full Archive — Page ${currentPage} of ${totalPages}` : 'Full Archive';
             }
 
             const counter = document.getElementById('liveCounter');
-            counter.innerText = isSearchingOrFiltering ? `FOUND ${filtered.length} MATCHING STUDIES` : `LIBRARY TOTAL: ${window.chessData.length}`;
+            counter.innerText = isSearchingOrFiltering
+                ? `FOUND ${filtered.length} MATCHING STUDIES • PAGE ${currentPage}/${totalPages}`
+                : `LIBRARY TOTAL: ${window.chessData.length}`;
             
             const grid = document.getElementById('resultsGrid');
             const noRes = document.getElementById('noResults');
@@ -1508,16 +1634,19 @@
             if (filtered.length === 0) {
                 grid.style.display = 'none';
                 noRes.style.display = 'block';
+                document.getElementById('paginationContainer').innerHTML = '';
             } else {
                 grid.style.display = 'grid';
                 noRes.style.display = 'none';
-                grid.innerHTML = filtered.map(i => cardHtml(i)).join('');
+                grid.innerHTML = pageItems.map(i => cardHtml(i)).join('');
                 grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
+                renderPagination(totalPages);
             }
         }
 
         function filterByAuthor(author) {
             currentAuthor = author;
+            currentPage = 1;
             document.getElementById('searchInput').value = '';
             renderArchive();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1525,6 +1654,7 @@
 
         function backToArchive() {
             currentAuthor = null;
+            currentPage = 1;
             renderArchive();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1534,6 +1664,7 @@
             currentFilter = 'All';
             currentSideFilter = 'Any Side';
             currentAuthor = null;
+            currentPage = 1;
             document.getElementById('sortSelect').value = 'newest';
             createFilters();
             createSideFilters();
@@ -1558,12 +1689,14 @@
 
         window.setFilter = (cat) => { 
             currentFilter = cat; 
+            currentPage = 1;
             createFilters(); 
             renderArchive(); 
         };
 
         window.setSideFilter = (side) => { 
             currentSideFilter = side; 
+            currentPage = 1;
             createSideFilters(); 
             renderArchive(); 
         };
@@ -1572,11 +1705,15 @@
             clearTimeout(searchTimer);
             searchTimer = setTimeout(() => {
                 currentAuthor = null;
+                currentPage = 1;
                 renderArchive();
             }, 40);
         });
 
-        document.getElementById('sortSelect').addEventListener('change', renderArchive);
+        document.getElementById('sortSelect').addEventListener('change', () => {
+            currentPage = 1;
+            renderArchive();
+        });
 
         document.addEventListener('mousemove', (e) => {
             const glow = document.getElementById('cursorGlow');
