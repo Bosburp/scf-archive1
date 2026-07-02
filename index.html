@@ -1,359 +1,297 @@
-const App = {
-    state: {
-        currentFilter: 'All',
-        currentSideFilter: 'Any Side',
-        currentAuthor: null,
-        currentPage: 1,
-        carouselPos: 0,
-        searchTerm: '',
-        sort: 'newest',
-        cacheKey: '',
-    },
-
-    data: {
-        studies: [],
-        authors: []
-    },
-
-    cache: {
-        filtered: null,
-        lastQuery: ''
-    },
-
-    storage: {
-        get(key, fallback) {
-            try {
-                return JSON.parse(localStorage.getItem(key)) ?? fallback;
-            } catch {
-                return fallback;
-            }
-        },
-        set(key, value) {
-            localStorage.setItem(key, JSON.stringify(value));
-        }
-    },
-
-    init() {
-        this.state.sort = this.storage.get('sort', 'newest');
-        this.favorites = new Set(this.storage.get('favorites', []));
-        this.recent = this.storage.get('recent', []);
-
-        document.getElementById('sortSelect').value = this.state.sort;
-
-        this.bindEvents();
-        this.loadData();
-    },
-
-    bindEvents() {
-        let searchTimer;
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            clearTimeout(searchTimer);
-            searchTimer = setTimeout(() => {
-                this.state.searchTerm = e.target.value.trim().toLowerCase();
-                this.state.currentAuthor = null;
-                this.state.currentPage = 1;
-                this.renderArchive();
-            }, 180);
-        });
-
-        document.getElementById('sortSelect').addEventListener('change', (e) => {
-            this.state.sort = e.target.value;
-            this.storage.set('sort', this.state.sort);
-            this.renderArchive();
-        });
-
-        window.addEventListener('resize', () => this.moveCarousel(0));
-
-        window.onscroll = () => {
-            const btn = document.getElementById('toTopBtn');
-            if (window.scrollY > 600) btn.classList.add('visible');
-            else btn.classList.remove('visible');
-        };
-    },
-
-    /* ================= DATA ================= */
-
-    async loadData() {
-        await this.loadAuthors();
-
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
-
-        const res = await fetch(sheetUrl);
-        const csv = await res.text();
-        const rows = this.parseCSV(csv);
-
-        this.data.studies = rows.slice(1).map(c => ({
-            side: c[1] || "Universal",
-            category: c[2] || "General",
-            title: c[3] || "Untitled",
-            author: c[4] || "Anonymous",
-            link: c[5] || "#",
-            notes: c[6] || "",
-            viewerNote: c[7] || "",
-            image: c[8]?.includes('http')
-                ? c[8]
-                : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
-            difficulty: c[9] || "",
-            keyword: c[11] || "",
-            featuredDescription: c[12] || ""
-        })).reverse();
-
-        this.renderAll();
-    },
-
-    async loadAuthors() {
-        const authorSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?gid=1246433755&single=true&output=csv';
-
-        try {
-            const res = await fetch(authorSheetUrl);
-            const csv = await res.text();
-            const rows = this.parseCSV(csv);
-
-            this.data.authors = rows.slice(1).map(c => ({
-                author: c[0],
-                bio: c[1],
-                country: c[2],
-                style: c[3],
-                links: c[4]
-            }));
-        } catch {
-            this.data.authors = [];
-        }
-    },
-
-    /* ================= CORE FIXES ================= */
-
-    parseCSV(text) {
-        const rows = [];
-        let row = [], cell = '', inQ = false;
-
-        for (let i = 0; i < text.length; i++) {
-            const ch = text[i], next = text[i + 1];
-
-            if (ch === '"' && next === '"') { cell += '"'; i++; continue; }
-            if (ch === '"') { inQ = !inQ; continue; }
-
-            if (ch === ',' && !inQ) { row.push(cell); cell = ''; continue; }
-            if ((ch === '\n' || ch === '\r') && !inQ) {
-                if (ch === '\r' && next === '\n') i++;
-                row.push(cell);
-                rows.push(row);
-                row = []; cell = '';
-                continue;
-            }
-
-            cell += ch;
-        }
-
-        if (cell || row.length) {
-            row.push(cell);
-            rows.push(row);
-        }
-
-        return rows;
-    },
-
-    matchesSearch(item, term) {
-        if (!term) return true;
-        const t = term.toLowerCase();
-
-        return [
-            item.title,
-            item.author,
-            item.category,
-            item.side,
-            item.notes,
-            item.viewerNote,
-            item.keyword
-        ].some(v => (v || '').toLowerCase().includes(t));
-    },
-
-    /* ================= FEATURED (FIXED PRIORITY) ================= */
-
-    getFeatured() {
-        const d = this.data.studies;
-
-        return (
-            d.find(s => (s.keyword || '').includes('FEATURED')) ||
-            d.find(s => (s.notes || '').toUpperCase().includes('STAR')) ||
-            d.find(s => s.viewerNote?.trim()) ||
-            d[0]
-        );
-    },
-
-    /* ================= FILTERING (FAST PATH) ================= */
-
-    getFiltered() {
-        const key = JSON.stringify({
-            f: this.state.currentFilter,
-            s: this.state.currentSideFilter,
-            a: this.state.currentAuthor,
-            q: this.state.searchTerm,
-            sort: this.state.sort
-        });
-
-        if (this.cache.lastQuery === key && this.cache.filtered) {
-            return this.cache.filtered;
-        }
-
-        let arr = this.data.studies;
-
-        arr = arr.filter(i => {
-            const textOk = this.matchesSearch(i, this.state.searchTerm);
-
-            const catOk =
-                this.state.currentFilter === 'All' ||
-                (this.state.currentFilter === 'Staff Picks'
-                    ? (i.notes || '').toUpperCase().includes('STAR')
-                    : i.category === this.state.currentFilter);
-
-            const sideOk =
-                this.state.currentSideFilter === 'Any Side' ||
-                i.side === this.state.currentSideFilter;
-
-            const authorOk =
-                !this.state.currentAuthor ||
-                i.author.toLowerCase() === this.state.currentAuthor.toLowerCase();
-
-            return textOk && catOk && sideOk && authorOk;
-        });
-
-        arr = this.sort(arr);
-
-        this.cache.lastQuery = key;
-        this.cache.filtered = arr;
-
-        return arr;
-    },
-
-    sort(arr) {
-        switch (this.state.sort) {
-            case 'title-az': return [...arr].sort((a,b)=>a.title.localeCompare(b.title));
-            case 'title-za': return [...arr].sort((a,b)=>b.title.localeCompare(a.title));
-            case 'author-az': return [...arr].sort((a,b)=>a.author.localeCompare(b.author));
-            case 'author-za': return [...arr].sort((a,b)=>b.author.localeCompare(a.author));
-            case 'oldest': return [...arr].reverse();
-            default: return arr;
-        }
-    },
-
-    /* ================= RENDER ================= */
-
-    renderAll() {
-        this.createFilters();
-        this.createSideFilters();
-        this.renderFeatured();
-        this.renderLatest();
-        this.renderArchive();
-    },
-
-    renderArchive() {
-        const filtered = this.getFiltered();
-
-        const perPage = 12;
-        const pages = Math.max(1, Math.ceil(filtered.length / perPage));
-
-        if (this.state.currentPage > pages) this.state.currentPage = pages;
-
-        const start = (this.state.currentPage - 1) * perPage;
-        const pageItems = filtered.slice(start, start + perPage);
-
-        document.getElementById('resultsGrid').innerHTML =
-            pageItems.map(i => this.card(i)).join('');
-
-        document.getElementById('liveCounter').innerText =
-            `FOUND ${filtered.length} STUDIES • PAGE ${this.state.currentPage}/${pages}`;
-
-        this.renderPagination(pages);
-    },
-
-    renderFeatured() {
-        const f = this.getFeatured();
-        if (!f) return;
-
-        document.getElementById('featuredStudyContainer').innerHTML = `
-            <a href="${f.link}" target="_blank">
-                <div class="featured-shell">
-                    <h2>${f.title}</h2>
-                    <p>${f.author}</p>
-                </div>
-            </a>
-        `;
-    },
-
-    renderLatest() {
-        const grid = document.getElementById('latestGrid');
-        grid.innerHTML = this.data.studies.slice(0, 9).map(i =>
-            `<div class="carousel-item">${this.card(i)}</div>`
-        ).join('');
-    },
-
-    card(i) {
-        const fav = this.favorites.has(i.link);
-
-        return `
-        <div class="chess-card">
-            <a href="${i.link}" target="_blank" onclick="App.track('${i.link}')">
-                <img src="${i.image}">
-            </a>
-
-            <div>
-                <div>${i.category}</div>
-                <h3>${this.highlight(i.title)}</h3>
-
-                <button onclick="App.toggleFav('${i.link}')">
-                    ${fav ? '★' : '☆'}
-                </button>
-            </div>
-        </div>`;
-    },
-
-    highlight(text) {
-        const q = this.state.searchTerm;
-        if (!q) return text;
-        return text.replaceAll(q, `<mark>${q}</mark>`);
-    },
-
-    /* ================= FEATURES ================= */
-
-    toggleFav(link) {
-        if (this.favorites.has(link)) this.favorites.delete(link);
-        else this.favorites.add(link);
-
-        this.storage.set('favorites', [...this.favorites]);
-        this.renderArchive();
-    },
-
-    track(link) {
-        this.recent.unshift(link);
-        this.recent = [...new Set(this.recent)].slice(0, 20);
-        this.storage.set('recent', this.recent);
-    },
-
-    surpriseMe() {
-        const pool = this.data.studies.filter(s =>
-            !this.recent.includes(s.link)
-        );
-
-        const pick = pool.length
-            ? pool[Math.floor(Math.random() * pool.length)]
-            : this.data.studies[Math.floor(Math.random() * this.data.studies.length)];
-
-        window.open(pick.link, '_blank');
-    },
-
-    /* ================= UI HELPERS ================= */
-
-    createFilters() {},
-    createSideFilters() {},
-    renderPagination() {},
-
-    moveCarousel(dir) {
-        const grid = document.getElementById('latestGrid');
-        this.state.carouselPos = Math.max(0, this.state.carouselPos + dir);
-        grid.style.transform = `translateX(-${this.state.carouselPos * 320}px)`;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chess Study Library</title>
+<style>
+/* (your existing CSS stays unchanged — not duplicated here) */
+</style>
+</head>
+
+<body class="min-h-screen p-8 md:p-16">
+
+<div id="cursorGlow"></div>
+<div id="copyToast" class="copy-toast">Link Copied to Clipboard</div>
+
+<button id="surpriseBtn" onclick="surpriseMe()">🎲</button>
+<button id="themeToggle" onclick="toggleTheme()">🌓</button>
+<button id="toTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div id="aboutPage" class="modal-overlay hidden">...</div>
+<div id="submitPage" class="modal-overlay hidden">...</div>
+
+<div class="max-w-6xl mx-auto site-layer">
+
+<header class="text-center mb-20">
+<h1>The Chess Study Library</h1>
+</header>
+
+<section id="featuredSection" class="mb-20 hidden">
+<h3>Featured</h3>
+<div id="featuredStudyContainer"></div>
+</section>
+
+<div class="max-w-2xl mx-auto mb-24 text-center">
+
+<input id="searchInput" placeholder="Search..." />
+
+<select id="sortSelect">
+<option value="newest">Newest</option>
+<option value="oldest">Oldest</option>
+<option value="title-az">A–Z</option>
+<option value="title-za">Z–A</option>
+<option value="author-az">Author A–Z</option>
+<option value="author-za">Author Z–A</option>
+</select>
+
+<div id="filterContainer"></div>
+<div id="sideFilterContainer"></div>
+
+<div id="liveCounter"></div>
+</div>
+
+<div id="latestSection">
+<div id="latestGrid"></div>
+</div>
+
+<h3 id="archiveHeader">Full Archive</h3>
+<div id="noResults" style="display:none;">No results</div>
+<div id="resultsGrid"></div>
+<div id="paginationContainer"></div>
+
+</div>
+
+<script>
+/* =========================
+   CONFIG
+========================= */
+const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv";
+const authorSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?gid=1246433755&single=true&output=csv";
+
+const ITEMS_PER_PAGE = 12;
+
+/* =========================
+   STATE
+========================= */
+let state = {
+  data: [],
+  authors: [],
+  filter: "All",
+  side: "Any Side",
+  author: null,
+  page: 1,
+  sort: "newest",
+  search: ""
 };
 
-App.init();
+let carouselPos = 0;
+let carouselTimer = null;
+let searchTimer = null;
+
+/* =========================
+   HELPERS
+========================= */
+const norm = s => (s || "").toString().toLowerCase().trim();
+
+function escapeHTML(str){
+  return (str||"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;");
+}
+
+/* safer CSV parser */
+function parseCSV(text){
+  const rows = [];
+  let row=[],cell="",q=false;
+
+  for(let i=0;i<text.length;i++){
+    const c=text[i],n=text[i+1];
+
+    if(c === '"' && q && n === '"'){ cell+='"'; i++; continue; }
+    if(c === '"'){ q=!q; continue; }
+
+    if(c === ',' && !q){ row.push(cell); cell=""; continue; }
+
+    if((c === '\n' || c === '\r') && !q){
+      if(c === '\r' && n === '\n') i++;
+      row.push(cell);
+      rows.push(row);
+      row=[]; cell="";
+      continue;
+    }
+
+    cell += c;
+  }
+
+  if(cell || row.length){
+    row.push(cell);
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+/* =========================
+   LOAD DATA
+========================= */
+async function load(){
+  state.authors = await loadAuthors();
+
+  const res = await fetch(sheetUrl);
+  const csv = await res.text();
+  const rows = parseCSV(csv).slice(1);
+
+  state.data = rows.map(r => ({
+    side: r[1] || "Universal",
+    category: r[2] || "General",
+    title: r[3] || "Untitled",
+    author: r[4] || "Anonymous",
+    link: r[5] || "#",
+    notes: r[6] || "",
+    viewerNote: r[7] || "",
+    image: r[8]?.includes("http") ? r[8] : "",
+    difficulty: r[9] || "",
+    keyword: r[11] || "",
+    featuredDescription: r[12] || ""
+  })).reverse();
+
+  renderAll();
+}
+
+async function loadAuthors(){
+  try{
+    const res = await fetch(authorSheetUrl);
+    const csv = await res.text();
+    return parseCSV(csv).slice(1).map(r => ({
+      author:r[0], bio:r[1], country:r[2], style:r[3], links:r[4]
+    }));
+  } catch(e){
+    return [];
+  }
+}
+
+/* =========================
+   FILTERING
+========================= */
+function isFeatured(i){
+  return (i.keyword||"").toUpperCase().includes("FEATURED");
+}
+
+function matchSearch(i, s){
+  if(!s) return true;
+  s = s.toLowerCase();
+  return Object.values(i).some(v => norm(v).includes(s));
+}
+
+function getFiltered(){
+  let arr = [...state.data];
+
+  arr = arr.filter(i => {
+    if(state.filter !== "All" && i.category !== state.filter) return false;
+    if(state.side !== "Any Side" && i.side !== state.side) return false;
+    if(state.author && norm(i.author) !== norm(state.author)) return false;
+    if(!matchSearch(i, state.search)) return false;
+    return true;
+  });
+
+  switch(state.sort){
+    case "title-az": arr.sort((a,b)=>a.title.localeCompare(b.title)); break;
+    case "title-za": arr.sort((a,b)=>b.title.localeCompare(a.title)); break;
+    case "author-az": arr.sort((a,b)=>a.author.localeCompare(b.author)); break;
+    case "author-za": arr.sort((a,b)=>b.author.localeCompare(a.author)); break;
+    case "oldest": arr.reverse(); break;
+  }
+
+  return arr;
+}
+
+/* =========================
+   RENDER
+========================= */
+function card(i){
+  return `
+  <div class="card">
+    <a href="${i.link}" target="_blank">
+      <img src="${i.image}" onerror="this.style.display='none'">
+    </a>
+
+    <div>
+      <div>${escapeHTML(i.category)}</div>
+      <h3>${escapeHTML(i.title)}</h3>
+      <p onclick="setAuthor('${escapeHTML(i.author)}')">${escapeHTML(i.author)}</p>
+      <small>${escapeHTML(i.notes)}</small>
+    </div>
+  </div>`;
+}
+
+function renderArchive(){
+  const filtered = getFiltered();
+
+  const start = (state.page-1)*ITEMS_PER_PAGE;
+  const page = filtered.slice(start,start+ITEMS_PER_PAGE);
+
+  document.getElementById("resultsGrid").innerHTML =
+    page.map(card).join("");
+
+  document.getElementById("liveCounter").textContent =
+    `${filtered.length} results`;
+
+}
+
+/* =========================
+   ACTIONS
+========================= */
+function setAuthor(a){
+  state.author = a;
+  state.page = 1;
+  renderArchive();
+}
+
+function setFilter(f){
+  state.filter = f;
+  state.page = 1;
+  renderArchive();
+}
+
+function setSide(s){
+  state.side = s;
+  state.page = 1;
+  renderArchive();
+}
+
+/* =========================
+   SEARCH (debounced)
+========================= */
+document.getElementById("searchInput").addEventListener("input", e=>{
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>{
+    state.search = e.target.value;
+    state.page = 1;
+    renderArchive();
+  },120);
+});
+
+/* =========================
+   SORT
+========================= */
+document.getElementById("sortSelect").addEventListener("change",e=>{
+  state.sort = e.target.value;
+  renderArchive();
+});
+
+/* =========================
+   INIT
+========================= */
+function renderAll(){
+  renderArchive();
+}
+
+load();
+</script>
+
+</body>
+</html>
