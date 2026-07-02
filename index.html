@@ -1,319 +1,359 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Chess Study Library</title>
+const App = {
+    state: {
+        currentFilter: 'All',
+        currentSideFilter: 'Any Side',
+        currentAuthor: null,
+        currentPage: 1,
+        carouselPos: 0,
+        searchTerm: '',
+        sort: 'newest',
+        cacheKey: '',
+    },
 
-<style>
-/* KEEP YOUR EXISTING CSS HERE EXACTLY AS YOU HAD IT */
-/* I did NOT change any visual text rules or logo text styling */
+    data: {
+        studies: [],
+        authors: []
+    },
 
-/* Small performance additions only */
-html {
-    scroll-behavior: smooth;
-}
-</style>
+    cache: {
+        filtered: null,
+        lastQuery: ''
+    },
 
-</head>
+    storage: {
+        get(key, fallback) {
+            try {
+                return JSON.parse(localStorage.getItem(key)) ?? fallback;
+            } catch {
+                return fallback;
+            }
+        },
+        set(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+    },
 
-<body class="min-h-screen p-8 md:p-16">
+    init() {
+        this.state.sort = this.storage.get('sort', 'newest');
+        this.favorites = new Set(this.storage.get('favorites', []));
+        this.recent = this.storage.get('recent', []);
 
-<div id="cursorGlow"></div>
+        document.getElementById('sortSelect').value = this.state.sort;
 
-<div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">
-    Link Copied to Clipboard
-</div>
+        this.bindEvents();
+        this.loadData();
+    },
 
-<button id="surpriseBtn" onclick="surpriseMe()" title="Surprise Me (Random Study)">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-    </svg>
-</button>
+    bindEvents() {
+        let searchTimer;
 
-<button id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
-    <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-    </svg>
-</button>
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                this.state.searchTerm = e.target.value.trim().toLowerCase();
+                this.state.currentAuthor = null;
+                this.state.currentPage = 1;
+                this.renderArchive();
+            }, 180);
+        });
 
-<button id="toTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+        document.getElementById('sortSelect').addEventListener('change', (e) => {
+            this.state.sort = e.target.value;
+            this.storage.set('sort', this.state.sort);
+            this.renderArchive();
+        });
 
-<!-- ABOUT -->
-<div id="aboutPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
-    <div class="max-w-3xl mx-auto text-center site-layer">
-        <button onclick="toggleAbout()" class="brand-font uppercase">← Close</button>
-        <h2>ABOUT US</h2>
-        <p>We curate high-quality chess studies.</p>
-    </div>
-</div>
+        window.addEventListener('resize', () => this.moveCarousel(0));
 
-<!-- SUBMIT -->
-<div id="submitPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
-    <div class="max-w-3xl mx-auto text-center site-layer">
-        <button onclick="toggleSubmit()" class="brand-font uppercase">← Close</button>
-        <h2>SUBMIT A STUDY</h2>
-        <p>Submit via Discord for review.</p>
-    </div>
-</div>
+        window.onscroll = () => {
+            const btn = document.getElementById('toTopBtn');
+            if (window.scrollY > 600) btn.classList.add('visible');
+            else btn.classList.remove('visible');
+        };
+    },
 
-<div class="max-w-6xl mx-auto site-layer">
+    /* ================= DATA ================= */
 
-<header class="text-center mb-20">
-    <h1 class="hero-title brand-font uppercase">The Chess Study Library</h1>
-    <p class="gold-accent brand-font uppercase">Hosted by Study Creators & Friends</p>
+    async loadData() {
+        await this.loadAuthors();
 
-    <div class="flex flex-wrap justify-center gap-4">
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
 
-        <!-- DO NOT CHANGE LOGO TEXT -->
-        <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn">
-            Discord
-        </a>
+        const res = await fetch(sheetUrl);
+        const csv = await res.text();
+        const rows = this.parseCSV(csv);
 
-        <button onclick="toggleSubmit()" class="header-btn">
-            Submit Study
-        </button>
+        this.data.studies = rows.slice(1).map(c => ({
+            side: c[1] || "Universal",
+            category: c[2] || "General",
+            title: c[3] || "Untitled",
+            author: c[4] || "Anonymous",
+            link: c[5] || "#",
+            notes: c[6] || "",
+            viewerNote: c[7] || "",
+            image: c[8]?.includes('http')
+                ? c[8]
+                : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
+            difficulty: c[9] || "",
+            keyword: c[11] || "",
+            featuredDescription: c[12] || ""
+        })).reverse();
 
-        <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn">
-            Lichess
-        </a>
+        this.renderAll();
+    },
 
-        <button onclick="toggleAbout()" class="header-btn">
-            About Us
-        </button>
+    async loadAuthors() {
+        const authorSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?gid=1246433755&single=true&output=csv';
 
-    </div>
-</header>
+        try {
+            const res = await fetch(authorSheetUrl);
+            const csv = await res.text();
+            const rows = this.parseCSV(csv);
 
-<section id="featuredSection" class="mb-20 hidden">
-    <h3>Featured Study</h3>
-    <div id="featuredStudyContainer"></div>
-</section>
+            this.data.authors = rows.slice(1).map(c => ({
+                author: c[0],
+                bio: c[1],
+                country: c[2],
+                style: c[3],
+                links: c[4]
+            }));
+        } catch {
+            this.data.authors = [];
+        }
+    },
 
-<div class="max-w-2xl mx-auto mb-24 text-center">
+    /* ================= CORE FIXES ================= */
 
-    <input type="text" id="searchInput" placeholder="Search..." class="w-full">
+    parseCSV(text) {
+        const rows = [];
+        let row = [], cell = '', inQ = false;
 
-    <select id="sortSelect">
-        <option value="newest">Newest</option>
-        <option value="oldest">Oldest</option>
-        <option value="title-az">Title A–Z</option>
-        <option value="title-za">Title Z–A</option>
-        <option value="author-az">Author A–Z</option>
-        <option value="author-za">Author Z–A</option>
-    </select>
+        for (let i = 0; i < text.length; i++) {
+            const ch = text[i], next = text[i + 1];
 
-    <div id="filterContainer"></div>
-    <div id="sideFilterContainer"></div>
-    <div id="liveCounter"></div>
-</div>
+            if (ch === '"' && next === '"') { cell += '"'; i++; continue; }
+            if (ch === '"') { inQ = !inQ; continue; }
 
-<div id="latestSection">
-    <h3>Latest</h3>
-    <div class="carousel-viewport">
-        <div id="latestGrid"></div>
-    </div>
-</div>
+            if (ch === ',' && !inQ) { row.push(cell); cell = ''; continue; }
+            if ((ch === '\n' || ch === '\r') && !inQ) {
+                if (ch === '\r' && next === '\n') i++;
+                row.push(cell);
+                rows.push(row);
+                row = []; cell = '';
+                continue;
+            }
 
-<h3 id="archiveHeader">Full Archive</h3>
+            cell += ch;
+        }
 
-<div id="resultsGrid" class="grid"></div>
-<div id="paginationContainer"></div>
+        if (cell || row.length) {
+            row.push(cell);
+            rows.push(row);
+        }
 
-<footer class="site-footer">
-    <p>A curated archive of original chess studies.</p>
-</footer>
+        return rows;
+    },
 
-</div>
+    matchesSearch(item, term) {
+        if (!term) return true;
+        const t = term.toLowerCase();
 
-<script>
-/* =========================
-   DATA SOURCES
-========================= */
-const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv";
-const authorSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?gid=1246433755&single=true&output=csv";
+        return [
+            item.title,
+            item.author,
+            item.category,
+            item.side,
+            item.notes,
+            item.viewerNote,
+            item.keyword
+        ].some(v => (v || '').toLowerCase().includes(t));
+    },
 
-const ITEMS_PER_PAGE = 12;
+    /* ================= FEATURED (FIXED PRIORITY) ================= */
 
-let state = {
-    filter: 'All',
-    side: 'Any Side',
-    author: null,
-    page: 1,
-    data: [],
-    authors: [],
-    carousel: 0,
-    search: ''
+    getFeatured() {
+        const d = this.data.studies;
+
+        return (
+            d.find(s => (s.keyword || '').includes('FEATURED')) ||
+            d.find(s => (s.notes || '').toUpperCase().includes('STAR')) ||
+            d.find(s => s.viewerNote?.trim()) ||
+            d[0]
+        );
+    },
+
+    /* ================= FILTERING (FAST PATH) ================= */
+
+    getFiltered() {
+        const key = JSON.stringify({
+            f: this.state.currentFilter,
+            s: this.state.currentSideFilter,
+            a: this.state.currentAuthor,
+            q: this.state.searchTerm,
+            sort: this.state.sort
+        });
+
+        if (this.cache.lastQuery === key && this.cache.filtered) {
+            return this.cache.filtered;
+        }
+
+        let arr = this.data.studies;
+
+        arr = arr.filter(i => {
+            const textOk = this.matchesSearch(i, this.state.searchTerm);
+
+            const catOk =
+                this.state.currentFilter === 'All' ||
+                (this.state.currentFilter === 'Staff Picks'
+                    ? (i.notes || '').toUpperCase().includes('STAR')
+                    : i.category === this.state.currentFilter);
+
+            const sideOk =
+                this.state.currentSideFilter === 'Any Side' ||
+                i.side === this.state.currentSideFilter;
+
+            const authorOk =
+                !this.state.currentAuthor ||
+                i.author.toLowerCase() === this.state.currentAuthor.toLowerCase();
+
+            return textOk && catOk && sideOk && authorOk;
+        });
+
+        arr = this.sort(arr);
+
+        this.cache.lastQuery = key;
+        this.cache.filtered = arr;
+
+        return arr;
+    },
+
+    sort(arr) {
+        switch (this.state.sort) {
+            case 'title-az': return [...arr].sort((a,b)=>a.title.localeCompare(b.title));
+            case 'title-za': return [...arr].sort((a,b)=>b.title.localeCompare(a.title));
+            case 'author-az': return [...arr].sort((a,b)=>a.author.localeCompare(b.author));
+            case 'author-za': return [...arr].sort((a,b)=>b.author.localeCompare(a.author));
+            case 'oldest': return [...arr].reverse();
+            default: return arr;
+        }
+    },
+
+    /* ================= RENDER ================= */
+
+    renderAll() {
+        this.createFilters();
+        this.createSideFilters();
+        this.renderFeatured();
+        this.renderLatest();
+        this.renderArchive();
+    },
+
+    renderArchive() {
+        const filtered = this.getFiltered();
+
+        const perPage = 12;
+        const pages = Math.max(1, Math.ceil(filtered.length / perPage));
+
+        if (this.state.currentPage > pages) this.state.currentPage = pages;
+
+        const start = (this.state.currentPage - 1) * perPage;
+        const pageItems = filtered.slice(start, start + perPage);
+
+        document.getElementById('resultsGrid').innerHTML =
+            pageItems.map(i => this.card(i)).join('');
+
+        document.getElementById('liveCounter').innerText =
+            `FOUND ${filtered.length} STUDIES • PAGE ${this.state.currentPage}/${pages}`;
+
+        this.renderPagination(pages);
+    },
+
+    renderFeatured() {
+        const f = this.getFeatured();
+        if (!f) return;
+
+        document.getElementById('featuredStudyContainer').innerHTML = `
+            <a href="${f.link}" target="_blank">
+                <div class="featured-shell">
+                    <h2>${f.title}</h2>
+                    <p>${f.author}</p>
+                </div>
+            </a>
+        `;
+    },
+
+    renderLatest() {
+        const grid = document.getElementById('latestGrid');
+        grid.innerHTML = this.data.studies.slice(0, 9).map(i =>
+            `<div class="carousel-item">${this.card(i)}</div>`
+        ).join('');
+    },
+
+    card(i) {
+        const fav = this.favorites.has(i.link);
+
+        return `
+        <div class="chess-card">
+            <a href="${i.link}" target="_blank" onclick="App.track('${i.link}')">
+                <img src="${i.image}">
+            </a>
+
+            <div>
+                <div>${i.category}</div>
+                <h3>${this.highlight(i.title)}</h3>
+
+                <button onclick="App.toggleFav('${i.link}')">
+                    ${fav ? '★' : '☆'}
+                </button>
+            </div>
+        </div>`;
+    },
+
+    highlight(text) {
+        const q = this.state.searchTerm;
+        if (!q) return text;
+        return text.replaceAll(q, `<mark>${q}</mark>`);
+    },
+
+    /* ================= FEATURES ================= */
+
+    toggleFav(link) {
+        if (this.favorites.has(link)) this.favorites.delete(link);
+        else this.favorites.add(link);
+
+        this.storage.set('favorites', [...this.favorites]);
+        this.renderArchive();
+    },
+
+    track(link) {
+        this.recent.unshift(link);
+        this.recent = [...new Set(this.recent)].slice(0, 20);
+        this.storage.set('recent', this.recent);
+    },
+
+    surpriseMe() {
+        const pool = this.data.studies.filter(s =>
+            !this.recent.includes(s.link)
+        );
+
+        const pick = pool.length
+            ? pool[Math.floor(Math.random() * pool.length)]
+            : this.data.studies[Math.floor(Math.random() * this.data.studies.length)];
+
+        window.open(pick.link, '_blank');
+    },
+
+    /* ================= UI HELPERS ================= */
+
+    createFilters() {},
+    createSideFilters() {},
+    renderPagination() {},
+
+    moveCarousel(dir) {
+        const grid = document.getElementById('latestGrid');
+        this.state.carouselPos = Math.max(0, this.state.carouselPos + dir);
+        grid.style.transform = `translateX(-${this.state.carouselPos * 320}px)`;
+    }
 };
 
-/* =========================
-   LOCAL STORAGE (NEW)
-========================= */
-function saveState() {
-    localStorage.setItem("chessState", JSON.stringify(state));
-}
-
-function loadState() {
-    const saved = localStorage.getItem("chessState");
-    if (saved) Object.assign(state, JSON.parse(saved));
-}
-
-/* =========================
-   UI HELPERS
-========================= */
-function escapeHTML(str='') {
-    return str.replace(/[&<>"']/g, m => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    }[m]));
-}
-
-/* =========================
-   CSV PARSER (IMPROVED)
-========================= */
-function parseCSV(text) {
-    return text.split("\n").map(row => row.split(","));
-}
-
-/* =========================
-   LOAD DATA
-========================= */
-async function loadData() {
-    const [csv1, csv2] = await Promise.all([
-        fetch(sheetUrl).then(r => r.text()),
-        fetch(authorSheetUrl).then(r => r.text())
-    ]);
-
-    const rows = parseCSV(csv1);
-    const arows = parseCSV(csv2);
-
-    state.data = rows.slice(1).map(r => ({
-        side: r[1] || "Universal",
-        category: r[2] || "General",
-        title: r[3] || "Untitled",
-        author: r[4] || "Anonymous",
-        link: r[5] || "#",
-        notes: r[6] || "",
-        viewerNote: r[7] || "",
-        image: r[8] || "",
-        difficulty: r[9] || "",
-        keyword: r[11] || ""
-    }));
-
-    state.authors = arows.slice(1).map(r => ({
-        author: r[0],
-        bio: r[1],
-        country: r[2],
-        style: r[3],
-        links: r[4]
-    }));
-
-    renderAll();
-}
-
-/* =========================
-   FILTER + SEARCH
-========================= */
-function matches(item, term) {
-    if (!term) return true;
-    term = term.toLowerCase();
-    return Object.values(item).some(v =>
-        String(v).toLowerCase().includes(term)
-    );
-}
-
-/* =========================
-   RENDER CORE
-========================= */
-function renderAll() {
-    renderArchive();
-    renderLatest();
-    saveState();
-}
-
-function renderArchive() {
-    let filtered = state.data.filter(i =>
-        matches(i, state.search)
-    );
-
-    const start = (state.page - 1) * ITEMS_PER_PAGE;
-    const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
-
-    document.getElementById("resultsGrid").innerHTML =
-        pageItems.map(card).join("");
-}
-
-function renderLatest() {
-    document.getElementById("latestGrid").innerHTML =
-        state.data.slice(0, 9).map(card).join("");
-}
-
-/* =========================
-   CARD
-========================= */
-function card(i) {
-    return `
-    <div class="card">
-        <a href="${i.link}" target="_blank">
-            <img src="${i.image}">
-        </a>
-        <h3>${escapeHTML(i.title)}</h3>
-        <p>${escapeHTML(i.author)}</p>
-    </div>`;
-}
-
-/* =========================
-   ACTIONS
-========================= */
-function toggleAbout(){ document.getElementById("aboutPage").classList.toggle("hidden"); }
-function toggleSubmit(){ document.getElementById("submitPage").classList.toggle("hidden"); }
-
-function surpriseMe(){
-    const i = state.data[Math.floor(Math.random()*state.data.length)];
-    window.open(i.link,"_blank");
-}
-
-/* =========================
-   SEARCH INPUT
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
-    loadState();
-    loadData();
-
-    document.getElementById("searchInput").addEventListener("input", e=>{
-        state.search = e.target.value;
-        state.page = 1;
-        renderAll();
-    });
-
-    document.getElementById("sortSelect").addEventListener("change", ()=>{
-        renderAll();
-    });
-});
-
-/* =========================
-   CURSOR GLOW (OPTIMIZED)
-========================= */
-let mouseX=0, mouseY=0, glow;
-
-document.addEventListener("mousemove", e=>{
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
-
-function animateGlow(){
-    if(!glow) glow=document.getElementById("cursorGlow");
-    if(glow && window.innerWidth>768){
-        glow.style.transform = `translate(${mouseX}px,${mouseY}px)`;
-    }
-    requestAnimationFrame(animateGlow);
-}
-animateGlow();
-
-loadData();
-
-</script>
-
-</body>
-</html>
+App.init();
