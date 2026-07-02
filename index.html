@@ -4,294 +4,441 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chess Study Library</title>
+
 <style>
-/* (your existing CSS stays unchanged — not duplicated here) */
+/* =========================
+   BASE
+========================= */
+:root{
+  --bg:#0a0a0a;
+  --panel:#111;
+  --text:#e7e7e7;
+  --muted:#a1a1a1;
+  --accent:#c5a059;
+  --border:#1f1f1f;
+}
+
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.site-layer{
+  max-width:1200px;
+  margin:0 auto;
+  padding:40px 20px;
+}
+
+/* =========================
+   HEADER
+========================= */
+header{
+  text-align:center;
+  margin-bottom:60px;
+}
+
+h1{
+  font-size:28px;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+}
+
+.sub{
+  font-size:11px;
+  color:var(--accent);
+  letter-spacing:0.3em;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+button, .chip{
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  padding:8px 12px;
+  font-size:11px;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  transition:0.2s;
+}
+
+button:hover, .chip:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+/* =========================
+   SEARCH
+========================= */
+.search{
+  width:100%;
+  padding:14px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  color:var(--text);
+  outline:none;
+  margin-bottom:20px;
+}
+
+/* =========================
+   FILTER ROW
+========================= */
+.row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin-bottom:20px;
+}
+
+/* =========================
+   FEATURED
+========================= */
+.featured{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:20px;
+  margin-bottom:60px;
+  border:1px solid var(--border);
+  background:var(--panel);
+}
+
+.featured img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.featured-content{
+  padding:30px;
+}
+
+.featured-title{
+  font-size:22px;
+  margin:10px 0;
+}
+
+.tag{
+  font-size:10px;
+  color:var(--accent);
+  letter-spacing:0.2em;
+}
+
+/* =========================
+   GRID
+========================= */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:20px;
+}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr);}
+}
+
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr;}
+}
+
+/* =========================
+   CARD
+========================= */
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  overflow:hidden;
+  transition:0.25s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:var(--accent);
+}
+
+.card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+
+.card-body{
+  padding:14px;
+}
+
+.card-title{
+  font-size:14px;
+  margin:6px 0;
+}
+
+.card-meta{
+  font-size:10px;
+  color:var(--muted);
+}
+
+/* =========================
+   MODAL
+========================= */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+}
+
+.modal-inner{
+  max-width:700px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:30px;
+}
+
+/* =========================
+   SMALL UI
+========================= */
+.counter{
+  text-align:center;
+  margin:20px 0;
+  color:var(--accent);
+  font-size:11px;
+  letter-spacing:0.2em;
+}
 </style>
 </head>
 
-<body class="min-h-screen p-8 md:p-16">
+<body>
 
-<div id="cursorGlow"></div>
-<div id="copyToast" class="copy-toast">Link Copied to Clipboard</div>
+<div class="site-layer">
 
-<button id="surpriseBtn" onclick="surpriseMe()">🎲</button>
-<button id="themeToggle" onclick="toggleTheme()">🌓</button>
-<button id="toTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-
-<div id="aboutPage" class="modal-overlay hidden">...</div>
-<div id="submitPage" class="modal-overlay hidden">...</div>
-
-<div class="max-w-6xl mx-auto site-layer">
-
-<header class="text-center mb-20">
-<h1>The Chess Study Library</h1>
+<header>
+<h1>Chess Study Library</h1>
+<div class="sub">Study Creators & Friends</div>
 </header>
 
-<section id="featuredSection" class="mb-20 hidden">
-<h3>Featured</h3>
-<div id="featuredStudyContainer"></div>
-</section>
+<input id="searchInput" class="search" placeholder="Search studies...">
 
-<div class="max-w-2xl mx-auto mb-24 text-center">
-
-<input id="searchInput" placeholder="Search..." />
-
+<div class="row">
 <select id="sortSelect">
 <option value="newest">Newest</option>
-<option value="oldest">Oldest</option>
 <option value="title-az">A–Z</option>
 <option value="title-za">Z–A</option>
 <option value="author-az">Author A–Z</option>
 <option value="author-za">Author Z–A</option>
 </select>
-
-<div id="filterContainer"></div>
-<div id="sideFilterContainer"></div>
-
-<div id="liveCounter"></div>
 </div>
 
-<div id="latestSection">
-<div id="latestGrid"></div>
-</div>
+<div id="filterContainer" class="row"></div>
+<div id="sideFilterContainer" class="row"></div>
 
-<h3 id="archiveHeader">Full Archive</h3>
-<div id="noResults" style="display:none;">No results</div>
-<div id="resultsGrid"></div>
-<div id="paginationContainer"></div>
+<div id="counter" class="counter"></div>
+
+<!-- FEATURED -->
+<div id="featured"></div>
+
+<!-- GRID -->
+<div id="grid" class="grid"></div>
 
 </div>
 
-<script>
-/* =========================
-   CONFIG
-========================= */
+<!-- MODAL -->
+<div id="modal" class="modal">
+<div class="modal-inner" id="modalInner"></div>
+</div>
+
+</body>
+   <script>
 const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv";
-const authorSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?gid=1246433755&single=true&output=csv";
 
-const ITEMS_PER_PAGE = 12;
-
-/* =========================
-   STATE
-========================= */
-let state = {
-  data: [],
-  authors: [],
-  filter: "All",
-  side: "Any Side",
-  author: null,
-  page: 1,
-  sort: "newest",
-  search: ""
-};
-
-let carouselPos = 0;
-let carouselTimer = null;
-let searchTimer = null;
+let data = [];
+let filter = "All";
+let side = "Any";
+let search = "";
+let sort = "newest";
 
 /* =========================
-   HELPERS
+   LOAD
 ========================= */
-const norm = s => (s || "").toString().toLowerCase().trim();
+async function load(){
+  const res = await fetch(sheetUrl);
+  const text = await res.text();
 
-function escapeHTML(str){
-  return (str||"")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#39;");
+  const rows = parseCSV(text).slice(1);
+
+  data = rows.map(r => ({
+    side:r[1],
+    category:r[2],
+    title:r[3],
+    author:r[4],
+    link:r[5],
+    notes:r[6],
+    image:r[8] || "",
+    difficulty:r[9]
+  })).reverse();
+
+  render();
 }
 
-/* safer CSV parser */
-function parseCSV(text){
-  const rows = [];
-  let row=[],cell="",q=false;
+/* =========================
+   CSV
+========================= */
+function parseCSV(t){
+  const rows=[], row=[], cell="";
+  let r=[], c="", q=false;
 
-  for(let i=0;i<text.length;i++){
-    const c=text[i],n=text[i+1];
+  for(let i=0;i<t.length;i++){
+    const ch=t[i], nx=t[i+1];
 
-    if(c === '"' && q && n === '"'){ cell+='"'; i++; continue; }
-    if(c === '"'){ q=!q; continue; }
+    if(ch=='"' && q && nx=='"'){ c+='"'; i++; continue; }
+    if(ch=='"'){ q=!q; continue; }
 
-    if(c === ',' && !q){ row.push(cell); cell=""; continue; }
+    if(ch==',' && !q){ r.push(c); c=""; continue; }
 
-    if((c === '\n' || c === '\r') && !q){
-      if(c === '\r' && n === '\n') i++;
-      row.push(cell);
-      rows.push(row);
-      row=[]; cell="";
+    if((ch=='\n'||ch=='\r') && !q){
+      if(ch=='\r'&&nx=='\n') i++;
+      r.push(c);
+      rows.push(r);
+      r=[]; c="";
       continue;
     }
 
-    cell += c;
-  }
-
-  if(cell || row.length){
-    row.push(cell);
-    rows.push(row);
+    c+=ch;
   }
 
   return rows;
 }
 
 /* =========================
-   LOAD DATA
+   FILTER
 ========================= */
-async function load(){
-  state.authors = await loadAuthors();
-
-  const res = await fetch(sheetUrl);
-  const csv = await res.text();
-  const rows = parseCSV(csv).slice(1);
-
-  state.data = rows.map(r => ({
-    side: r[1] || "Universal",
-    category: r[2] || "General",
-    title: r[3] || "Untitled",
-    author: r[4] || "Anonymous",
-    link: r[5] || "#",
-    notes: r[6] || "",
-    viewerNote: r[7] || "",
-    image: r[8]?.includes("http") ? r[8] : "",
-    difficulty: r[9] || "",
-    keyword: r[11] || "",
-    featuredDescription: r[12] || ""
-  })).reverse();
-
-  renderAll();
-}
-
-async function loadAuthors(){
-  try{
-    const res = await fetch(authorSheetUrl);
-    const csv = await res.text();
-    return parseCSV(csv).slice(1).map(r => ({
-      author:r[0], bio:r[1], country:r[2], style:r[3], links:r[4]
-    }));
-  } catch(e){
-    return [];
-  }
+function getFiltered(){
+  return data.filter(i=>{
+    const okSearch = !search || Object.values(i).join(" ").toLowerCase().includes(search.toLowerCase());
+    const okFilter = filter==="All" || i.category===filter;
+    const okSide = side==="Any" || i.side===side;
+    return okSearch && okFilter && okSide;
+  });
 }
 
 /* =========================
-   FILTERING
+   SORT
 ========================= */
-function isFeatured(i){
-  return (i.keyword||"").toUpperCase().includes("FEATURED");
-}
+function sortData(arr){
+  const a=[...arr];
 
-function matchSearch(i, s){
-  if(!s) return true;
-  s = s.toLowerCase();
-  return Object.values(i).some(v => norm(v).includes(s));
-}
+  if(sort==="title-az") a.sort((x,y)=>x.title.localeCompare(y.title));
+  if(sort==="title-za") a.sort((x,y)=>y.title.localeCompare(x.title));
+  if(sort==="author-az") a.sort((x,y)=>x.author.localeCompare(y.author));
+  if(sort==="author-za") a.sort((x,y)=>y.author.localeCompare(x.author));
+  if(sort==="oldest") a.reverse();
 
-function getFiltered(){
-  let arr = [...state.data];
-
-  arr = arr.filter(i => {
-    if(state.filter !== "All" && i.category !== state.filter) return false;
-    if(state.side !== "Any Side" && i.side !== state.side) return false;
-    if(state.author && norm(i.author) !== norm(state.author)) return false;
-    if(!matchSearch(i, state.search)) return false;
-    return true;
-  });
-
-  switch(state.sort){
-    case "title-az": arr.sort((a,b)=>a.title.localeCompare(b.title)); break;
-    case "title-za": arr.sort((a,b)=>b.title.localeCompare(a.title)); break;
-    case "author-az": arr.sort((a,b)=>a.author.localeCompare(b.author)); break;
-    case "author-za": arr.sort((a,b)=>b.author.localeCompare(a.author)); break;
-    case "oldest": arr.reverse(); break;
-  }
-
-  return arr;
+  return a;
 }
 
 /* =========================
    RENDER
 ========================= */
-function card(i){
-  return `
-  <div class="card">
-    <a href="${i.link}" target="_blank">
-      <img src="${i.image}" onerror="this.style.display='none'">
-    </a>
+function render(){
+  let filtered = sortData(getFiltered());
 
-    <div>
-      <div>${escapeHTML(i.category)}</div>
-      <h3>${escapeHTML(i.title)}</h3>
-      <p onclick="setAuthor('${escapeHTML(i.author)}')">${escapeHTML(i.author)}</p>
-      <small>${escapeHTML(i.notes)}</small>
+  document.getElementById("counter").innerText =
+    filtered.length + " studies";
+
+  renderFeatured(filtered[0]);
+  renderGrid(filtered);
+  renderFilters();
+}
+
+/* =========================
+   FEATURED
+========================= */
+function renderFeatured(i){
+  if(!i) return;
+
+  document.getElementById("featured").innerHTML = `
+    <div class="featured">
+      <img src="${i.image}">
+      <div class="featured-content">
+        <div class="tag">${i.category}</div>
+        <h2 class="featured-title">${i.title}</h2>
+        <p>${i.author}</p>
+        <small>${i.notes}</small>
+      </div>
     </div>
-  </div>`;
-}
-
-function renderArchive(){
-  const filtered = getFiltered();
-
-  const start = (state.page-1)*ITEMS_PER_PAGE;
-  const page = filtered.slice(start,start+ITEMS_PER_PAGE);
-
-  document.getElementById("resultsGrid").innerHTML =
-    page.map(card).join("");
-
-  document.getElementById("liveCounter").textContent =
-    `${filtered.length} results`;
-
+  `;
 }
 
 /* =========================
-   ACTIONS
+   GRID
 ========================= */
-function setAuthor(a){
-  state.author = a;
-  state.page = 1;
-  renderArchive();
-}
-
-function setFilter(f){
-  state.filter = f;
-  state.page = 1;
-  renderArchive();
-}
-
-function setSide(s){
-  state.side = s;
-  state.page = 1;
-  renderArchive();
+function renderGrid(arr){
+  document.getElementById("grid").innerHTML =
+    arr.map(i=>`
+      <div class="card" onclick="openModal('${i.title}','${i.notes}')">
+        <img src="${i.image}">
+        <div class="card-body">
+          <div class="card-meta">${i.category}</div>
+          <div class="card-title">${i.title}</div>
+          <div class="card-meta">${i.author}</div>
+        </div>
+      </div>
+    `).join("");
 }
 
 /* =========================
-   SEARCH (debounced)
+   FILTERS
 ========================= */
-document.getElementById("searchInput").addEventListener("input", e=>{
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(()=>{
-    state.search = e.target.value;
-    state.page = 1;
-    renderArchive();
-  },120);
+function renderFilters(){
+  const cats = ["All",...new Set(data.map(i=>i.category))];
+  const sides = ["Any","White","Black","Universal"];
+
+  document.getElementById("filterContainer").innerHTML =
+    cats.map(c=>`<button onclick="setFilter('${c}')">${c}</button>`).join("");
+
+  document.getElementById("sideFilterContainer").innerHTML =
+    sides.map(s=>`<button onclick="setSide('${s}')">${s}</button>`).join("");
+}
+
+function setFilter(f){filter=f;render();}
+function setSide(s){side=s;render();}
+
+/* =========================
+   SEARCH
+========================= */
+document.getElementById("searchInput").addEventListener("input",e=>{
+  search=e.target.value;
+  render();
 });
 
-/* =========================
-   SORT
-========================= */
 document.getElementById("sortSelect").addEventListener("change",e=>{
-  state.sort = e.target.value;
-  renderArchive();
+  sort=e.target.value;
+  render();
 });
 
 /* =========================
-   INIT
+   MODAL
 ========================= */
-function renderAll(){
-  renderArchive();
+function openModal(title,notes){
+  document.getElementById("modal").style.display="flex";
+  document.getElementById("modalInner").innerHTML=
+    `<h2>${title}</h2><p>${notes}</p>`;
 }
 
+document.getElementById("modal").onclick=()=> {
+  document.getElementById("modal").style.display="none";
+};
+
+/* INIT */
 load();
 </script>
-
-</body>
 </html>
