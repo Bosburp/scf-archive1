@@ -107,6 +107,36 @@
             transform: translateY(-1px);
         }
 
+        #searchSuggestions {
+            box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
+        }
+
+        .suggestion-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-style: italic;
+            color: var(--text);
+            transition: background 0.15s ease;
+        }
+
+        .suggestion-row:hover {
+            background: rgba(197, 160, 89, 0.08);
+            color: var(--heading);
+        }
+
+        .suggestion-row .suggestion-kind {
+            font-size: 8px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-style: normal;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+
         .carousel-viewport { 
             position: relative;
             overflow: hidden; 
@@ -226,7 +256,8 @@
 
         .featured-badge,
         .forest-tag,
-        .skill-tag {
+        .skill-tag,
+        .new-tag {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -383,6 +414,18 @@
             text-transform: uppercase; 
             backdrop-filter: blur(4px); 
             border-radius: 999px;
+        }
+
+        .new-tag {
+            background-color: #b91c1c;
+            color: #fef2f2;
+            padding: 2px 8px;
+            font-size: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 999px;
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.05em;
         }
 
         .modal-overlay { 
@@ -802,26 +845,7 @@
             }
         }
 
-        #cursorGlow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 420px;
-            height: 420px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(197, 160, 89, 0.10) 0%, rgba(197, 160, 89, 0.04) 35%, transparent 70%);
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            will-change: transform;
-        }
-
         @media (max-width: 768px) {
-            #cursorGlow {
-                display: none;
-            }
 
             #toTopBtn, #themeToggle, #surpriseBtn {
                 bottom: 20px;
@@ -850,8 +874,6 @@
     </style>
 </head>
 <body class="min-h-screen p-8 md:p-16">
-
-    <div id="cursorGlow"></div>
 
     <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
@@ -939,7 +961,8 @@
 
         <div class="max-w-2xl mx-auto mb-24 text-center">
             <div class="search-container relative mb-8">
-                <input type="text" id="searchInput" placeholder="Search by author, opening, or game stage... (press / to focus)" class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic">
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Search by author, opening, or game stage... (press / to focus)" class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic">
+                <div id="searchSuggestions" class="hidden text-left absolute left-0 right-0 mt-2 rounded-sm overflow-hidden z-30" style="background: var(--card); border: 1px solid var(--border);"></div>
             </div>
 
             <div class="flex flex-wrap justify-center gap-3 mb-6">
@@ -964,6 +987,13 @@
             <div id="liveCounter" class="mt-8 gold-accent brand-font font-bold uppercase"></div>
         </div>
 
+        <div id="newSinceVisitBanner" class="hidden max-w-2xl mx-auto -mt-16 mb-16 text-center">
+            <button onclick="jumpToNewStudies()" class="inline-flex items-center gap-3 border border-[var(--gold)]/30 rounded-full px-5 py-2.5 text-[11px] brand-font uppercase tracking-widest gold-accent hover:border-[var(--gold)] transition-all bg-transparent">
+                <span id="newSinceVisitText"></span>
+                <span>→</span>
+            </button>
+        </div>
+
         <div id="authorProfileSection" class="hidden mb-20">
             <section class="author-profile-shell">
                 <div class="author-profile-header">
@@ -982,6 +1012,16 @@
                     <div id="authorProfileFooter" class="author-profile-footer"></div>
                 </div>
             </section>
+        </div>
+
+        <div id="recentlyViewedSection" class="mb-16 hidden">
+            <div class="flex justify-between items-end mb-8 border-b border-zinc-900 pb-2">
+                <h3 class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px]">Continue Browsing</h3>
+                <p class="gold-accent brand-font text-[9px] uppercase tracking-[0.25em]">Recently Viewed</p>
+            </div>
+            <div class="carousel-viewport">
+                <div id="recentlyViewedGrid" style="display:flex; gap:2.5rem;"></div>
+            </div>
         </div>
 
         <div id="latestSection" class="mb-32 transition-opacity duration-500">
@@ -1026,6 +1066,56 @@
             carouselInterval,
             searchTimer;
 
+        function updateSearchSuggestions(term) {
+            const box = document.getElementById('searchSuggestions');
+            if (!term || term.length < 2 || !window.chessData) {
+                box.classList.add('hidden');
+                box.innerHTML = '';
+                return;
+            }
+
+            const t = term.toLowerCase();
+
+            const authors = [...new Set(window.chessData.map(i => i.author))]
+                .filter(a => a.toLowerCase().includes(t))
+                .slice(0, 4);
+
+            const categories = [...new Set(window.chessData.map(i => i.category))]
+                .filter(c => c && c !== 'General' && c.toLowerCase().includes(t))
+                .slice(0, 4);
+
+            if (!authors.length && !categories.length) {
+                box.classList.add('hidden');
+                box.innerHTML = '';
+                return;
+            }
+
+            const rows = [
+                ...authors.map(a => `<div class="suggestion-row" onclick="selectAuthorSuggestion('${a.replace(/'/g, "\\'")}')"><span>${escapeHTML(a)}</span><span class="suggestion-kind">Author</span></div>`),
+                ...categories.map(c => `<div class="suggestion-row" onclick="selectCategorySuggestion('${c.replace(/'/g, "\\'")}')"><span>${escapeHTML(c)}</span><span class="suggestion-kind">Category</span></div>`)
+            ];
+
+            box.innerHTML = rows.join('');
+            box.classList.remove('hidden');
+        }
+
+        function hideSearchSuggestions() {
+            const box = document.getElementById('searchSuggestions');
+            box.classList.add('hidden');
+            box.innerHTML = '';
+        }
+
+        function selectAuthorSuggestion(author) {
+            hideSearchSuggestions();
+            filterByAuthor(author);
+        }
+
+        function selectCategorySuggestion(category) {
+            hideSearchSuggestions();
+            document.getElementById('searchInput').value = '';
+            setFilter(category);
+        }
+
         function toggleAbout() {
             const el = document.getElementById('aboutPage');
             el.classList.toggle('hidden');
@@ -1060,9 +1150,33 @@
             }
         }
 
+        function getSurprisedLinks() {
+            try {
+                return new Set(JSON.parse(localStorage.getItem('scf-surprised-links') || '[]'));
+            } catch (e) {
+                return new Set();
+            }
+        }
+
+        function saveSurprisedLinks(set) {
+            try { localStorage.setItem('scf-surprised-links', JSON.stringify([...set])); } catch (e) {}
+        }
+
         function surpriseMe() {
             if (!window.chessData || window.chessData.length === 0) return;
-            const randomStudy = window.chessData[Math.floor(Math.random() * window.chessData.length)];
+
+            let shown = getSurprisedLinks();
+            let pool = window.chessData.filter(s => !shown.has(s.link));
+
+            if (pool.length === 0) {
+                shown = new Set();
+                pool = window.chessData;
+            }
+
+            const randomStudy = pool[Math.floor(Math.random() * pool.length)];
+            shown.add(randomStudy.link);
+            saveSurprisedLinks(shown);
+            recordView(randomStudy.link);
             window.open(randomStudy.link, '_blank');
         }
 
@@ -1072,6 +1186,22 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 2000);
             });
+        }
+
+        function getRecentViews() {
+            try {
+                return JSON.parse(localStorage.getItem('scf-recent-views') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function recordView(link) {
+            let arr = getRecentViews();
+            arr = arr.filter(l => l !== link);
+            arr.unshift(link);
+            arr = arr.slice(0, 10);
+            try { localStorage.setItem('scf-recent-views', JSON.stringify(arr)); } catch (e) {}
         }
 
         function getFavorites() {
@@ -1322,9 +1452,12 @@
                     featuredDescription: c[12]?.replace(/"/g, '').trim() || ""
                 })).filter(i => i.title !== "").reverse();
 
+                markNewStudies(window.chessData);
+
                 readUrlParams();
                 renderFeaturedStudy();
                 renderLatest();
+                renderRecentlyViewed();
                 createFilters();
                 createSideFilters();
                 renderArchive();
@@ -1350,6 +1483,46 @@
                 startCarouselAutoplay();
             }
         });
+
+        function getSeenLinks() {
+            try {
+                return new Set(JSON.parse(localStorage.getItem('scf-seen-links') || '[]'));
+            } catch (e) {
+                return new Set();
+            }
+        }
+
+        function saveSeenLinks(links) {
+            try { localStorage.setItem('scf-seen-links', JSON.stringify(links)); } catch (e) {}
+        }
+
+        function markNewStudies(data) {
+            const seen = getSeenLinks();
+            const isFirstVisit = seen.size === 0;
+
+            data.forEach(i => {
+                i.isNew = !isFirstVisit && !seen.has(i.link);
+            });
+
+            saveSeenLinks(data.map(i => i.link));
+            showNewSinceVisitBanner(isFirstVisit ? 0 : data.filter(i => i.isNew).length);
+        }
+
+        function showNewSinceVisitBanner(count) {
+            const banner = document.getElementById('newSinceVisitBanner');
+            if (!count) {
+                banner.classList.add('hidden');
+                return;
+            }
+            document.getElementById('newSinceVisitText').textContent =
+                `${count} new ${count === 1 ? 'study' : 'studies'} since your last visit`;
+            banner.classList.remove('hidden');
+        }
+
+        function jumpToNewStudies() {
+            const target = document.getElementById('latestSection');
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
 
         function getFeaturedStudy() {
             if (!window.chessData || window.chessData.length === 0) return null;
@@ -1385,7 +1558,7 @@
             container.innerHTML = `
                 <div class="featured-shell rounded-sm">
                     <div class="grid lg:grid-cols-[1.05fr_0.95fr] min-h-[320px] lg:min-h-[420px]">
-                        <a href="${featured.link}" target="_blank" class="featured-image block relative">
+                        <a href="${featured.link}" target="_blank" onclick="recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-image block relative">
                             <img src="${featured.image}" alt="${featured.title}" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
                             <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap items-center gap-2 z-10 max-w-[calc(100%-2rem)]">
                                 <div class="featured-badge brand-font px-3 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] rounded-sm">Featured Study</div>
@@ -1409,7 +1582,7 @@
                             </div>
 
                             <div class="flex flex-wrap gap-3">
-                                <a href="${featured.link}" target="_blank" class="featured-btn bg-[#c5a059] text-[#0a0a0a] px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] hover:bg-transparent hover:text-[#c5a059] transition-all">
+                                <a href="${featured.link}" target="_blank" onclick="recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-btn bg-[#c5a059] text-[#0a0a0a] px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] hover:bg-transparent hover:text-[#c5a059] transition-all">
                                     Open Study
                                 </a>
 
@@ -1421,6 +1594,27 @@
                     </div>
                 </div>
             `;
+        }
+
+        function renderRecentlyViewed() {
+            const links = getRecentViews();
+            const container = document.getElementById('recentlyViewedGrid');
+            const section = document.getElementById('recentlyViewedSection');
+
+            const items = links
+                .map(link => window.chessData.find(s => s.link === link))
+                .filter(Boolean)
+                .slice(0, 9);
+
+            window.hasRecentViews = items.length > 0;
+
+            if (!items.length) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = items.map(i => `<div class="carousel-item">${cardHtml(i)}</div>`).join('');
+            container.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
         }
 
         function renderLatest() {
@@ -1450,20 +1644,22 @@
             const isStar = i.notes.toUpperCase().includes("STAR");
             const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
             const favActive = isFavorite(i.link) ? 'active' : '';
+            const favTopClass = isStar ? 'top-11' : 'top-3';
             
             return `
             <div class="chess-card flex flex-col group relative">
                 ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
                 ${noteOverlay}
-                <button onclick="toggleFavorite('${i.link.replace(/'/g, "\\'")}', this)" class="fav-btn ${favActive} absolute top-3 left-3 z-40 text-white/70 hover:text-[#c5a059]" title="Save to favorites">
+                <button onclick="toggleFavorite('${i.link.replace(/'/g, "\\'")}', this)" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/70 hover:text-[#c5a059]" title="Save to favorites">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                 </button>
                 
-                <a href="${i.link}" target="_blank" class="h-40 w-full relative block">
+                <a href="${i.link}" target="_blank" onclick="recordView('${i.link.replace(/'/g, "\\'")}')" class="h-40 w-full relative block">
                     <div class="card-image-wrap">
                         <img src="${i.image}" class="card-image" alt="${i.title}" loading="lazy" decoding="async" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
                         <div class="image-vignette"></div>
                         <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
+                            ${i.isNew ? `<div class="new-tag brand-font">New</div>` : ''}
                             <div class="forest-tag brand-font">${i.side}</div>
                             ${i.difficulty ? `<div class="skill-tag brand-font">${i.difficulty}</div>` : ''}
                         </div>
@@ -1480,7 +1676,7 @@
                         </button>
                     </div>
 
-                    <a href="${i.link}" target="_blank" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
+                    <a href="${i.link}" target="_blank" onclick="recordView('${i.link.replace(/'/g, "\\'")}')" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
                     
                     <p onclick="filterByAuthor('${i.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
                     
@@ -1752,8 +1948,9 @@
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-            const isSearchingOrFiltering = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side' || currentAuthor;
+            const isSearchingOrFiltering = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side' || currentAuthor || showFavoritesOnly;
             const latestSec = document.getElementById('latestSection');
+            const recentSec = document.getElementById('recentlyViewedSection');
             const featuredSec = document.getElementById('featuredSection');
             const authorSec = document.getElementById('authorProfileSection');
             const archiveHeader = document.getElementById('archiveHeader');
@@ -1763,8 +1960,10 @@
 
             if (isSearchingOrFiltering) {
                 latestSec.style.display = 'none';
+                recentSec.classList.add('hidden');
             } else {
                 latestSec.style.display = 'block';
+                recentSec.classList.toggle('hidden', !window.hasRecentViews);
             }
 
             if (term.length > 0 && featuredMatchesSearch) {
@@ -1893,7 +2092,8 @@
             renderArchive(); 
         };
 
-        document.getElementById('searchInput').addEventListener('input', () => {
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            updateSearchSuggestions(e.target.value.trim());
             clearTimeout(searchTimer);
             searchTimer = setTimeout(() => {
                 currentAuthor = null;
@@ -1902,22 +2102,17 @@
             }, 40);
         });
 
+        document.addEventListener('click', (e) => {
+            const box = document.getElementById('searchSuggestions');
+            const input = document.getElementById('searchInput');
+            if (!box.contains(e.target) && e.target !== input) {
+                hideSearchSuggestions();
+            }
+        });
+
         document.getElementById('sortSelect').addEventListener('change', () => {
             currentPage = 1;
             renderArchive();
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            const glow = document.getElementById('cursorGlow');
-            if (!glow || window.innerWidth < 768) return;
-            glow.style.left = `${e.clientX}px`;
-            glow.style.top = `${e.clientY}px`;
-            glow.style.opacity = '1';
-        });
-
-        document.addEventListener('mouseleave', () => {
-            const glow = document.getElementById('cursorGlow');
-            if (glow) glow.style.opacity = '0';
         });
 
         document.addEventListener('keydown', (e) => {
@@ -1926,6 +2121,7 @@
                 const submit = document.getElementById('submitPage');
                 if (!about.classList.contains('hidden')) toggleAbout();
                 if (!submit.classList.contains('hidden')) toggleSubmit();
+                hideSearchSuggestions();
                 return;
             }
 
