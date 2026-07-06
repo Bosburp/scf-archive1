@@ -1958,6 +1958,9 @@
             const featured = getFeaturedStudy();
             const featuredMatchesSearch = !!featured && matchesSearch(featured, term);
 
+            const searchInputEl = document.getElementById('searchInput');
+            const beforeTop = searchInputEl.getBoundingClientRect().top;
+
             if (isSearchingOrFiltering) {
                 latestSec.style.display = 'none';
                 recentSec.classList.add('hidden');
@@ -1972,6 +1975,12 @@
                 featuredSec.style.display = 'none';
             } else {
                 featuredSec.style.display = 'block';
+            }
+
+            const afterTop = searchInputEl.getBoundingClientRect().top;
+            const scrollDelta = afterTop - beforeTop;
+            if (scrollDelta !== 0) {
+                window.scrollBy(0, scrollDelta);
             }
 
             if (currentAuthor) {
