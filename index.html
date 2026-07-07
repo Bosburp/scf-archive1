@@ -15,8 +15,10 @@
     <link rel="preconnect" href="https://docs.google.com">
     <link rel="dns-prefetch" href="https://images.unsplash.com">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet"></noscript>
 
+    <!-- Schema.org structured data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -33,6 +35,9 @@
     </script>
 
     <style>
+        /* ========================================
+               ROOT VARIABLES & THEME
+               ======================================== */
         :root { 
             --bg: #0a0a0a; 
             --card: #121212; 
@@ -40,6 +45,7 @@
             --border: #262626; 
             --heading: #f5f5dc; 
             --gold: #c5a059;
+            --gold-rgb: 197, 160, 89;
         }
 
         body.light-mode { 
@@ -51,9 +57,10 @@
             --gold: #b88d3b;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        /* ========================================
+               BASE STYLES
+               ======================================== */
+        html { scroll-behavior: smooth; }
 
         body { 
             background-color: var(--bg); 
@@ -79,20 +86,21 @@
         .parchment-text { color: var(--heading); }
         .gold-accent { color: var(--gold); }
 
-        .site-layer {
-            position: relative;
-            z-index: 2;
-        }
+        .site-layer { position: relative; z-index: 2; }
 
+        /* ========================================
+               ANIMATIONS
+               ======================================== */
         @keyframes heroFloat {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-4px); }
         }
 
-        .hero-title {
-            animation: heroFloat 7s ease-in-out infinite;
-        }
+        .hero-title { animation: heroFloat 7s ease-in-out infinite; }
 
+        /* ========================================
+               SEARCH
+               ======================================== */
         .search-container input { 
             background-color: var(--card); 
             border: 1px solid var(--border); 
@@ -137,6 +145,9 @@
             font-family: 'Josefin Sans', sans-serif;
         }
 
+        /* ========================================
+               CAROUSEL
+               ======================================== */
         .carousel-viewport { 
             position: relative;
             overflow: hidden; 
@@ -165,10 +176,19 @@
             will-change: transform; 
         }
 
-        .carousel-item { width: calc((100% - 5rem) / 3); flex: 0 0 auto; }
+        .carousel-item { 
+            width: calc((100% - 5rem) / 3); 
+            flex: 0 0 auto;
+            content-visibility: auto;
+            contain-intrinsic-size: 400px;
+        }
+
         @media (max-width: 1024px) { .carousel-item { width: calc((100% - 2.5rem) / 2); } }
         @media (max-width: 640px) { .carousel-item { width: 100%; } }
 
+        /* ========================================
+               BUTTONS
+               ======================================== */
         .header-btn { 
             transition: all 0.35s ease; 
             background-color: var(--card); 
@@ -191,10 +211,29 @@
         #themeToggle:active,
         #surpriseBtn:active,
         .filter-chip:active,
-        .featured-btn:active {
+        .featured-btn:active,
+        .refresh-btn:active {
             transform: scale(0.96);
         }
 
+        .refresh-btn {
+            transition: all 0.35s ease;
+            background-color: var(--card);
+            border-color: var(--border);
+            color: var(--text);
+            letter-spacing: 0.3em;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -10px rgba(197, 160, 89, 0.3);
+            color: var(--heading);
+            border-color: var(--gold);
+        }
+
+        /* ========================================
+               FEATURED STUDY
+               ======================================== */
         .featured-shell {
             position: relative;
             border: 1px solid rgba(197, 160, 89, 0.16);
@@ -275,6 +314,9 @@
             box-shadow: 0 14px 28px -16px rgba(197,160,89,0.38);
         }
 
+        /* ========================================
+               STUDY CARDS
+               ======================================== */
         .chess-card { 
             background: var(--card); 
             border: 1px solid var(--border); 
@@ -285,6 +327,8 @@
             opacity: 0; 
             transform: translateY(18px);
             border-radius: 2px;
+            content-visibility: auto;
+            contain-intrinsic-size: 400px;
         }
 
         .chess-card.reveal { 
@@ -323,10 +367,6 @@
             filter: grayscale(0%);
         }
 
-        .image-vignette {
-            display: none;
-        }
-        
         .note-overlay {
             position: absolute;
             bottom: 0;
@@ -349,6 +389,9 @@
             opacity: 1; 
         }
 
+        /* ========================================
+               FILTERS
+               ======================================== */
         .filter-chip { 
             border: 1px solid var(--border); 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -377,22 +420,30 @@
             box-shadow: 0 0 15px rgba(197, 160, 89, 0.1); 
         }
 
+        .page-chip {
+            cursor: pointer;
+        }
+
+        .page-chip[disabled] {
+            opacity: 0.35;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        /* ========================================
+               FAVORITES
+               ======================================== */
         .fav-btn {
             transition: color 0.25s ease, transform 0.25s ease;
         }
 
-        .fav-btn:hover {
-            transform: scale(1.15);
-        }
+        .fav-btn:hover { transform: scale(1.15); }
+        .fav-btn.active { color: var(--gold); }
+        .fav-btn.active svg { fill: var(--gold); }
 
-        .fav-btn.active {
-            color: var(--gold);
-        }
-
-        .fav-btn.active svg {
-            fill: var(--gold);
-        }
-        
+        /* ========================================
+               TAGS
+               ======================================== */
         .forest-tag { 
             background-color: #143224; 
             color: #a7f3d0; 
@@ -403,7 +454,7 @@
             border-radius: 999px;
             backdrop-filter: blur(4px);
         }
-        
+
         .skill-tag { 
             background-color: rgba(10, 10, 10, 0.8); 
             border: 1px solid var(--gold); 
@@ -428,6 +479,9 @@
             letter-spacing: 0.05em;
         }
 
+        /* ========================================
+               MODALS
+               ======================================== */
         .modal-overlay { 
             backdrop-filter: blur(20px); 
             transition: opacity 0.4s ease; 
@@ -445,6 +499,9 @@
             background-color: rgba(253, 251, 247, 0.9); 
         }
 
+        /* ========================================
+               FIXED BUTTONS
+               ======================================== */
         #toTopBtn, #themeToggle, #surpriseBtn {
             position: fixed; 
             bottom: 40px; 
@@ -498,6 +555,9 @@
             transition: all 0.3s ease; 
         }
 
+        /* ========================================
+               TOAST
+               ======================================== */
         .copy-toast {
             position: fixed; 
             bottom: 20px; 
@@ -520,6 +580,9 @@
             transform: translateX(-50%) translateY(-4px);
         }
 
+        /* ========================================
+               AUTHOR PROFILE
+               ======================================== */
         .author-profile-shell {
             width: 100%;
             margin: 0 auto 3rem auto;
@@ -582,10 +645,7 @@
             white-space: nowrap;
         }
 
-        .author-profile-badge .flag {
-            font-size: 1rem;
-            line-height: 1;
-        }
+        .author-profile-badge .flag { font-size: 1rem; line-height: 1; }
 
         .author-profile-subtitle {
             margin-top: 0.2rem;
@@ -596,9 +656,7 @@
             font-family: 'Josefin Sans', sans-serif;
         }
 
-        .author-profile-body {
-            padding: 1.25rem;
-        }
+        .author-profile-body { padding: 1.25rem; }
 
         .author-profile-grid {
             max-width: 1100px;
@@ -653,9 +711,7 @@
             white-space: pre-line;
         }
 
-        .author-bio-card {
-            grid-column: 1 / -1;
-        }
+        .author-bio-card { grid-column: 1 / -1; }
 
         .author-country-row {
             display: flex;
@@ -729,9 +785,7 @@
             color: var(--gold);
         }
 
-        .author-link-chip svg {
-            flex: 0 0 auto;
-        }
+        .author-link-chip svg { flex: 0 0 auto; }
 
         .back-btn {
             display: inline-flex;
@@ -744,6 +798,9 @@
             color: var(--gold);
             transition: color 0.25s ease, transform 0.25s ease;
             font-family: 'Josefin Sans', sans-serif;
+            background: none;
+            border: none;
+            cursor: pointer;
         }
 
         .back-btn:hover {
@@ -768,6 +825,9 @@
             word-break: break-word;
         }
 
+        /* ========================================
+               PAGINATION
+               ======================================== */
         .archive-pagination {
             display: flex;
             flex-wrap: wrap;
@@ -776,11 +836,7 @@
             margin-top: 1.25rem;
         }
 
-        .archive-pagination .page-chip {
-            appearance: none;
-            background: transparent;
-        }
-
+        .archive-pagination .page-chip { background: transparent; }
         .archive-pagination .page-chip[disabled] {
             opacity: 0.35;
             cursor: default;
@@ -794,6 +850,9 @@
             box-shadow: 0 0 15px rgba(197, 160, 89, 0.1);
         }
 
+        /* ========================================
+               FOOTER
+               ======================================== */
         .site-footer {
             border-top: 1px solid var(--border);
             margin-top: 6rem;
@@ -801,10 +860,11 @@
             text-align: center;
         }
 
-        .site-footer p {
-            margin: 0;
-        }
+        .site-footer p { margin: 0; }
 
+        /* ========================================
+               RESPONSIVE
+               ======================================== */
         @media (min-width: 768px) {
             .author-profile-header {
                 padding: 3.2rem 2rem 2.6rem;
@@ -817,9 +877,7 @@
                 gap: 1.25rem;
             }
 
-            .author-profile-badge {
-                margin-left: auto;
-            }
+            .author-profile-badge { margin-left: auto; }
 
             .author-profile-body {
                 padding: 1.6rem 2rem 2rem 2rem;
@@ -830,23 +888,15 @@
                 gap: 1.15rem;
             }
 
-            .author-bio-card {
-                grid-column: 1 / -1;
-            }
+            .author-bio-card { grid-column: 1 / -1; }
         }
 
         @media (min-width: 1024px) {
-            .author-profile-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .author-bio-card {
-                grid-column: 1 / -1;
-            }
+            .author-profile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .author-bio-card { grid-column: 1 / -1; }
         }
 
         @media (max-width: 768px) {
-
             #toTopBtn, #themeToggle, #surpriseBtn {
                 bottom: 20px;
             }
@@ -855,50 +905,43 @@
             #themeToggle { right: 75px; }
             #surpriseBtn { right: 130px; }
 
-            .featured-shell {
-                max-width: 100%;
-            }
+            .featured-shell { max-width: 100%; }
+            .featured-image { min-height: 260px; }
 
-            .featured-image {
-                min-height: 260px;
-            }
-
-            .author-profile-body {
-                padding: 1rem;
-            }
-
-            .author-profile-header {
-                padding: 2rem 1rem;
-            }
+            .author-profile-body { padding: 1rem; }
+            .author-profile-header { padding: 2rem 1rem; }
         }
     </style>
 </head>
 <body class="min-h-screen p-8 md:p-16">
 
+    <!-- Toast Notification -->
     <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
-    <button id="surpriseBtn" onclick="surpriseMe()" title="Surprise Me (Random Study)">
+    <!-- Fixed Buttons -->
+    <button id="surpriseBtn" onclick="app.surpriseMe()" title="Surprise Me (Random Study)" aria-label="Random study">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
         </svg>
     </button>
 
-    <button id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+    <button id="themeToggle" onclick="app.toggleTheme()" title="Toggle Light/Dark Mode" aria-label="Toggle theme">
         <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
     </button>
 
-    <button id="toTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <button id="toTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
 
-    <div id="aboutPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
+    <!-- Modals -->
+    <div id="aboutPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8" role="dialog" aria-labelledby="aboutTitle">
         <div class="max-w-3xl mx-auto text-center site-layer">
-            <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
-            <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
+            <button onclick="app.toggleModal('aboutPage')" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
+            <h2 id="aboutTitle" class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
               <p>We're a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
               <p>On Lichess, many excellent studies can be difficult to find. Search results often bring unannotated or low-effort studies to the top, while high-quality, educational work remains buried. At the same time, the number of likes doesn't always reflect true quality, allowing copied or less meaningful content to gain visibility.</p>
@@ -907,10 +950,10 @@
         </div>
     </div>
 
-    <div id="submitPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
+    <div id="submitPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8" role="dialog" aria-labelledby="submitTitle">
         <div class="max-w-3xl mx-auto text-center site-layer">
-            <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
-            <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
+            <button onclick="app.toggleModal('submitPage')" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
+            <h2 id="submitTitle" class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
             <div class="space-y-8 text-zinc-400 italic text-md leading-relaxed text-center max-w-2xl mx-auto">
                 <p>We are always looking for high-quality, educational chess studies to add to our archive.</p>
                 <div class="border border-zinc-900 p-8 rounded-sm bg-black/20">
@@ -926,6 +969,7 @@
         </div>
     </div>
 
+    <!-- Main Content -->
     <div class="max-w-6xl mx-auto site-layer">
         <header class="text-center mb-20">
            <h1 class="hero-title text-xl sm:text-2xl md:text-3xl brand-font font-light tracking-[0.18em] parchment-text mb-4 uppercase">The Chess Study Library</h1>
@@ -936,7 +980,7 @@
                     <span class="relative z-10">Discord</span>
                 </a>
                 
-                <button onclick="toggleSubmit()" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase transition-all hover:bg-transparent hover:text-[#c5a059]">
+                <button onclick="app.toggleModal('submitPage')" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase transition-all hover:bg-transparent hover:text-[#c5a059]">
                     <span class="relative z-10">Submit Study</span>
                 </button>
 
@@ -945,12 +989,17 @@
                     <span class="relative z-10">Lichess</span>
                 </a>
 
-                <button onclick="toggleAbout()" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
+                <button onclick="app.toggleModal('aboutPage')" class="header-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
                     <span class="relative z-10">About Us</span>
+                </button>
+
+                <button onclick="app.refreshData()" class="refresh-btn px-6 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all" title="Refresh data from Google Sheets">
+                    <span class="relative z-10">↻ Refresh</span>
                 </button>
             </div>
         </header>
 
+        <!-- Featured Study -->
         <section id="featuredSection" class="mb-20 hidden">
             <div class="flex justify-between items-end mb-8 border-b border-zinc-900 pb-2">
                 <h3 class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px]">Featured Study of the Week</h3>
@@ -959,9 +1008,10 @@
             <div id="featuredStudyContainer"></div>
         </section>
 
+        <!-- Search & Filters -->
         <div class="max-w-2xl mx-auto mb-24 text-center">
             <div class="search-container relative mb-8">
-                <input type="text" id="searchInput" autocomplete="off" placeholder="Search by author, opening, or game stage... (press / to focus)" class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic">
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Search by author, title, category, or keyword... (press / to focus)" class="w-full rounded-sm py-4 px-8 text-sm focus:outline-none italic">
                 <div id="searchSuggestions" class="hidden text-left absolute left-0 right-0 mt-2 rounded-sm overflow-hidden z-30" style="background: var(--card); border: 1px solid var(--border);"></div>
             </div>
 
@@ -979,7 +1029,7 @@
             <div id="filterContainer" class="flex flex-wrap justify-center gap-2 mb-4"></div>
             <div id="sideFilterContainer" class="flex flex-wrap justify-center gap-2 pt-4 border-t border-zinc-900"></div>
             <div class="flex justify-center mt-4">
-                <div id="favoritesToggle" onclick="toggleFavoritesFilter()" class="filter-chip brand-font flex items-center gap-2">
+                <div id="favoritesToggle" onclick="app.toggleFavoritesFilter()" class="filter-chip brand-font flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                     <span>My Favorites</span>
                 </div>
@@ -987,18 +1037,20 @@
             <div id="liveCounter" class="mt-8 gold-accent brand-font font-bold uppercase"></div>
         </div>
 
+        <!-- New Studies Banner -->
         <div id="newSinceVisitBanner" class="hidden max-w-2xl mx-auto -mt-16 mb-16 text-center">
-            <button onclick="jumpToNewStudies()" class="inline-flex items-center gap-3 border border-[var(--gold)]/30 rounded-full px-5 py-2.5 text-[11px] brand-font uppercase tracking-widest gold-accent hover:border-[var(--gold)] transition-all bg-transparent">
+            <button onclick="app.jumpToNewStudies()" class="inline-flex items-center gap-3 border border-[var(--gold)]/30 rounded-full px-5 py-2.5 text-[11px] brand-font uppercase tracking-widest gold-accent hover:border-[var(--gold)] transition-all bg-transparent">
                 <span id="newSinceVisitText"></span>
                 <span>→</span>
             </button>
         </div>
 
+        <!-- Author Profile -->
         <div id="authorProfileSection" class="hidden mb-20">
             <section class="author-profile-shell">
                 <div class="author-profile-header">
                     <div class="author-profile-header-inner">
-                        <button onclick="backToArchive()" class="back-btn">← Back to Archive</button>
+                        <button onclick="app.backToArchive()" class="back-btn">← Back to Archive</button>
                         <div class="author-profile-top-row">
                             <h2 id="authorProfileName" class="author-profile-name"></h2>
                             <div id="authorProfileBadge" class="author-profile-badge hidden"></div>
@@ -1014,6 +1066,7 @@
             </section>
         </div>
 
+        <!-- Recently Viewed -->
         <div id="recentlyViewedSection" class="mb-16 hidden">
             <div class="flex justify-between items-end mb-8 border-b border-zinc-900 pb-2">
                 <h3 class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px]">Continue Browsing</h3>
@@ -1024,12 +1077,13 @@
             </div>
         </div>
 
+        <!-- Latest Additions -->
         <div id="latestSection" class="mb-32 transition-opacity duration-500">
             <div class="flex justify-between items-end mb-8 border-b border-zinc-900 pb-2">
                 <h3 class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px]">Latest Additions</h3>
                 <div class="flex gap-4">
-                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">←</button>
-                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">→</button>
+                    <button onclick="app.moveCarousel(-1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">←</button>
+                    <button onclick="app.moveCarousel(1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">→</button>
                 </div>
             </div>
             <div class="carousel-viewport">
@@ -1037,228 +1091,60 @@
             </div>
         </div>
 
+        <!-- Full Archive -->
         <h3 id="archiveHeader" class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px] mb-8 border-b border-zinc-900 pb-2">Full Archive</h3>
         <div id="noResults" class="brand-font italic text-zinc-600" style="display:none;">
             <p class="text-lg">No studies match your current search.</p>
-            <button onclick="resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
+            <button onclick="app.resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
         </div>
         <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"></div>
         <div id="paginationContainer" class="archive-pagination"></div>
 
+        <!-- Footer -->
         <footer class="site-footer">
             <p class="text-zinc-500 italic text-sm">A curated archive of original chess studies.</p>
             <p class="gold-accent brand-font uppercase tracking-[0.25em] text-[9px] mt-3">Study Creators &amp; Friends</p>
-            <p class="text-zinc-600 text-[10px] uppercase tracking-[0.2em] mt-4"></p>
         </footer>
     </div>
 
     <script>
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
-        const authorSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?gid=1246433755&single=true&output=csv';
-        const FEATURED_KEYWORD = 'FEATURED';
-        const ITEMS_PER_PAGE = 12;
+        // ============================================================
+        // CONFIGURATION
+        // ============================================================
+        const CONFIG = {
+            SHEET_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv',
+            AUTHOR_SHEET_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?gid=1246433755&single=true&output=csv',
+            ITEMS_PER_PAGE: 12,
+            FEATURED_KEYWORD: 'FEATURED',
+            CACHE_TTL_MS: 24 * 60 * 60 * 1000, // 24 hours
+            RECENT_VIEWS_MAX: 10,
+        };
 
-        let currentFilter = 'All',
-            currentSideFilter = 'Any Side',
-            currentAuthor = null,
-            currentPage = 1,
-            carouselPos = 0,
-            carouselInterval,
-            searchTimer;
+        // ============================================================
+        // APPLICATION STATE
+        // ============================================================
+        const state = {
+            chessData: [],
+            authorData: [],
+            currentFilter: 'All',
+            currentSideFilter: 'Any Side',
+            currentAuthor: null,
+            currentPage: 1,
+            carouselPos: 0,
+            carouselInterval: null,
+            showFavoritesOnly: false,
+            searchTimer: null,
+        };
 
-        function updateSearchSuggestions(term) {
-            const box = document.getElementById('searchSuggestions');
-            if (!term || term.length < 2 || !window.chessData) {
-                box.classList.add('hidden');
-                box.innerHTML = '';
-                return;
-            }
-
-            const t = term.toLowerCase();
-
-            const authors = [...new Set(window.chessData.map(i => i.author))]
-                .filter(a => a.toLowerCase().includes(t))
-                .slice(0, 4);
-
-            const categories = [...new Set(window.chessData.map(i => i.category))]
-                .filter(c => c && c !== 'General' && c.toLowerCase().includes(t))
-                .slice(0, 4);
-
-            if (!authors.length && !categories.length) {
-                box.classList.add('hidden');
-                box.innerHTML = '';
-                return;
-            }
-
-            const rows = [
-                ...authors.map(a => `<div class="suggestion-row" onclick="selectAuthorSuggestion('${a.replace(/'/g, "\\'")}')"><span>${escapeHTML(a)}</span><span class="suggestion-kind">Author</span></div>`),
-                ...categories.map(c => `<div class="suggestion-row" onclick="selectCategorySuggestion('${c.replace(/'/g, "\\'")}')"><span>${escapeHTML(c)}</span><span class="suggestion-kind">Category</span></div>`)
-            ];
-
-            box.innerHTML = rows.join('');
-            box.classList.remove('hidden');
-        }
-
-        function hideSearchSuggestions() {
-            const box = document.getElementById('searchSuggestions');
-            box.classList.add('hidden');
-            box.innerHTML = '';
-        }
-
-        function selectAuthorSuggestion(author) {
-            hideSearchSuggestions();
-            filterByAuthor(author);
-        }
-
-        function selectCategorySuggestion(category) {
-            hideSearchSuggestions();
-            document.getElementById('searchInput').value = '';
-            setFilter(category);
-        }
-
-        function toggleAbout() {
-            const el = document.getElementById('aboutPage');
-            el.classList.toggle('hidden');
-            document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
-        }
-
-        function toggleSubmit() {
-            const el = document.getElementById('submitPage');
-            el.classList.toggle('hidden');
-            document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
-        }
-
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('themeIcon');
-            body.classList.toggle('light-mode');
-            const isLight = body.classList.contains('light-mode');
-
-            icon.innerHTML = isLight 
-                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />'
-                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
-
-            try { localStorage.setItem('scf-theme', isLight ? 'light' : 'dark'); } catch (e) {}
-        }
-
-        function applyStoredTheme() {
-            let stored = null;
-            try { stored = localStorage.getItem('scf-theme'); } catch (e) {}
-            if (stored === 'light') {
-                document.body.classList.add('light-mode');
-                document.getElementById('themeIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />';
-            }
-        }
-
-        function getSurprisedLinks() {
-            try {
-                return new Set(JSON.parse(localStorage.getItem('scf-surprised-links') || '[]'));
-            } catch (e) {
-                return new Set();
-            }
-        }
-
-        function saveSurprisedLinks(set) {
-            try { localStorage.setItem('scf-surprised-links', JSON.stringify([...set])); } catch (e) {}
-        }
-
-        function surpriseMe() {
-            if (!window.chessData || window.chessData.length === 0) return;
-
-            let shown = getSurprisedLinks();
-            let pool = window.chessData.filter(s => !shown.has(s.link));
-
-            if (pool.length === 0) {
-                shown = new Set();
-                pool = window.chessData;
-            }
-
-            const randomStudy = pool[Math.floor(Math.random() * pool.length)];
-            shown.add(randomStudy.link);
-            saveSurprisedLinks(shown);
-            recordView(randomStudy.link);
-            window.open(randomStudy.link, '_blank');
-        }
-
-        function copyLink(url) {
-            navigator.clipboard.writeText(url).then(() => {
-                const toast = document.getElementById('copyToast');
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2000);
-            });
-        }
-
-        function getRecentViews() {
-            try {
-                return JSON.parse(localStorage.getItem('scf-recent-views') || '[]');
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function recordView(link) {
-            let arr = getRecentViews();
-            arr = arr.filter(l => l !== link);
-            arr.unshift(link);
-            arr = arr.slice(0, 10);
-            try { localStorage.setItem('scf-recent-views', JSON.stringify(arr)); } catch (e) {}
-        }
-
-        function getFavorites() {
-            try {
-                return new Set(JSON.parse(localStorage.getItem('scf-favorites') || '[]'));
-            } catch (e) {
-                return new Set();
-            }
-        }
-
-        function saveFavorites(set) {
-            try { localStorage.setItem('scf-favorites', JSON.stringify([...set])); } catch (e) {}
-        }
-
-        function isFavorite(link) {
-            return getFavorites().has(link);
-        }
-
-        function toggleFavorite(link, btnEl) {
-            const favs = getFavorites();
-            if (favs.has(link)) {
-                favs.delete(link);
-            } else {
-                favs.add(link);
-            }
-            saveFavorites(favs);
-            if (btnEl) btnEl.classList.toggle('active', favs.has(link));
-            if (showFavoritesOnly) renderArchive();
-        }
-
-        let showFavoritesOnly = false;
-
-        function toggleFavoritesFilter() {
-            showFavoritesOnly = !showFavoritesOnly;
-            document.getElementById('favoritesToggle').classList.toggle('active', showFavoritesOnly);
-            currentPage = 1;
-            renderArchive();
-        }
-
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('reveal');
-                }
-            });
-        }, { threshold: 0.1 });
-
+        // ============================================================
+        // UTILITY FUNCTIONS
+        // ============================================================
         function normalizeText(value) {
             return (value || '').toString().trim().toLowerCase();
         }
 
         function normalizeAuthorName(name) {
-            return (name || '')
-                .toString()
-                .trim()
-                .toLowerCase()
-                .replace(/\s+/g, ' ');
+            return (name || '').toString().trim().toLowerCase().replace(/\s+/g, ' ');
         }
 
         function escapeHTML(value) {
@@ -1271,15 +1157,11 @@
         }
 
         function getKeywordList(value) {
-            return (value || '')
-                .toString()
-                .split(/[,;|]/)
-                .map(v => v.trim().toUpperCase())
-                .filter(Boolean);
+            return (value || '').toString().split(/[,;|]/).map(v => v.trim().toUpperCase()).filter(Boolean);
         }
 
         function isFeaturedStudy(study) {
-            return getKeywordList(study.keyword).includes(FEATURED_KEYWORD);
+            return getKeywordList(study.keyword).includes(CONFIG.FEATURED_KEYWORD);
         }
 
         function isStaffPickStudy(study) {
@@ -1341,33 +1223,38 @@
             return rows;
         }
 
-        const CACHE_TTL_MS = 5 * 60 * 1000;
-
         function readCache(key) {
             try {
                 const raw = localStorage.getItem(key);
                 if (!raw) return null;
                 const parsed = JSON.parse(raw);
-                if (!parsed || !parsed.timestamp || !parsed.csv) return null;
+                if (!parsed || !parsed.timestamp || !parsed.data) return null;
                 return parsed;
             } catch (e) {
                 return null;
             }
         }
 
-        function writeCache(key, csv) {
+        function writeCache(key, data) {
             try {
-                localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), csv }));
+                localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data }));
             } catch (e) {}
         }
 
-        async function fetchCsvCached(url, cacheKey) {
+        function clearCache(key) {
+            try { localStorage.removeItem(key); } catch (e) {}
+        }
+
+        async function fetchCsvCached(url, cacheKey, forceRefresh = false) {
+            if (forceRefresh) clearCache(cacheKey);
+
             const cached = readCache(cacheKey);
-            const isFresh = cached && (Date.now() - cached.timestamp < CACHE_TTL_MS);
+            const isFresh = cached && (Date.now() - cached.timestamp < CONFIG.CACHE_TTL_MS);
 
             if (isFresh) {
+                // Background refresh
                 fetch(url).then(res => res.text()).then(csv => writeCache(cacheKey, csv)).catch(() => {});
-                return cached.csv;
+                return cached.data;
             }
 
             try {
@@ -1376,344 +1263,9 @@
                 writeCache(cacheKey, csv);
                 return csv;
             } catch (err) {
-                if (cached) return cached.csv;
+                if (cached) return cached.data;
                 throw err;
             }
-        }
-
-        function showLoadingState() {
-            const grid = document.getElementById('resultsGrid');
-            grid.style.display = 'grid';
-            grid.innerHTML = Array.from({ length: 6 }).map(() => `
-                <div class="chess-card reveal" style="pointer-events:none;">
-                    <div class="h-40 w-full" style="background: var(--border); opacity:0.4;"></div>
-                    <div class="p-8">
-                        <div style="height:8px;width:40%;background:var(--border);border-radius:4px;margin-bottom:14px;"></div>
-                        <div style="height:18px;width:80%;background:var(--border);border-radius:4px;margin-bottom:16px;"></div>
-                        <div style="height:10px;width:30%;background:var(--border);border-radius:4px;"></div>
-                    </div>
-                </div>
-            `).join('');
-            document.getElementById('liveCounter').innerText = 'LOADING THE ARCHIVE...';
-        }
-
-        function showLoadErrorState() {
-            const grid = document.getElementById('resultsGrid');
-            const noRes = document.getElementById('noResults');
-            grid.style.display = 'none';
-            noRes.style.display = 'block';
-            noRes.innerHTML = `
-                <p class="text-lg">The archive couldn't be loaded right now.</p>
-                <p class="text-sm mt-2 opacity-70">This is usually a temporary connection hiccup.</p>
-                <button onclick="loadData()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Try again</button>
-            `;
-            document.getElementById('liveCounter').innerText = 'ARCHIVE UNAVAILABLE';
-        }
-
-        async function loadAuthorData() {
-            try {
-                const csv = await fetchCsvCached(authorSheetUrl, 'scf-author-csv');
-                const rows = parseCSV(csv);
-
-                window.authorData = rows.slice(1).map(c => ({
-                    author: c[0]?.trim() || "",
-                    bio: c[1]?.trim() || "",
-                    country: c[2]?.trim() || "",
-                    style: c[3]?.trim() || "",
-                    links: c[4]?.trim() || ""
-                })).filter(i => i.author !== "");
-            } catch (err) {
-                console.error('Author sheet failed to load:', err);
-                window.authorData = [];
-            }
-        }
-
-        async function loadData() {
-            document.getElementById('noResults').style.display = 'none';
-            showLoadingState();
-
-            try {
-                await loadAuthorData();
-
-                const csv = await fetchCsvCached(sheetUrl, 'scf-studies-csv');
-                const rows = parseCSV(csv);
-
-                window.chessData = rows.slice(1).map(c => ({
-                    side: c[1]?.replace(/"/g, '') || "Universal",
-                    category: c[2]?.replace(/"/g, '') || "General",
-                    title: c[3]?.replace(/"/g, '') || "Untitled",
-                    author: c[4]?.replace(/"/g, '') || "Anonymous",
-                    link: c[5]?.replace(/"/g, '') || "#",
-                    notes: c[6]?.replace(/"/g, '') || "",
-                    viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
-                    image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
-                    difficulty: c[9]?.replace(/"/g, '').trim() || "",
-                    keyword: c[11]?.replace(/"/g, '').trim() || "",
-                    featuredDescription: c[12]?.replace(/"/g, '').trim() || ""
-                })).filter(i => i.title !== "").reverse();
-
-                markNewStudies(window.chessData);
-
-                readUrlParams();
-                renderFeaturedStudy();
-                renderLatest();
-                renderRecentlyViewed();
-                createFilters();
-                createSideFilters();
-                renderArchive();
-                startCarouselAutoplay();
-            } catch (err) { 
-                console.error(err); 
-                showLoadErrorState();
-            }
-        }
-
-        function startCarouselAutoplay() {
-            clearInterval(carouselInterval);
-            carouselInterval = setInterval(() => {
-                if (document.hidden) return;
-                moveCarousel(1);
-            }, 8000);
-        }
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                clearInterval(carouselInterval);
-            } else {
-                startCarouselAutoplay();
-            }
-        });
-
-        function getSeenLinks() {
-            try {
-                return new Set(JSON.parse(localStorage.getItem('scf-seen-links') || '[]'));
-            } catch (e) {
-                return new Set();
-            }
-        }
-
-        function saveSeenLinks(links) {
-            try { localStorage.setItem('scf-seen-links', JSON.stringify(links)); } catch (e) {}
-        }
-
-        function markNewStudies(data) {
-            const seen = getSeenLinks();
-            const isFirstVisit = seen.size === 0;
-
-            data.forEach(i => {
-                i.isNew = !isFirstVisit && !seen.has(i.link);
-            });
-
-            saveSeenLinks(data.map(i => i.link));
-            showNewSinceVisitBanner(isFirstVisit ? 0 : data.filter(i => i.isNew).length);
-        }
-
-        function showNewSinceVisitBanner(count) {
-            const banner = document.getElementById('newSinceVisitBanner');
-            if (!count) {
-                banner.classList.add('hidden');
-                return;
-            }
-            document.getElementById('newSinceVisitText').textContent =
-                `${count} new ${count === 1 ? 'study' : 'studies'} since your last visit`;
-            banner.classList.remove('hidden');
-        }
-
-        function jumpToNewStudies() {
-            const target = document.getElementById('latestSection');
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function getFeaturedStudy() {
-            if (!window.chessData || window.chessData.length === 0) return null;
-
-            const manual = window.chessData.find(i => isFeaturedStudy(i));
-            if (manual) return manual;
-
-            const staffPicks = window.chessData.filter(i => i.notes.toUpperCase().includes("STAR"));
-            if (staffPicks.length > 0) return staffPicks[0];
-
-            const withViewerNotes = window.chessData.filter(i => i.viewerNote && i.viewerNote.trim() !== "");
-            if (withViewerNotes.length > 0) return withViewerNotes[0];
-
-            return window.chessData[0];
-        }
-
-        function renderFeaturedStudy() {
-            const featured = getFeaturedStudy();
-            const container = document.getElementById('featuredStudyContainer');
-            const section = document.getElementById('featuredSection');
-
-            if (!featured) {
-                section.classList.add('hidden');
-                container.innerHTML = '';
-                return;
-            }
-
-            section.classList.remove('hidden');
-
-            const cleanNotes = featured.notes.replace(/STAR/gi, '').trim();
-            const spotlightText = featured.featuredDescription || featured.viewerNote || cleanNotes || "A carefully selected study from the archive.";
-
-            container.innerHTML = `
-                <div class="featured-shell rounded-sm">
-                    <div class="grid lg:grid-cols-[1.05fr_0.95fr] min-h-[320px] lg:min-h-[420px]">
-                        <a href="${featured.link}" target="_blank" onclick="recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-image block relative">
-                            <img src="${featured.image}" alt="${featured.title}" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
-                            <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap items-center gap-2 z-10 max-w-[calc(100%-2rem)]">
-                                <div class="featured-badge brand-font px-3 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] rounded-sm">Featured Study</div>
-                                <div class="forest-tag brand-font">${featured.side}</div>
-                                ${featured.difficulty ? `<div class="skill-tag brand-font">${featured.difficulty}</div>` : ''}
-                            </div>
-                        </a>
-
-                        <div class="p-8 md:p-10 lg:p-12 flex flex-col justify-center relative z-10 border-t lg:border-t-0 lg:border-l border-zinc-900/70">
-                            <p class="gold-accent brand-font uppercase tracking-[0.3em] text-[9px] mb-4">Weekly Spotlight</p>
-                            <h2 class="text-2xl md:text-3xl lg:text-4xl brand-font parchment-text leading-tight mb-4">${featured.title}</h2>
-                            <p onclick="filterByAuthor('${featured.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-xs md:text-sm mb-6 cursor-pointer hover:underline w-fit">By ${featured.author}</p>
-
-                            <div class="space-y-4 mb-8">
-                                <p class="text-zinc-400 italic leading-relaxed text-sm max-w-xl">
-                                    ${spotlightText}
-                                </p>
-                                <p class="text-zinc-500 text-[11px] italic leading-relaxed">
-                                    Category: ${featured.category}
-                                </p>
-                            </div>
-
-                            <div class="flex flex-wrap gap-3">
-                                <a href="${featured.link}" target="_blank" onclick="recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-btn bg-[#c5a059] text-[#0a0a0a] px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] hover:bg-transparent hover:text-[#c5a059] transition-all">
-                                    Open Study
-                                </a>
-
-                                <button onclick="copyLink('${featured.link}')" class="featured-btn px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] text-[var(--heading)] hover:text-[#c5a059] transition-all">
-                                    Copy Link
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderRecentlyViewed() {
-            const links = getRecentViews();
-            const container = document.getElementById('recentlyViewedGrid');
-            const section = document.getElementById('recentlyViewedSection');
-
-            const items = links
-                .map(link => window.chessData.find(s => s.link === link))
-                .filter(Boolean)
-                .slice(0, 9);
-
-            window.hasRecentViews = items.length > 0;
-
-            if (!items.length) {
-                container.innerHTML = '';
-                return;
-            }
-
-            container.innerHTML = items.map(i => `<div class="carousel-item">${cardHtml(i)}</div>`).join('');
-            container.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
-        }
-
-        function renderLatest() {
-            const grid = document.getElementById('latestGrid');
-            grid.innerHTML = window.chessData.slice(0, 9).map(i => `<div class="carousel-item">${cardHtml(i)}</div>`).join('');
-            grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
-        }
-
-        function moveCarousel(dir) {
-            const grid = document.getElementById('latestGrid');
-            if (!grid || !grid.querySelector('.carousel-item')) return;
-
-            const itemsInView = window.innerWidth > 1024 ? 3 : (window.innerWidth > 640 ? 2 : 1);
-            const totalItems = Math.min(9, window.chessData.length);
-            const maxPos = Math.max(0, totalItems - itemsInView);
-
-            carouselPos = (carouselPos + dir);
-            if (carouselPos > maxPos) carouselPos = 0;
-            if (carouselPos < 0) carouselPos = maxPos;
-
-            const itemWidth = grid.querySelector('.carousel-item').offsetWidth;
-            const gap = 40;
-            grid.style.transform = `translateX(-${carouselPos * (itemWidth + gap)}px)`;
-        }
-
-        function cardHtml(i) {
-            const isStar = i.notes.toUpperCase().includes("STAR");
-            const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
-            const favActive = isFavorite(i.link) ? 'active' : '';
-            const favTopClass = isStar ? 'top-11' : 'top-3';
-            
-            return `
-            <div class="chess-card flex flex-col group relative">
-                ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
-                ${noteOverlay}
-                <button onclick="toggleFavorite('${i.link.replace(/'/g, "\\'")}', this)" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/70 hover:text-[#c5a059]" title="Save to favorites">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-                </button>
-                
-                <a href="${i.link}" target="_blank" onclick="recordView('${i.link.replace(/'/g, "\\'")}')" class="h-40 w-full relative block">
-                    <div class="card-image-wrap">
-                        <img src="${i.image}" class="card-image" alt="${i.title}" loading="lazy" decoding="async" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
-                        <div class="image-vignette"></div>
-                        <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
-                            ${i.isNew ? `<div class="new-tag brand-font">New</div>` : ''}
-                            <div class="forest-tag brand-font">${i.side}</div>
-                            ${i.difficulty ? `<div class="skill-tag brand-font">${i.difficulty}</div>` : ''}
-                        </div>
-                    </div>
-                </a>
-
-                <div class="p-8 flex-grow flex flex-col">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase block italic">${i.category}</span>
-                        <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors" title="Copy Study Link">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <a href="${i.link}" target="_blank" onclick="recordView('${i.link.replace(/'/g, "\\'")}')" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
-                    
-                    <p onclick="filterByAuthor('${i.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
-                    
-                    <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
-                </div>
-            </div>`;
-        }
-
-        function getSortedStudies(data) {
-            const sortValue = document.getElementById('sortSelect')?.value || 'newest';
-            const arr = [...data];
-
-            switch (sortValue) {
-                case 'oldest':
-                    return arr.reverse();
-                case 'title-az':
-                    return arr.sort((a, b) => a.title.localeCompare(b.title));
-                case 'title-za':
-                    return arr.sort((a, b) => b.title.localeCompare(a.title));
-                case 'author-az':
-                    return arr.sort((a, b) => a.author.localeCompare(b.author));
-                case 'author-za':
-                    return arr.sort((a, b) => b.author.localeCompare(a.author));
-                case 'newest':
-                default:
-                    return arr;
-            }
-        }
-
-        function normalizeCountryKey(value) {
-            return (value || '')
-                .toString()
-                .trim()
-                .toLowerCase()
-                .replace(/\([^)]*\)/g, '')
-                .replace(/\s+/g, ' ')
-                .replace(/[^a-z0-9\s.-]/g, '');
         }
 
         function countryToCode(country) {
@@ -1721,7 +1273,7 @@
             if (!raw) return '';
 
             const first = raw.split(/[\/,;|]/)[0].trim();
-            const normalized = normalizeCountryKey(first);
+            const normalized = normalizeText(first);
 
             if (/^[a-z]{2}$/i.test(first)) return first.toUpperCase();
             if (/^[a-z]{2}$/i.test(normalized)) return normalized.toUpperCase();
@@ -1761,11 +1313,7 @@
         }
 
         function splitLinks(raw) {
-            return (raw || '')
-                .toString()
-                .split(/[\n,;|]+/g)
-                .map(v => v.trim())
-                .filter(Boolean);
+            return (raw || '').toString().split(/[\n,;|]+/g).map(v => v.trim()).filter(Boolean);
         }
 
         function normalizeHref(url) {
@@ -1775,380 +1323,954 @@
             return `https://${trimmed}`;
         }
 
-        function renderAuthorProfile(authorName, studies) {
-            const section = document.getElementById('authorProfileSection');
-            const content = document.getElementById('authorProfileContent');
-            const title = document.getElementById('authorProfileName');
-            const badge = document.getElementById('authorProfileBadge');
-            const subtitle = document.getElementById('authorProfileSubtitle');
-            const footer = document.getElementById('authorProfileFooter');
+        function getFavorites() {
+            try { return new Set(JSON.parse(localStorage.getItem('scf-favorites') || '[]')); } catch (e) { return new Set(); }
+        }
 
-            const profile = (window.authorData || []).find(a => normalizeAuthorName(a.author) === normalizeAuthorName(authorName));
+        function saveFavorites(set) {
+            try { localStorage.setItem('scf-favorites', JSON.stringify([...set])); } catch (e) {}
+        }
 
-            const studyCount = studies.length;
-            const studyWord = studyCount === 1 ? 'study' : 'studies';
+        function isFavorite(link) {
+            return getFavorites().has(link);
+        }
 
-            const bio = profile?.bio?.trim() || 'No author profile has been added yet.';
-            const country = profile?.country?.trim() || '';
-            const style = profile?.style?.trim() || '';
-            const linksRaw = profile?.links?.trim() || '';
-            const links = splitLinks(linksRaw);
-            const flag = getCountryFlag(country);
+        function getRecentViews() {
+            try { return JSON.parse(localStorage.getItem('scf-recent-views') || '[]'); } catch (e) { return []; }
+        }
 
-            title.textContent = authorName;
-            subtitle.textContent = `${studyCount} ${studyWord} in the library`;
+        function recordView(link) {
+            let arr = getRecentViews();
+            arr = arr.filter(l => l !== link);
+            arr.unshift(link);
+            arr = arr.slice(0, CONFIG.RECENT_VIEWS_MAX);
+            try { localStorage.setItem('scf-recent-views', JSON.stringify(arr)); } catch (e) {}
+        }
 
-            if (country) {
-                badge.classList.remove('hidden');
-                badge.innerHTML = `<span class="flag">${flag}</span><span>${escapeHTML(country)}</span>`;
-            } else {
-                badge.classList.add('hidden');
-                badge.innerHTML = '';
-            }
+        function getSeenLinks() {
+            try { return new Set(JSON.parse(localStorage.getItem('scf-seen-links') || '[]')); } catch (e) { return new Set(); }
+        }
 
-            const svgIcon = (path) => `
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    ${path}
-                </svg>
-            `;
+        function saveSeenLinks(links) {
+            try { localStorage.setItem('scf-seen-links', JSON.stringify(links)); } catch (e) {}
+        }
 
-            const cards = [];
+        function getSurprisedLinks() {
+            try { return new Set(JSON.parse(localStorage.getItem('scf-surprised-links') || '[]')); } catch (e) { return new Set(); }
+        }
 
-            cards.push(`
-                <div class="author-profile-card author-bio-card">
-                    <div class="author-card-label"><span class="dot"></span> Bio</div>
-                    <div class="author-card-text">${escapeHTML(bio).replace(/\n/g, '<br>')}</div>
-                </div>
-            `);
+        function saveSurprisedLinks(set) {
+            try { localStorage.setItem('scf-surprised-links', JSON.stringify([...set])); } catch (e) {}
+        }
 
-            if (country) {
-                cards.push(`
-                    <div class="author-profile-card">
-                        <div class="author-card-label"><span class="dot"></span> Country</div>
-                        <div class="author-country-row">
-                            <div class="author-country-flag" aria-hidden="true">${flag}</div>
-                            <div class="author-country-text">
-                                <div class="author-country-name">${escapeHTML(country)}</div>
-                                <div class="author-country-sub">Region / nationality</div>
+        // ============================================================
+        // REVEAL OBSERVER
+        // ============================================================
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        // ============================================================
+        // APPLICATION OBJECT
+        // ============================================================
+        const app = {
+            // --- Initialization ---
+            async init() {
+                this.applyStoredTheme();
+                await this.loadData();
+                this.setupEventListeners();
+                this.startCarouselAutoplay();
+            },
+
+            // --- Data Loading ---
+            async loadData(forceRefresh = false) {
+                this.showLoadingState();
+
+                try {
+                    await this.loadAuthorData(forceRefresh);
+                    await this.loadStudyData(forceRefresh);
+                    this.markNewStudies();
+                    this.readUrlParams();
+                    this.renderFeaturedStudy();
+                    this.renderLatest();
+                    this.renderRecentlyViewed();
+                    this.createFilters();
+                    this.createSideFilters();
+                    this.renderArchive();
+                    this.startCarouselAutoplay();
+                } catch (err) {
+                    console.error('Failed to load data:', err);
+                    this.showLoadErrorState();
+                }
+            },
+
+            async refreshData() {
+                await this.loadData(true);
+                // Show a brief toast notification
+                const toast = document.getElementById('copyToast');
+                toast.textContent = 'Data Refreshed ✓';
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    toast.textContent = 'Link Copied to Clipboard';
+                }, 2000);
+            },
+
+            async loadAuthorData(forceRefresh = false) {
+                try {
+                    const csv = await fetchCsvCached(CONFIG.AUTHOR_SHEET_URL, 'scf-author-cache', forceRefresh);
+                    const rows = parseCSV(csv);
+                    state.authorData = rows.slice(1).map(c => ({
+                        author: c[0]?.trim() || "",
+                        bio: c[1]?.trim() || "",
+                        country: c[2]?.trim() || "",
+                        style: c[3]?.trim() || "",
+                        links: c[4]?.trim() || ""
+                    })).filter(i => i.author !== "");
+                } catch (err) {
+                    console.error('Author sheet failed to load:', err);
+                    state.authorData = [];
+                }
+            },
+
+            async loadStudyData(forceRefresh = false) {
+                const csv = await fetchCsvCached(CONFIG.SHEET_URL, 'scf-studies-cache', forceRefresh);
+                const rows = parseCSV(csv);
+
+                state.chessData = rows.slice(1).map(c => ({
+                    side: c[1]?.replace(/"/g, '') || "Universal",
+                    category: c[2]?.replace(/"/g, '') || "General",
+                    title: c[3]?.replace(/"/g, '') || "Untitled",
+                    author: c[4]?.replace(/"/g, '') || "Anonymous",
+                    link: c[5]?.replace(/"/g, '') || "#",
+                    notes: c[6]?.replace(/"/g, '') || "",
+                    viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
+                    image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
+                    difficulty: c[9]?.replace(/"/g, '').trim() || "",
+                    keyword: c[11]?.replace(/"/g, '').trim() || "",
+                    featuredDescription: c[12]?.replace(/"/g, '').trim() || "",
+                    isNew: false,
+                })).filter(i => i.title !== "").reverse();
+            },
+
+            // --- UI State Management ---
+            showLoadingState() {
+                const grid = document.getElementById('resultsGrid');
+                grid.style.display = 'grid';
+                grid.innerHTML = Array.from({ length: 6 }).map(() => `
+                    <div class="chess-card reveal" style="pointer-events:none;">
+                        <div class="h-40 w-full" style="background: var(--border); opacity:0.4;"></div>
+                        <div class="p-8">
+                            <div style="height:8px;width:40%;background:var(--border);border-radius:4px;margin-bottom:14px;"></div>
+                            <div style="height:18px;width:80%;background:var(--border);border-radius:4px;margin-bottom:16px;"></div>
+                            <div style="height:10px;width:30%;background:var(--border);border-radius:4px;"></div>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('liveCounter').innerText = 'LOADING THE ARCHIVE...';
+            },
+
+            showLoadErrorState() {
+                const grid = document.getElementById('resultsGrid');
+                const noRes = document.getElementById('noResults');
+                grid.style.display = 'none';
+                noRes.style.display = 'block';
+                noRes.innerHTML = `
+                    <p class="text-lg">The archive couldn't be loaded right now.</p>
+                    <p class="text-sm mt-2 opacity-70">This is usually a temporary connection hiccup.</p>
+                    <button onclick="app.refreshData()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Try again</button>
+                `;
+                document.getElementById('liveCounter').innerText = 'ARCHIVE UNAVAILABLE';
+            },
+
+            // --- Theme ---
+            applyStoredTheme() {
+                let stored = null;
+                try { stored = localStorage.getItem('scf-theme'); } catch (e) {}
+                if (stored === 'light') {
+                    document.body.classList.add('light-mode');
+                    document.getElementById('themeIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />';
+                }
+            },
+
+            toggleTheme() {
+                const body = document.body;
+                const icon = document.getElementById('themeIcon');
+                body.classList.toggle('light-mode');
+                const isLight = body.classList.contains('light-mode');
+
+                icon.innerHTML = isLight 
+                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />'
+                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+
+                try { localStorage.setItem('scf-theme', isLight ? 'light' : 'dark'); } catch (e) {}
+            },
+
+            // --- Modals ---
+            toggleModal(id) {
+                const el = document.getElementById(id);
+                const isHidden = el.classList.toggle('hidden');
+                document.body.style.overflow = isHidden ? 'auto' : 'hidden';
+                if (!isHidden) {
+                    const focusable = el.querySelector('button, a, input');
+                    if (focusable) focusable.focus();
+                }
+            },
+
+            // --- New Studies ---
+            markNewStudies() {
+                const seen = getSeenLinks();
+                const isFirstVisit = seen.size === 0;
+
+                state.chessData.forEach(i => {
+                    i.isNew = !isFirstVisit && !seen.has(i.link);
+                });
+
+                saveSeenLinks(state.chessData.map(i => i.link));
+                this.showNewSinceVisitBanner(isFirstVisit ? 0 : state.chessData.filter(i => i.isNew).length);
+            },
+
+            showNewSinceVisitBanner(count) {
+                const banner = document.getElementById('newSinceVisitBanner');
+                if (!count) {
+                    banner.classList.add('hidden');
+                    return;
+                }
+                document.getElementById('newSinceVisitText').textContent =
+                    `${count} new ${count === 1 ? 'study' : 'studies'} since your last visit`;
+                banner.classList.remove('hidden');
+            },
+
+            jumpToNewStudies() {
+                const target = document.getElementById('latestSection');
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            },
+
+            // --- Featured Study ---
+            getFeaturedStudy() {
+                if (!state.chessData || state.chessData.length === 0) return null;
+
+                const manual = state.chessData.find(i => isFeaturedStudy(i));
+                if (manual) return manual;
+
+                const staffPicks = state.chessData.filter(i => i.notes.toUpperCase().includes("STAR"));
+                if (staffPicks.length > 0) return staffPicks[0];
+
+                const withViewerNotes = state.chessData.filter(i => i.viewerNote && i.viewerNote.trim() !== "");
+                if (withViewerNotes.length > 0) return withViewerNotes[0];
+
+                return state.chessData[0];
+            },
+
+            renderFeaturedStudy() {
+                const featured = this.getFeaturedStudy();
+                const container = document.getElementById('featuredStudyContainer');
+                const section = document.getElementById('featuredSection');
+
+                if (!featured) {
+                    section.classList.add('hidden');
+                    container.innerHTML = '';
+                    return;
+                }
+
+                section.classList.remove('hidden');
+
+                const cleanNotes = featured.notes.replace(/STAR/gi, '').trim();
+                const spotlightText = featured.featuredDescription || featured.viewerNote || cleanNotes || "A carefully selected study from the archive.";
+
+                container.innerHTML = `
+                    <div class="featured-shell rounded-sm">
+                        <div class="grid lg:grid-cols-[1.05fr_0.95fr] min-h-[320px] lg:min-h-[420px]">
+                            <a href="${featured.link}" target="_blank" onclick="app.recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-image block relative">
+                                <img src="${featured.image}" alt="${featured.title}" loading="lazy" decoding="async" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
+                                <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap items-center gap-2 z-10 max-w-[calc(100%-2rem)]">
+                                    <div class="featured-badge brand-font px-3 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] rounded-sm">Featured Study</div>
+                                    <div class="forest-tag brand-font">${featured.side}</div>
+                                    ${featured.difficulty ? `<div class="skill-tag brand-font">${featured.difficulty}</div>` : ''}
+                                </div>
+                            </a>
+
+                            <div class="p-8 md:p-10 lg:p-12 flex flex-col justify-center relative z-10 border-t lg:border-t-0 lg:border-l border-zinc-900/70">
+                                <p class="gold-accent brand-font uppercase tracking-[0.3em] text-[9px] mb-4">Weekly Spotlight</p>
+                                <h2 class="text-2xl md:text-3xl lg:text-4xl brand-font parchment-text leading-tight mb-4">${featured.title}</h2>
+                                <p onclick="app.filterByAuthor('${featured.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-xs md:text-sm mb-6 cursor-pointer hover:underline w-fit">By ${featured.author}</p>
+
+                                <div class="space-y-4 mb-8">
+                                    <p class="text-zinc-400 italic leading-relaxed text-sm max-w-xl">
+                                        ${spotlightText}
+                                    </p>
+                                    <p class="text-zinc-500 text-[11px] italic leading-relaxed">
+                                        Category: ${featured.category}
+                                    </p>
+                                </div>
+
+                                <div class="flex flex-wrap gap-3">
+                                    <a href="${featured.link}" target="_blank" onclick="app.recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-btn bg-[#c5a059] text-[#0a0a0a] px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] hover:bg-transparent hover:text-[#c5a059] transition-all">
+                                        Open Study
+                                    </a>
+
+                                    <button onclick="app.copyLink('${featured.link}')" class="featured-btn px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] text-[var(--heading)] hover:text-[#c5a059] transition-all">
+                                        Copy Link
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                `);
-            }
-
-            if (style) {
-                cards.push(`
-                    <div class="author-profile-card">
-                        <div class="author-card-label"><span class="dot"></span> Style</div>
-                        <div class="author-card-text">${escapeHTML(style).replace(/\n/g, '<br>')}</div>
-                    </div>
-                `);
-            }
-
-            if (links.length) {
-                cards.push(`
-                    <div class="author-profile-card author-bio-card">
-                        <div class="author-card-label"><span class="dot"></span> Links</div>
-                        <div class="author-links-list">
-                            ${links.map(link => {
-                                const href = normalizeHref(link);
-                                return `<a href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer" class="author-link-chip">${svgIcon('<path d="M10 13a5 5 0 0 1 0-7.07l1.5-1.5a5 5 0 0 1 7.07 7.07l-1 1" /><path d="M14 11a5 5 0 0 1 0 7.07l-1.5 1.5a5 5 0 0 1-7.07-7.07l1-1" />')}<span>${escapeHTML(link)}</span></a>`;
-                            }).join('')}
-                        </div>
-                    </div>
-                `);
-            } else if (linksRaw) {
-                cards.push(`
-                    <div class="author-profile-card author-bio-card">
-                        <div class="author-card-label"><span class="dot"></span> Links</div>
-                        <div class="author-card-text"><a href="${escapeHTML(normalizeHref(linksRaw))}" target="_blank" rel="noopener noreferrer" class="author-link">${escapeHTML(linksRaw)}</a></div>
-                    </div>
-                `);
-            }
-
-            content.innerHTML = cards.join('');
-            footer.textContent = country ? `${flag} ${country}` : '';
-
-            section.classList.remove('hidden');
-        }
-
-        function renderPagination(totalPages) {
-            const container = document.getElementById('paginationContainer');
-            if (!container) return;
-
-            if (totalPages <= 1) {
-                container.innerHTML = '';
-                return;
-            }
-
-            const pages = [];
-            const windowSize = 7;
-            let start = Math.max(1, currentPage - Math.floor(windowSize / 2));
-            let end = Math.min(totalPages, start + windowSize - 1);
-            start = Math.max(1, end - windowSize + 1);
-
-            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.max(1, currentPage - 1)}" ${currentPage === 1 ? 'disabled' : ''}>← Prev</button>`);
-
-            if (start > 1) {
-                pages.push(`<button class="filter-chip brand-font page-chip" data-page="1">1</button>`);
-                if (start > 2) {
-                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">…</span>`);
-                }
-            }
-
-            for (let p = start; p <= end; p++) {
-                pages.push(`<button class="filter-chip brand-font page-chip ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`);
-            }
-
-            if (end < totalPages) {
-                if (end < totalPages - 1) {
-                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">…</span>`);
-                }
-                pages.push(`<button class="filter-chip brand-font page-chip" data-page="${totalPages}">${totalPages}</button>`);
-            }
-
-            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.min(totalPages, currentPage + 1)}" ${currentPage === totalPages ? 'disabled' : ''}>Next →</button>`);
-
-            container.innerHTML = pages.join('');
-            container.querySelectorAll('button[data-page]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const page = parseInt(btn.getAttribute('data-page'), 10);
-                    if (!Number.isFinite(page) || page < 1 || page > totalPages) return;
-                    currentPage = page;
-                    renderArchive();
-                    const anchor = document.getElementById('archiveHeader');
-                    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                });
-            });
-        }
-
-        function renderArchive() {
-            document.getElementById('archiveHeader').style.display = '';
-
-            const term = document.getElementById('searchInput').value.trim().toLowerCase();
-
-            let filtered = window.chessData.filter(i => {
-                const matchesText = matchesSearch(i, term) || term.length === 0;
-
-                const matchesCategory =
-                    (currentFilter === 'All' ||
-                    (currentFilter === 'Staff Picks' ? isStaffPickStudy(i) : i.category === currentFilter));
-
-                const matchesSide = (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
-                const matchesAuthor = (!currentAuthor || normalizeAuthorName(i.author) === normalizeAuthorName(currentAuthor));
-                const matchesFavorite = (!showFavoritesOnly || isFavorite(i.link));
-
-                return matchesText && matchesCategory && matchesSide && matchesAuthor && matchesFavorite;
-            });
-
-            filtered = getSortedStudies(filtered);
-
-            const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
-            if (currentPage > totalPages) currentPage = totalPages;
-            if (currentPage < 1) currentPage = 1;
-
-            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-            const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-            const isSearchingOrFiltering = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side' || currentAuthor || showFavoritesOnly;
-            const latestSec = document.getElementById('latestSection');
-            const recentSec = document.getElementById('recentlyViewedSection');
-            const featuredSec = document.getElementById('featuredSection');
-            const authorSec = document.getElementById('authorProfileSection');
-            const archiveHeader = document.getElementById('archiveHeader');
-
-            const featured = getFeaturedStudy();
-            const featuredMatchesSearch = !!featured && matchesSearch(featured, term);
-
-            const searchInputEl = document.getElementById('searchInput');
-            const beforeTop = searchInputEl.getBoundingClientRect().top;
-
-            if (isSearchingOrFiltering) {
-                latestSec.style.display = 'none';
-                recentSec.classList.add('hidden');
-            } else {
-                latestSec.style.display = 'block';
-                recentSec.classList.toggle('hidden', !window.hasRecentViews);
-            }
-
-            if (term.length > 0 && featuredMatchesSearch) {
-                featuredSec.style.display = 'none';
-            } else if (isSearchingOrFiltering) {
-                featuredSec.style.display = 'none';
-            } else {
-                featuredSec.style.display = 'block';
-            }
-
-            const afterTop = searchInputEl.getBoundingClientRect().top;
-            const scrollDelta = afterTop - beforeTop;
-            if (scrollDelta !== 0) {
-                window.scrollBy(0, scrollDelta);
-            }
-
-            if (currentAuthor) {
-                renderAuthorProfile(currentAuthor, filtered);
-                archiveHeader.textContent = `${currentAuthor}'s Studies`;
-                authorSec.classList.remove('hidden');
-            } else {
-                authorSec.classList.add('hidden');
-                archiveHeader.textContent = totalPages > 1 ? `Full Archive — Page ${currentPage} of ${totalPages}` : 'Full Archive';
-            }
-
-            const counter = document.getElementById('liveCounter');
-            counter.innerText = isSearchingOrFiltering
-                ? `FOUND ${filtered.length} MATCHING STUDIES • PAGE ${currentPage}/${totalPages}`
-                : `LIBRARY TOTAL: ${window.chessData.length}`;
-
-            syncUrlParams(term);
-            
-            const grid = document.getElementById('resultsGrid');
-            const noRes = document.getElementById('noResults');
-
-            if (filtered.length === 0) {
-                grid.style.display = 'none';
-                noRes.innerHTML = `
-                    <p class="text-lg">No studies match your current search.</p>
-                    <button onclick="resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
                 `;
-                noRes.style.display = 'block';
-                document.getElementById('paginationContainer').innerHTML = '';
-            } else {
-                grid.style.display = 'grid';
-                noRes.style.display = 'none';
-                grid.innerHTML = pageItems.map(i => cardHtml(i)).join('');
+            },
+
+            // --- Carousel ---
+            startCarouselAutoplay() {
+                clearInterval(state.carouselInterval);
+                state.carouselInterval = setInterval(() => {
+                    if (document.hidden) return;
+                    this.moveCarousel(1);
+                }, 8000);
+            },
+
+            moveCarousel(dir) {
+                const grid = document.getElementById('latestGrid');
+                if (!grid || !grid.querySelector('.carousel-item')) return;
+
+                const itemsInView = window.innerWidth > 1024 ? 3 : (window.innerWidth > 640 ? 2 : 1);
+                const totalItems = Math.min(9, state.chessData.length);
+                const maxPos = Math.max(0, totalItems - itemsInView);
+
+                state.carouselPos = (state.carouselPos + dir);
+                if (state.carouselPos > maxPos) state.carouselPos = 0;
+                if (state.carouselPos < 0) state.carouselPos = maxPos;
+
+                const itemWidth = grid.querySelector('.carousel-item').offsetWidth;
+                const gap = 40;
+                grid.style.transform = `translateX(-${state.carouselPos * (itemWidth + gap)}px)`;
+            },
+
+            // --- Recently Viewed ---
+            renderRecentlyViewed() {
+                const links = getRecentViews();
+                const container = document.getElementById('recentlyViewedGrid');
+                const section = document.getElementById('recentlyViewedSection');
+
+                const items = links
+                    .map(link => state.chessData.find(s => s.link === link))
+                    .filter(Boolean)
+                    .slice(0, 9);
+
+                if (!items.length) {
+                    container.innerHTML = '';
+                    section.classList.add('hidden');
+                    return;
+                }
+
+                section.classList.remove('hidden');
+                container.innerHTML = items.map(i => `<div class="carousel-item">${this.cardHtml(i)}</div>`).join('');
+                container.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
+            },
+
+            // --- Latest ---
+            renderLatest() {
+                const grid = document.getElementById('latestGrid');
+                grid.innerHTML = state.chessData.slice(0, 9).map(i => `<div class="carousel-item">${this.cardHtml(i)}</div>`).join('');
                 grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
-                renderPagination(totalPages);
-            }
-        }
+            },
 
-        function readUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            const q = params.get('q');
-            const category = params.get('category');
-            const side = params.get('side');
-            const author = params.get('author');
+            // --- Card HTML ---
+            cardHtml(i) {
+                const isStar = i.notes.toUpperCase().includes("STAR");
+                const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
+                const favActive = isFavorite(i.link) ? 'active' : '';
+                const favTopClass = isStar ? 'top-11' : 'top-3';
+                
+                return `
+                <div class="chess-card flex flex-col group relative">
+                    ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
+                    ${noteOverlay}
+                    <button onclick="app.toggleFavorite('${i.link.replace(/'/g, "\\'")}', this)" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/70 hover:text-[#c5a059]" title="Save to favorites" aria-label="Toggle favorite">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                    </button>
+                    
+                    <a href="${i.link}" target="_blank" onclick="app.recordView('${i.link.replace(/'/g, "\\'")}')" class="h-40 w-full relative block">
+                        <div class="card-image-wrap">
+                            <img src="${i.image}" class="card-image" alt="${i.title}" loading="lazy" decoding="async" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
+                            <div class="image-vignette"></div>
+                            <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
+                                ${i.isNew ? `<div class="new-tag brand-font">New</div>` : ''}
+                                <div class="forest-tag brand-font">${i.side}</div>
+                                ${i.difficulty ? `<div class="skill-tag brand-font">${i.difficulty}</div>` : ''}
+                            </div>
+                        </div>
+                    </a>
 
-            if (q) document.getElementById('searchInput').value = q;
-            if (category) currentFilter = category;
-            if (side) currentSideFilter = side;
-            if (author) currentAuthor = author;
-        }
+                    <div class="p-8 flex-grow flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[9px] brand-font font-semibold tracking-[0.2em] text-zinc-600 uppercase block italic">${i.category}</span>
+                            <button onclick="app.copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors" title="Copy Study Link" aria-label="Copy link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                        </div>
 
-        function syncUrlParams(term) {
-            const params = new URLSearchParams();
+                        <a href="${i.link}" target="_blank" onclick="app.recordView('${i.link.replace(/'/g, "\\'")}')" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
+                        
+                        <p onclick="app.filterByAuthor('${i.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
+                        
+                        <p class="text-zinc-500 text-[10px] italic leading-relaxed line-clamp-3">${i.notes.replace(/STAR/gi, '')}</p>
+                    </div>
+                </div>`;
+            },
 
-            if (term) params.set('q', term);
-            if (currentFilter !== 'All') params.set('category', currentFilter);
-            if (currentSideFilter !== 'Any Side') params.set('side', currentSideFilter);
-            if (currentAuthor) params.set('author', currentAuthor);
+            // --- Favorites ---
+            toggleFavorite(link, btnEl) {
+                const favs = getFavorites();
+                if (favs.has(link)) {
+                    favs.delete(link);
+                } else {
+                    favs.add(link);
+                }
+                saveFavorites(favs);
+                if (btnEl) btnEl.classList.toggle('active', favs.has(link));
+                if (state.showFavoritesOnly) this.renderArchive();
+            },
 
-            const query = params.toString();
-            const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
-            window.history.replaceState({}, '', newUrl);
-        }
+            toggleFavoritesFilter() {
+                state.showFavoritesOnly = !state.showFavoritesOnly;
+                document.getElementById('favoritesToggle').classList.toggle('active', state.showFavoritesOnly);
+                state.currentPage = 1;
+                this.renderArchive();
+            },
 
-        function filterByAuthor(author) {
-            currentAuthor = author;
-            currentPage = 1;
-            document.getElementById('searchInput').value = '';
-            renderArchive();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+            // --- Surprise ---
+            surpriseMe() {
+                if (!state.chessData || state.chessData.length === 0) return;
 
-        function backToArchive() {
-            currentAuthor = null;
-            currentPage = 1;
-            renderArchive();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+                let shown = getSurprisedLinks();
+                let pool = state.chessData.filter(s => !shown.has(s.link));
 
-        function resetFilters() {
-            document.getElementById('searchInput').value = '';
-            currentFilter = 'All';
-            currentSideFilter = 'Any Side';
-            currentAuthor = null;
-            currentPage = 1;
-            document.getElementById('sortSelect').value = 'newest';
-            createFilters();
-            createSideFilters();
-            renderArchive();
-        }
+                if (pool.length === 0) {
+                    shown = new Set();
+                    pool = state.chessData;
+                }
 
-        window.onscroll = function() {
-            const btn = document.getElementById('toTopBtn');
-            if (window.scrollY > 600) btn.classList.add('visible');
-            else btn.classList.remove('visible');
+                const randomStudy = pool[Math.floor(Math.random() * pool.length)];
+                shown.add(randomStudy.link);
+                saveSurprisedLinks(shown);
+                recordView(randomStudy.link);
+                window.open(randomStudy.link, '_blank');
+            },
+
+            // --- Copy Link ---
+            copyLink(url) {
+                navigator.clipboard.writeText(url).then(() => {
+                    const toast = document.getElementById('copyToast');
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 2000);
+                });
+            },
+
+            // --- Filters ---
+            createFilters() {
+                const cats = ['All', 'Staff Picks', ...new Set(state.chessData.map(i => i.category))].filter(c => c !== 'General');
+                document.getElementById('filterContainer').innerHTML = cats.map(c => 
+                    `<div onclick="app.setFilter('${c.replace(/'/g, "\\'")}')" class="filter-chip brand-font ${state.currentFilter === c ? 'active' : ''}">${c}</div>`
+                ).join('');
+            },
+
+            createSideFilters() {
+                const sides = ['Any Side', 'White', 'Black', 'Universal'];
+                document.getElementById('sideFilterContainer').innerHTML = sides.map(s => 
+                    `<div onclick="app.setSideFilter('${s}')" class="filter-chip brand-font ${state.currentSideFilter === s ? 'active' : ''}">${s}</div>`
+                ).join('');
+            },
+
+            setFilter(cat) {
+                state.currentFilter = cat;
+                state.currentPage = 1;
+                this.createFilters();
+                this.renderArchive();
+            },
+
+            setSideFilter(side) {
+                state.currentSideFilter = side;
+                state.currentPage = 1;
+                this.createSideFilters();
+                this.renderArchive();
+            },
+
+            filterByAuthor(author) {
+                state.currentAuthor = author;
+                state.currentPage = 1;
+                document.getElementById('searchInput').value = '';
+                this.renderArchive();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            resetFilters() {
+                document.getElementById('searchInput').value = '';
+                state.currentFilter = 'All';
+                state.currentSideFilter = 'Any Side';
+                state.currentAuthor = null;
+                state.currentPage = 1;
+                document.getElementById('sortSelect').value = 'newest';
+                this.createFilters();
+                this.createSideFilters();
+                this.renderArchive();
+            },
+
+            backToArchive() {
+                state.currentAuthor = null;
+                state.currentPage = 1;
+                this.renderArchive();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            // --- Search Suggestions ---
+            updateSearchSuggestions(term) {
+                const box = document.getElementById('searchSuggestions');
+                if (!term || term.length < 2 || !state.chessData) {
+                    box.classList.add('hidden');
+                    box.innerHTML = '';
+                    return;
+                }
+
+                const t = term.toLowerCase();
+
+                // Find matching authors
+                const authors = [...new Set(state.chessData.map(i => i.author))]
+                    .filter(a => a.toLowerCase().includes(t))
+                    .slice(0, 4);
+
+                // Find matching titles
+                const titles = [...new Set(state.chessData.map(i => i.title))]
+                    .filter(title => title.toLowerCase().includes(t))
+                    .slice(0, 4);
+
+                // Find matching categories
+                const categories = [...new Set(state.chessData.map(i => i.category))]
+                    .filter(c => c && c !== 'General' && c.toLowerCase().includes(t))
+                    .slice(0, 4);
+
+                // Find matching keywords
+                const keywords = [];
+                state.chessData.forEach(i => {
+                    const kws = getKeywordList(i.keyword);
+                    kws.forEach(kw => {
+                        if (kw.toLowerCase().includes(t) && !keywords.includes(kw)) {
+                            keywords.push(kw);
+                        }
+                    });
+                });
+
+                const allSuggestions = [
+                    ...authors.map(a => ({ text: a, kind: 'Author' })),
+                    ...titles.map(title => ({ text: title, kind: 'Title' })),
+                    ...categories.map(c => ({ text: c, kind: 'Category' })),
+                    ...keywords.slice(0, 3).map(kw => ({ text: kw, kind: 'Keyword' })),
+                ].slice(0, 8);
+
+                if (!allSuggestions.length) {
+                    box.classList.add('hidden');
+                    box.innerHTML = '';
+                    return;
+                }
+
+                const rows = allSuggestions.map(s => `
+                    <div class="suggestion-row" onclick="app.selectSuggestion('${s.text.replace(/'/g, "\\'")}', '${s.kind}')">
+                        <span>${escapeHTML(s.text)}</span>
+                        <span class="suggestion-kind">${s.kind}</span>
+                    </div>
+                `);
+
+                box.innerHTML = rows.join('');
+                box.classList.remove('hidden');
+            },
+
+            selectSuggestion(text, kind) {
+                document.getElementById('searchSuggestions').classList.add('hidden');
+                if (kind === 'Author') {
+                    this.filterByAuthor(text);
+                } else if (kind === 'Category') {
+                    document.getElementById('searchInput').value = '';
+                    this.setFilter(text);
+                } else {
+                    document.getElementById('searchInput').value = text;
+                    this.renderArchive();
+                }
+            },
+
+            hideSearchSuggestions() {
+                const box = document.getElementById('searchSuggestions');
+                box.classList.add('hidden');
+                box.innerHTML = '';
+            },
+
+            // --- Sorting ---
+            getSortedStudies(data) {
+                const sortValue = document.getElementById('sortSelect')?.value || 'newest';
+                const arr = [...data];
+
+                switch (sortValue) {
+                    case 'oldest': return arr.reverse();
+                    case 'title-az': return arr.sort((a, b) => a.title.localeCompare(b.title));
+                    case 'title-za': return arr.sort((a, b) => b.title.localeCompare(a.title));
+                    case 'author-az': return arr.sort((a, b) => a.author.localeCompare(b.author));
+                    case 'author-za': return arr.sort((a, b) => b.author.localeCompare(a.author));
+                    case 'newest':
+                    default: return arr;
+                }
+            },
+
+            // --- Author Profile ---
+            renderAuthorProfile(authorName, studies) {
+                const section = document.getElementById('authorProfileSection');
+                const content = document.getElementById('authorProfileContent');
+                const title = document.getElementById('authorProfileName');
+                const badge = document.getElementById('authorProfileBadge');
+                const subtitle = document.getElementById('authorProfileSubtitle');
+                const footer = document.getElementById('authorProfileFooter');
+
+                const profile = state.authorData.find(a => normalizeAuthorName(a.author) === normalizeAuthorName(authorName));
+
+                const studyCount = studies.length;
+                const studyWord = studyCount === 1 ? 'study' : 'studies';
+
+                const bio = profile?.bio?.trim() || 'No author profile has been added yet.';
+                const country = profile?.country?.trim() || '';
+                const style = profile?.style?.trim() || '';
+                const linksRaw = profile?.links?.trim() || '';
+                const links = splitLinks(linksRaw);
+                const flag = getCountryFlag(country);
+
+                title.textContent = authorName;
+                subtitle.textContent = `${studyCount} ${studyWord} in the library`;
+
+                if (country) {
+                    badge.classList.remove('hidden');
+                    badge.innerHTML = `<span class="flag">${flag}</span><span>${escapeHTML(country)}</span>`;
+                } else {
+                    badge.classList.add('hidden');
+                    badge.innerHTML = '';
+                }
+
+                const svgIcon = (path) => `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        ${path}
+                    </svg>
+                `;
+
+                const cards = [];
+
+                cards.push(`
+                    <div class="author-profile-card author-bio-card">
+                        <div class="author-card-label"><span class="dot"></span> Bio</div>
+                        <div class="author-card-text">${escapeHTML(bio).replace(/\n/g, '<br>')}</div>
+                    </div>
+                `);
+
+                if (country) {
+                    cards.push(`
+                        <div class="author-profile-card">
+                            <div class="author-card-label"><span class="dot"></span> Country</div>
+                            <div class="author-country-row">
+                                <div class="author-country-flag" aria-hidden="true">${flag}</div>
+                                <div class="author-country-text">
+                                    <div class="author-country-name">${escapeHTML(country)}</div>
+                                    <div class="author-country-sub">Region / nationality</div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                if (style) {
+                    cards.push(`
+                        <div class="author-profile-card">
+                            <div class="author-card-label"><span class="dot"></span> Style</div>
+                            <div class="author-card-text">${escapeHTML(style).replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `);
+                }
+
+                if (links.length) {
+                    cards.push(`
+                        <div class="author-profile-card author-bio-card">
+                            <div class="author-card-label"><span class="dot"></span> Links</div>
+                            <div class="author-links-list">
+                                ${links.map(link => {
+                                    const href = normalizeHref(link);
+                                    return `<a href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer" class="author-link-chip">${svgIcon('<path d="M10 13a5 5 0 0 1 0-7.07l1.5-1.5a5 5 0 0 1 7.07 7.07l-1 1" /><path d="M14 11a5 5 0 0 1 0 7.07l-1.5 1.5a5 5 0 0 1-7.07-7.07l1-1" />')}<span>${escapeHTML(link)}</span></a>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `);
+                } else if (linksRaw) {
+                    cards.push(`
+                        <div class="author-profile-card author-bio-card">
+                            <div class="author-card-label"><span class="dot"></span> Links</div>
+                            <div class="author-card-text"><a href="${escapeHTML(normalizeHref(linksRaw))}" target="_blank" rel="noopener noreferrer" class="author-link">${escapeHTML(linksRaw)}</a></div>
+                        </div>
+                    `);
+                }
+
+                content.innerHTML = cards.join('');
+                footer.textContent = country ? `${flag} ${country}` : '';
+
+                section.classList.remove('hidden');
+            },
+
+            // --- Pagination ---
+            renderPagination(totalPages) {
+                const container = document.getElementById('paginationContainer');
+                if (!container) return;
+
+                if (totalPages <= 1) {
+                    container.innerHTML = '';
+                    return;
+                }
+
+                const pages = [];
+                const windowSize = 7;
+                let start = Math.max(1, state.currentPage - Math.floor(windowSize / 2));
+                let end = Math.min(totalPages, start + windowSize - 1);
+                start = Math.max(1, end - windowSize + 1);
+
+                pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.max(1, state.currentPage - 1)}" ${state.currentPage === 1 ? 'disabled' : ''}>← Prev</button>`);
+
+                if (start > 1) {
+                    pages.push(`<button class="filter-chip brand-font page-chip" data-page="1">1</button>`);
+                    if (start > 2) {
+                        pages.push(`<span class="filter-chip brand-font page-chip cursor-default">…</span>`);
+                    }
+                }
+
+                for (let p = start; p <= end; p++) {
+                    pages.push(`<button class="filter-chip brand-font page-chip ${p === state.currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`);
+                }
+
+                if (end < totalPages) {
+                    if (end < totalPages - 1) {
+                        pages.push(`<span class="filter-chip brand-font page-chip cursor-default">…</span>`);
+                    }
+                    pages.push(`<button class="filter-chip brand-font page-chip" data-page="${totalPages}">${totalPages}</button>`);
+                }
+
+                pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.min(totalPages, state.currentPage + 1)}" ${state.currentPage === totalPages ? 'disabled' : ''}>Next →</button>`);
+
+                container.innerHTML = pages.join('');
+                container.querySelectorAll('button[data-page]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const page = parseInt(btn.getAttribute('data-page'), 10);
+                        if (!Number.isFinite(page) || page < 1 || page > totalPages) return;
+                        state.currentPage = page;
+                        this.renderArchive();
+                        const anchor = document.getElementById('archiveHeader');
+                        if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                });
+            },
+
+            // --- Main Render ---
+            renderArchive() {
+                const term = document.getElementById('searchInput').value.trim().toLowerCase();
+
+                let filtered = state.chessData.filter(i => {
+                    const matchesText = matchesSearch(i, term) || term.length === 0;
+                    const matchesCategory = (state.currentFilter === 'All' || (state.currentFilter === 'Staff Picks' ? isStaffPickStudy(i) : i.category === state.currentFilter));
+                    const matchesSide = (state.currentSideFilter === 'Any Side' || i.side === state.currentSideFilter);
+                    const matchesAuthor = (!state.currentAuthor || normalizeAuthorName(i.author) === normalizeAuthorName(state.currentAuthor));
+                    const matchesFavorite = (!state.showFavoritesOnly || isFavorite(i.link));
+                    return matchesText && matchesCategory && matchesSide && matchesAuthor && matchesFavorite;
+                });
+
+                filtered = this.getSortedStudies(filtered);
+
+                const totalPages = Math.max(1, Math.ceil(filtered.length / CONFIG.ITEMS_PER_PAGE));
+                if (state.currentPage > totalPages) state.currentPage = totalPages;
+                if (state.currentPage < 1) state.currentPage = 1;
+
+                const startIndex = (state.currentPage - 1) * CONFIG.ITEMS_PER_PAGE;
+                const pageItems = filtered.slice(startIndex, startIndex + CONFIG.ITEMS_PER_PAGE);
+
+                const isSearchingOrFiltering = term.length > 0 || state.currentFilter !== 'All' || state.currentSideFilter !== 'Any Side' || state.currentAuthor || state.showFavoritesOnly;
+                const latestSec = document.getElementById('latestSection');
+                const recentSec = document.getElementById('recentlyViewedSection');
+                const featuredSec = document.getElementById('featuredSection');
+                const authorSec = document.getElementById('authorProfileSection');
+                const archiveHeader = document.getElementById('archiveHeader');
+
+                const featured = this.getFeaturedStudy();
+                const featuredMatchesSearch = !!featured && matchesSearch(featured, term);
+
+                if (isSearchingOrFiltering) {
+                    latestSec.style.display = 'none';
+                    recentSec.classList.add('hidden');
+                } else {
+                    latestSec.style.display = 'block';
+                    const recentViews = getRecentViews();
+                    recentSec.classList.toggle('hidden', recentViews.length === 0);
+                }
+
+                if (term.length > 0 && featuredMatchesSearch) {
+                    featuredSec.style.display = 'none';
+                } else if (isSearchingOrFiltering) {
+                    featuredSec.style.display = 'none';
+                } else {
+                    featuredSec.style.display = 'block';
+                }
+
+                if (state.currentAuthor) {
+                    this.renderAuthorProfile(state.currentAuthor, filtered);
+                    archiveHeader.textContent = `${state.currentAuthor}'s Studies`;
+                    authorSec.classList.remove('hidden');
+                } else {
+                    authorSec.classList.add('hidden');
+                    archiveHeader.textContent = totalPages > 1 ? `Full Archive — Page ${state.currentPage} of ${totalPages}` : 'Full Archive';
+                }
+
+                const counter = document.getElementById('liveCounter');
+                counter.innerText = isSearchingOrFiltering
+                    ? `FOUND ${filtered.length} MATCHING STUDIES • PAGE ${state.currentPage}/${totalPages}`
+                    : `LIBRARY TOTAL: ${state.chessData.length}`;
+
+                this.syncUrlParams(term);
+                
+                const grid = document.getElementById('resultsGrid');
+                const noRes = document.getElementById('noResults');
+
+                if (filtered.length === 0) {
+                    grid.style.display = 'none';
+                    noRes.innerHTML = `
+                        <p class="text-lg">No studies match your current search.</p>
+                        <button onclick="app.resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
+                    `;
+                    noRes.style.display = 'block';
+                    document.getElementById('paginationContainer').innerHTML = '';
+                    archiveHeader.style.display = 'none';
+                } else {
+                    grid.style.display = 'grid';
+                    noRes.style.display = 'none';
+                    archiveHeader.style.display = 'block';
+                    grid.innerHTML = pageItems.map(i => this.cardHtml(i)).join('');
+                    grid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
+                    this.renderPagination(totalPages);
+                }
+            },
+
+            // --- URL Handling ---
+            readUrlParams() {
+                const params = new URLSearchParams(window.location.search);
+                const q = params.get('q');
+                const category = params.get('category');
+                const side = params.get('side');
+                const author = params.get('author');
+
+                if (q) document.getElementById('searchInput').value = q;
+                if (category) state.currentFilter = category;
+                if (side) state.currentSideFilter = side;
+                if (author) state.currentAuthor = author;
+            },
+
+            syncUrlParams(term) {
+                const params = new URLSearchParams();
+                if (term) params.set('q', term);
+                if (state.currentFilter !== 'All') params.set('category', state.currentFilter);
+                if (state.currentSideFilter !== 'Any Side') params.set('side', state.currentSideFilter);
+                if (state.currentAuthor) params.set('author', state.currentAuthor);
+                const query = params.toString();
+                const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+                window.history.replaceState({}, '', newUrl);
+            },
+
+            // --- Event Listeners ---
+            setupEventListeners() {
+                // Search input
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', (e) => {
+                    this.updateSearchSuggestions(e.target.value.trim());
+                    clearTimeout(state.searchTimer);
+                    state.searchTimer = setTimeout(() => {
+                        state.currentAuthor = null;
+                        state.currentPage = 1;
+                        this.renderArchive();
+                    }, 40);
+                });
+
+                // Click outside search suggestions
+                document.addEventListener('click', (e) => {
+                    const box = document.getElementById('searchSuggestions');
+                    const input = document.getElementById('searchInput');
+                    if (!box.contains(e.target) && e.target !== input) {
+                        this.hideSearchSuggestions();
+                    }
+                });
+
+                // Sort select
+                document.getElementById('sortSelect').addEventListener('change', () => {
+                    state.currentPage = 1;
+                    this.renderArchive();
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        const about = document.getElementById('aboutPage');
+                        const submit = document.getElementById('submitPage');
+                        if (!about.classList.contains('hidden')) this.toggleModal('aboutPage');
+                        if (!submit.classList.contains('hidden')) this.toggleModal('submitPage');
+                        this.hideSearchSuggestions();
+                        return;
+                    }
+
+                    if (e.key === '/' && document.activeElement.id !== 'searchInput') {
+                        e.preventDefault();
+                        document.getElementById('searchInput').focus();
+                    }
+                });
+
+                // Scroll to top button
+                window.onscroll = function() {
+                    const btn = document.getElementById('toTopBtn');
+                    if (window.scrollY > 600) btn.classList.add('visible');
+                    else btn.classList.remove('visible');
+                };
+
+                // Resize for carousel
+                window.addEventListener('resize', () => {
+                    this.moveCarousel(0);
+                });
+
+                // Visibility change for carousel autoplay
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        clearInterval(state.carouselInterval);
+                    } else {
+                        this.startCarouselAutoplay();
+                    }
+                });
+
+                // Record view for all study links (delegated)
+                document.addEventListener('click', (e) => {
+                    const link = e.target.closest('a[href]');
+                    if (link && link.getAttribute('target') === '_blank' && state.chessData.some(s => s.link === link.href)) {
+                        recordView(link.href);
+                    }
+                });
+            },
+
+            // --- Record View (exposed for onclick) ---
+            recordView(link) {
+                recordView(link);
+            },
         };
 
-        function createFilters() {
-            const cats = ['All', 'Staff Picks', ...new Set(window.chessData.map(i => i.category))].filter(c => c !== 'General');
-            document.getElementById('filterContainer').innerHTML = cats.map(c => `<div onclick="setFilter('${c.replace(/'/g, "\\'")}')" class="filter-chip brand-font ${currentFilter === c ? 'active' : ''}">${c}</div>`).join('');
-        }
-
-        function createSideFilters() {
-            const sides = ['Any Side', 'White', 'Black', 'Universal'];
-            document.getElementById('sideFilterContainer').innerHTML = sides.map(s => `<div onclick="setSideFilter('${s}')" class="filter-chip brand-font ${currentSideFilter === s ? 'active' : ''}">${s}</div>`).join('');
-        }
-
-        window.setFilter = (cat) => { 
-            currentFilter = cat; 
-            currentPage = 1;
-            createFilters(); 
-            renderArchive(); 
-        };
-
-        window.setSideFilter = (side) => { 
-            currentSideFilter = side; 
-            currentPage = 1;
-            createSideFilters(); 
-            renderArchive(); 
-        };
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            updateSearchSuggestions(e.target.value.trim());
-            clearTimeout(searchTimer);
-            searchTimer = setTimeout(() => {
-                currentAuthor = null;
-                currentPage = 1;
-                renderArchive();
-            }, 40);
-        });
-
-        document.addEventListener('click', (e) => {
-            const box = document.getElementById('searchSuggestions');
-            const input = document.getElementById('searchInput');
-            if (!box.contains(e.target) && e.target !== input) {
-                hideSearchSuggestions();
-            }
-        });
-
-        document.getElementById('sortSelect').addEventListener('change', () => {
-            currentPage = 1;
-            renderArchive();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                const about = document.getElementById('aboutPage');
-                const submit = document.getElementById('submitPage');
-                if (!about.classList.contains('hidden')) toggleAbout();
-                if (!submit.classList.contains('hidden')) toggleSubmit();
-                hideSearchSuggestions();
-                return;
-            }
-
-            if (e.key === '/' && document.activeElement.id !== 'searchInput') {
-                e.preventDefault();
-                document.getElementById('searchInput').focus();
-            }
-        });
-
-        window.addEventListener('resize', () => {
-            moveCarousel(0);
-        });
-
-        applyStoredTheme();
-        loadData();
+        // ============================================================
+        // INITIALIZE
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => app.init());
     </script>
 </body>
 </html>
