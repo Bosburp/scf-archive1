@@ -768,42 +768,6 @@
             word-break: break-word;
         }
 
-        .study-embed-wrap {
-            position: relative;
-            width: 100%;
-            max-width: 720px;
-            margin: 0 auto;
-            padding-top: 62%;
-            background: #0c0c0c;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .study-embed-wrap iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        .study-embed-message {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 2rem;
-            color: #71717a;
-            font-style: italic;
-            font-size: 13px;
-        }
-
         .archive-pagination {
             display: flex;
             flex-wrap: wrap;
@@ -1050,34 +1014,6 @@
             </section>
         </div>
 
-        <div id="studyDetailSection" class="hidden mb-20">
-            <section class="author-profile-shell">
-                <div class="author-profile-header">
-                    <div class="author-profile-header-inner">
-                        <button onclick="closeStudyDetail()" class="back-btn">← Back to Archive</button>
-                        <div class="author-profile-top-row">
-                            <h2 id="studyDetailTitle" class="author-profile-name" style="font-size: clamp(1.5rem, 4vw, 2.75rem);"></h2>
-                        </div>
-                        <p id="studyDetailAuthor" class="author-profile-subtitle gold-accent" style="cursor:pointer; width:fit-content;"></p>
-                        <div id="studyDetailTags" class="flex flex-wrap gap-2 mt-4"></div>
-                    </div>
-                </div>
-
-                <div class="author-profile-body">
-                    <div id="studyDetailEmbed" class="study-embed-wrap"></div>
-                    <p id="studyDetailNotes" class="text-zinc-400 italic text-sm leading-relaxed mt-6 max-w-2xl mx-auto text-center"></p>
-                    <div class="flex flex-wrap gap-3 justify-center mt-8">
-                        <a id="studyDetailOpenBtn" href="#" target="_blank" class="featured-btn bg-[#c5a059] text-[#0a0a0a] px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] hover:bg-transparent hover:text-[#c5a059] transition-all">Open on Lichess</a>
-                        <button id="studyDetailCopyBtn" class="featured-btn px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] text-[var(--heading)] hover:text-[#c5a059] transition-all">Copy Link</button>
-                        <button id="studyDetailFavBtn" class="fav-btn featured-btn px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] text-[var(--heading)] hover:text-[#c5a059] transition-all flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-                            <span>Favorite</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </div>
-
         <div id="recentlyViewedSection" class="mb-16 hidden">
             <div class="flex justify-between items-end mb-8 border-b border-zinc-900 pb-2">
                 <h3 class="text-zinc-600 brand-font font-bold uppercase tracking-[0.4em] text-[9px]">Continue Browsing</h3>
@@ -1125,7 +1061,6 @@
         let currentFilter = 'All',
             currentSideFilter = 'Any Side',
             currentAuthor = null,
-            currentStudyId = null,
             currentPage = 1,
             carouselPos = 0,
             carouselInterval,
@@ -1241,12 +1176,8 @@
             const randomStudy = pool[Math.floor(Math.random() * pool.length)];
             shown.add(randomStudy.link);
             saveSurprisedLinks(shown);
-            currentFilter = 'All';
-            currentSideFilter = 'Any Side';
-            currentAuthor = null;
-            showFavoritesOnly = false;
-            document.getElementById('searchInput').value = '';
-            openStudyDetail(randomStudy.link);
+            recordView(randomStudy.link);
+            window.open(randomStudy.link, '_blank');
         }
 
         function copyLink(url) {
@@ -1593,134 +1524,6 @@
             if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        function parseLichessStudyUrl(link) {
-            try {
-                const u = new URL(link);
-                const host = u.hostname.replace(/^www\./i, '');
-                if (!/lichess\.org$/i.test(host)) return null;
-                const parts = u.pathname.split('/').filter(Boolean);
-                if (parts[0] !== 'study' || !parts[1]) return null;
-                return { studyId: parts[1], chapterId: parts[2] || '' };
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function getStudyIdentifier(link) {
-            const parsed = parseLichessStudyUrl(link);
-            if (!parsed) return null;
-            return parsed.chapterId ? `${parsed.studyId}-${parsed.chapterId}` : parsed.studyId;
-        }
-
-        function findStudyByIdentifier(id) {
-            if (!window.chessData) return null;
-            return window.chessData.find(s => getStudyIdentifier(s.link) === id) || null;
-        }
-
-        async function resolveFirstChapterId(studyId) {
-            const cacheKey = `scf-chapter-${studyId}`;
-            try {
-                const cached = sessionStorage.getItem(cacheKey);
-                if (cached) return cached === 'null' ? null : cached;
-            } catch (e) {}
-
-            try {
-                const res = await fetch(`https://lichess.org/api/study/${studyId}.pgn?source=true`);
-                if (!res.ok) throw new Error('bad response');
-                const text = await res.text();
-                const match = text.match(/\[Site\s+"https:\/\/lichess\.org\/study\/[\w]+\/([\w]+)"\]/);
-                const chapterId = match ? match[1] : null;
-                try { sessionStorage.setItem(cacheKey, chapterId || 'null'); } catch (e) {}
-                return chapterId;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        async function getEmbedUrl(link) {
-            const parsed = parseLichessStudyUrl(link);
-            if (!parsed) return null;
-
-            if (parsed.chapterId) {
-                return `https://lichess.org/study/embed/${parsed.studyId}/${parsed.chapterId}`;
-            }
-
-            const chapterId = await resolveFirstChapterId(parsed.studyId);
-            if (!chapterId) return null;
-            return `https://lichess.org/study/embed/${parsed.studyId}/${chapterId}`;
-        }
-
-        function handleStudyLinkClick(e, link) {
-            if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) {
-                recordView(link);
-                return true;
-            }
-            e.preventDefault();
-            openStudyDetail(link);
-            return false;
-        }
-
-        function openStudyDetail(link) {
-            const id = getStudyIdentifier(link);
-            if (!id) {
-                recordView(link);
-                window.open(link, '_blank');
-                return;
-            }
-            currentStudyId = id;
-            recordView(link);
-            renderArchive();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function closeStudyDetail() {
-            currentStudyId = null;
-            renderArchive();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        async function renderStudyDetailContent(study) {
-            document.getElementById('studyDetailTitle').textContent = study.title;
-
-            const authorEl = document.getElementById('studyDetailAuthor');
-            authorEl.textContent = `By ${study.author}`;
-            authorEl.onclick = () => { currentStudyId = null; filterByAuthor(study.author); };
-
-            const tagsWrap = document.getElementById('studyDetailTags');
-            tagsWrap.innerHTML = `
-                <div class="forest-tag brand-font">${escapeHTML(study.side)}</div>
-                ${study.difficulty ? `<div class="skill-tag brand-font">${escapeHTML(study.difficulty)}</div>` : ''}
-                <div class="skill-tag brand-font" style="border-color: var(--border); color: var(--text);">${escapeHTML(study.category)}</div>
-            `;
-
-            const notesText = study.featuredDescription || study.viewerNote || study.notes.replace(/STAR/gi, '').trim();
-            document.getElementById('studyDetailNotes').textContent = notesText || '';
-
-            const openBtn = document.getElementById('studyDetailOpenBtn');
-            openBtn.href = study.link;
-            openBtn.onclick = () => recordView(study.link);
-
-            document.getElementById('studyDetailCopyBtn').onclick = () => copyLink(study.link);
-
-            const favBtn = document.getElementById('studyDetailFavBtn');
-            favBtn.classList.toggle('active', isFavorite(study.link));
-            favBtn.onclick = () => toggleFavorite(study.link, favBtn);
-
-            const embedWrap = document.getElementById('studyDetailEmbed');
-            const thisStudyId = getStudyIdentifier(study.link);
-            embedWrap.innerHTML = `<div class="study-embed-message">Loading board…</div>`;
-
-            const embedUrl = await getEmbedUrl(study.link);
-
-            if (currentStudyId !== thisStudyId) return;
-
-            if (embedUrl) {
-                embedWrap.innerHTML = `<iframe src="${embedUrl}" allowfullscreen loading="lazy" title="${escapeHTML(study.title)}"></iframe>`;
-            } else {
-                embedWrap.innerHTML = `<div class="study-embed-message">This study can't be embedded directly — open it on Lichess to view.</div>`;
-            }
-        }
-
         function getFeaturedStudy() {
             if (!window.chessData || window.chessData.length === 0) return null;
 
@@ -1755,7 +1558,7 @@
             container.innerHTML = `
                 <div class="featured-shell rounded-sm">
                     <div class="grid lg:grid-cols-[1.05fr_0.95fr] min-h-[320px] lg:min-h-[420px]">
-                        <a href="${featured.link}" onclick="return handleStudyLinkClick(event, '${featured.link.replace(/'/g, "\\'")}')" class="featured-image block relative">
+                        <a href="${featured.link}" target="_blank" onclick="recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-image block relative">
                             <img src="${featured.image}" alt="${featured.title}" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
                             <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap items-center gap-2 z-10 max-w-[calc(100%-2rem)]">
                                 <div class="featured-badge brand-font px-3 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] rounded-sm">Featured Study</div>
@@ -1851,7 +1654,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                 </button>
                 
-                <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="h-40 w-full relative block">
+                <a href="${i.link}" target="_blank" onclick="recordView('${i.link.replace(/'/g, "\\'")}')" class="h-40 w-full relative block">
                     <div class="card-image-wrap">
                         <img src="${i.image}" class="card-image" alt="${i.title}" loading="lazy" decoding="async" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
                         <div class="image-vignette"></div>
@@ -1873,7 +1676,7 @@
                         </button>
                     </div>
 
-                    <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
+                    <a href="${i.link}" target="_blank" onclick="recordView('${i.link.replace(/'/g, "\\'")}')" class="text-lg brand-font parchment-text mb-4 leading-snug hover:text-[#c5a059] transition-colors">${i.title}</a>
                     
                     <p onclick="filterByAuthor('${i.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-[13px] mb-6 cursor-pointer hover:underline w-fit">By ${i.author}</p>
                     
@@ -2120,29 +1923,6 @@
         }
 
         function renderArchive() {
-            const detailSec = document.getElementById('studyDetailSection');
-
-            if (currentStudyId) {
-                const study = findStudyByIdentifier(currentStudyId);
-                if (study) {
-                    renderStudyDetailContent(study);
-                    detailSec.classList.remove('hidden');
-                    document.getElementById('featuredSection').style.display = 'none';
-                    document.getElementById('latestSection').style.display = 'none';
-                    document.getElementById('recentlyViewedSection').classList.add('hidden');
-                    document.getElementById('authorProfileSection').classList.add('hidden');
-                    document.getElementById('resultsGrid').style.display = 'none';
-                    document.getElementById('noResults').style.display = 'none';
-                    document.getElementById('paginationContainer').innerHTML = '';
-                    document.getElementById('archiveHeader').style.display = 'none';
-                    document.getElementById('liveCounter').innerText = '';
-                    syncUrlParams(document.getElementById('searchInput').value.trim().toLowerCase());
-                    return;
-                }
-                currentStudyId = null;
-            }
-
-            detailSec.classList.add('hidden');
             document.getElementById('archiveHeader').style.display = '';
 
             const term = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -2247,26 +2027,20 @@
             const category = params.get('category');
             const side = params.get('side');
             const author = params.get('author');
-            const study = params.get('study');
 
             if (q) document.getElementById('searchInput').value = q;
             if (category) currentFilter = category;
             if (side) currentSideFilter = side;
             if (author) currentAuthor = author;
-            if (study) currentStudyId = study;
         }
 
         function syncUrlParams(term) {
             const params = new URLSearchParams();
 
-            if (currentStudyId) {
-                params.set('study', currentStudyId);
-            } else {
-                if (term) params.set('q', term);
-                if (currentFilter !== 'All') params.set('category', currentFilter);
-                if (currentSideFilter !== 'Any Side') params.set('side', currentSideFilter);
-                if (currentAuthor) params.set('author', currentAuthor);
-            }
+            if (term) params.set('q', term);
+            if (currentFilter !== 'All') params.set('category', currentFilter);
+            if (currentSideFilter !== 'Any Side') params.set('side', currentSideFilter);
+            if (currentAuthor) params.set('author', currentAuthor);
 
             const query = params.toString();
             const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
@@ -2359,7 +2133,6 @@
                 const submit = document.getElementById('submitPage');
                 if (!about.classList.contains('hidden')) toggleAbout();
                 if (!submit.classList.contains('hidden')) toggleSubmit();
-                if (currentStudyId) closeStudyDetail();
                 hideSearchSuggestions();
                 return;
             }
