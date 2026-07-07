@@ -768,6 +768,46 @@
             word-break: break-word;
         }
 
+        .study-embed-wrap {
+            position: relative;
+            width: 100%;
+            padding-top: 62%;
+            background: #0c0c0c;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .study-embed-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .study-embed-message {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            color: #71717a;
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        @media (max-width: 640px) {
+            .study-embed-wrap {
+                padding-top: 100%;
+            }
+        }
+
         .archive-pagination {
             display: flex;
             flex-wrap: wrap;
@@ -1028,7 +1068,7 @@
                 </div>
 
                 <div class="author-profile-body">
-                    <div id="studyDetailEmbed" style="width:100%; min-height: 420px; background:#0c0c0c; border-radius:2px; overflow:hidden;"></div>
+                    <div id="studyDetailEmbed" class="study-embed-wrap"></div>
                     <p id="studyDetailNotes" class="text-zinc-400 italic text-sm leading-relaxed mt-6 max-w-2xl mx-auto text-center"></p>
                     <div class="flex flex-wrap gap-3 justify-center mt-8">
                         <a id="studyDetailOpenBtn" href="#" target="_blank" class="featured-btn bg-[#c5a059] text-[#0a0a0a] px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] hover:bg-transparent hover:text-[#c5a059] transition-all">Open on Lichess</a>
@@ -1581,12 +1621,37 @@
             return window.chessData.find(s => getStudyIdentifier(s.link) === id) || null;
         }
 
-        function getEmbedUrl(link) {
+        async function resolveFirstChapterId(studyId) {
+            const cacheKey = `scf-chapter-${studyId}`;
+            try {
+                const cached = sessionStorage.getItem(cacheKey);
+                if (cached) return cached === 'null' ? null : cached;
+            } catch (e) {}
+
+            try {
+                const res = await fetch(`https://lichess.org/api/study/${studyId}.pgn?source=true`);
+                if (!res.ok) throw new Error('bad response');
+                const text = await res.text();
+                const match = text.match(/\[Site\s+"https:\/\/lichess\.org\/study\/[\w]+\/([\w]+)"\]/);
+                const chapterId = match ? match[1] : null;
+                try { sessionStorage.setItem(cacheKey, chapterId || 'null'); } catch (e) {}
+                return chapterId;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function getEmbedUrl(link) {
             const parsed = parseLichessStudyUrl(link);
             if (!parsed) return null;
-            return parsed.chapterId
-                ? `https://lichess.org/study/embed/${parsed.studyId}/${parsed.chapterId}`
-                : `https://lichess.org/study/embed/${parsed.studyId}`;
+
+            if (parsed.chapterId) {
+                return `https://lichess.org/study/embed/${parsed.studyId}/${parsed.chapterId}`;
+            }
+
+            const chapterId = await resolveFirstChapterId(parsed.studyId);
+            if (!chapterId) return null;
+            return `https://lichess.org/study/embed/${parsed.studyId}/${chapterId}`;
         }
 
         function handleStudyLinkClick(e, link) {
@@ -1618,7 +1683,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function renderStudyDetailContent(study) {
+        async function renderStudyDetailContent(study) {
             document.getElementById('studyDetailTitle').textContent = study.title;
 
             const authorEl = document.getElementById('studyDetailAuthor');
@@ -1632,14 +1697,6 @@
                 <div class="skill-tag brand-font" style="border-color: var(--border); color: var(--text);">${escapeHTML(study.category)}</div>
             `;
 
-            const embedUrl = getEmbedUrl(study.link);
-            const embedWrap = document.getElementById('studyDetailEmbed');
-            if (embedUrl) {
-                embedWrap.innerHTML = `<iframe src="${embedUrl}" style="width:100%; height:100%; min-height:420px; border:0; display:block;" allowfullscreen loading="lazy" title="${escapeHTML(study.title)}"></iframe>`;
-            } else {
-                embedWrap.innerHTML = `<div class="flex items-center justify-center h-full text-zinc-500 italic text-sm p-8 text-center" style="min-height:420px;">This study can't be embedded directly — open it on Lichess to view.</div>`;
-            }
-
             const notesText = study.featuredDescription || study.viewerNote || study.notes.replace(/STAR/gi, '').trim();
             document.getElementById('studyDetailNotes').textContent = notesText || '';
 
@@ -1652,6 +1709,20 @@
             const favBtn = document.getElementById('studyDetailFavBtn');
             favBtn.classList.toggle('active', isFavorite(study.link));
             favBtn.onclick = () => toggleFavorite(study.link, favBtn);
+
+            const embedWrap = document.getElementById('studyDetailEmbed');
+            const thisStudyId = getStudyIdentifier(study.link);
+            embedWrap.innerHTML = `<div class="study-embed-message">Loading board…</div>`;
+
+            const embedUrl = await getEmbedUrl(study.link);
+
+            if (currentStudyId !== thisStudyId) return;
+
+            if (embedUrl) {
+                embedWrap.innerHTML = `<iframe src="${embedUrl}" allowfullscreen loading="lazy" title="${escapeHTML(study.title)}"></iframe>`;
+            } else {
+                embedWrap.innerHTML = `<div class="study-embed-message">This study can't be embedded directly — open it on Lichess to view.</div>`;
+            }
         }
 
         function getFeaturedStudy() {
