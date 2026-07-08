@@ -22,11 +22,11 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "The Chess Study Library",
-      "url": "https://the-chess-study-library.vercel.app/",
+      "url": "https://studycreatorsandfriends.com",
       "description": "A curated archive of original, high-quality chess studies from Study Creators & Friends.",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "=https://the-chess-study-library.vercel.app/?q={search_term_string}",
+        "target": "https://studycreatorsandfriends.com/?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     }
@@ -977,6 +977,7 @@
             </div>
 
             <div id="filterContainer" class="flex flex-wrap justify-center gap-2 mb-4"></div>
+            <div id="subFilterContainer" class="flex-wrap justify-center gap-2 mb-4 pt-4 border-t border-zinc-900" style="display:none;"></div>
             <div id="sideFilterContainer" class="flex flex-wrap justify-center gap-2 pt-4 border-t border-zinc-900"></div>
             <div class="flex justify-center mt-4">
                 <div id="favoritesToggle" onclick="toggleFavoritesFilter()" class="filter-chip brand-font flex items-center gap-2">
@@ -1061,10 +1062,17 @@
         let currentFilter = 'All',
             currentSideFilter = 'Any Side',
             currentAuthor = null,
+            currentSubFilter = null,
             currentPage = 1,
             carouselPos = 0,
             carouselInterval,
             searchTimer;
+
+        function isOpeningCategory(category) {
+            if (!category) return false;
+            const c = category.trim().toLowerCase();
+            return /^1\.\S/.test(c) || c.endsWith('defense') || c.includes('opening');
+        }
 
         function updateSearchSuggestions(term) {
             const box = document.getElementById('searchSuggestions');
@@ -1930,9 +1938,16 @@
             let filtered = window.chessData.filter(i => {
                 const matchesText = matchesSearch(i, term) || term.length === 0;
 
-                const matchesCategory =
-                    (currentFilter === 'All' ||
-                    (currentFilter === 'Staff Picks' ? isStaffPickStudy(i) : i.category === currentFilter));
+                let matchesCategory;
+                if (currentFilter === 'All') {
+                    matchesCategory = true;
+                } else if (currentFilter === 'Staff Picks') {
+                    matchesCategory = isStaffPickStudy(i);
+                } else if (currentFilter === 'Openings') {
+                    matchesCategory = currentSubFilter ? i.category === currentSubFilter : isOpeningCategory(i.category);
+                } else {
+                    matchesCategory = i.category === currentFilter;
+                }
 
                 const matchesSide = (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
                 const matchesAuthor = (!currentAuthor || normalizeAuthorName(i.author) === normalizeAuthorName(currentAuthor));
@@ -2025,11 +2040,13 @@
             const params = new URLSearchParams(window.location.search);
             const q = params.get('q');
             const category = params.get('category');
+            const sub = params.get('sub');
             const side = params.get('side');
             const author = params.get('author');
 
             if (q) document.getElementById('searchInput').value = q;
             if (category) currentFilter = category;
+            if (sub) currentSubFilter = sub;
             if (side) currentSideFilter = side;
             if (author) currentAuthor = author;
         }
@@ -2039,6 +2056,7 @@
 
             if (term) params.set('q', term);
             if (currentFilter !== 'All') params.set('category', currentFilter);
+            if (currentFilter === 'Openings' && currentSubFilter) params.set('sub', currentSubFilter);
             if (currentSideFilter !== 'Any Side') params.set('side', currentSideFilter);
             if (currentAuthor) params.set('author', currentAuthor);
 
@@ -2067,6 +2085,7 @@
             currentFilter = 'All';
             currentSideFilter = 'Any Side';
             currentAuthor = null;
+            currentSubFilter = null;
             currentPage = 1;
             document.getElementById('sortSelect').value = 'newest';
             createFilters();
@@ -2081,8 +2100,41 @@
         };
 
         function createFilters() {
-            const cats = ['All', 'Staff Picks', ...new Set(window.chessData.map(i => i.category))].filter(c => c !== 'General');
-            document.getElementById('filterContainer').innerHTML = cats.map(c => `<div onclick="setFilter('${c.replace(/'/g, "\\'")}')" class="filter-chip brand-font ${currentFilter === c ? 'active' : ''}">${c}</div>`).join('');
+            const allCats = [...new Set(window.chessData.map(i => i.category))].filter(c => c && c !== 'General');
+            const openingCats = allCats.filter(isOpeningCategory);
+            const otherCats = allCats.filter(c => !isOpeningCategory(c));
+
+            const topLevel = ['All', 'Staff Picks'];
+            if (openingCats.length) topLevel.push('Openings');
+            topLevel.push(...otherCats);
+
+            document.getElementById('filterContainer').innerHTML = topLevel.map(c =>
+                `<div onclick="setFilter('${c.replace(/'/g, "\\'")}')" class="filter-chip brand-font ${currentFilter === c ? 'active' : ''}">${c}</div>`
+            ).join('');
+
+            renderSubFilters(openingCats);
+        }
+
+        function renderSubFilters(openingCats) {
+            const box = document.getElementById('subFilterContainer');
+
+            if (currentFilter !== 'Openings' || !openingCats.length) {
+                box.style.display = 'none';
+                box.innerHTML = '';
+                return;
+            }
+
+            const chips = ['All Openings', ...openingCats];
+            box.innerHTML = chips.map(c => {
+                const isAll = c === 'All Openings';
+                const active = isAll ? !currentSubFilter : currentSubFilter === c;
+                return `<div onclick="setSubFilter(${isAll ? 'null' : `'${c.replace(/'/g, "\\'")}'`})" class="filter-chip brand-font ${active ? 'active' : ''}">${c}</div>`;
+            }).join('');
+            box.style.display = 'flex';
+        }
+
+        function getOpeningCategories() {
+            return [...new Set(window.chessData.map(i => i.category))].filter(isOpeningCategory);
         }
 
         function createSideFilters() {
@@ -2092,9 +2144,17 @@
 
         window.setFilter = (cat) => { 
             currentFilter = cat; 
+            currentSubFilter = null;
             currentPage = 1;
             createFilters(); 
             renderArchive(); 
+        };
+
+        window.setSubFilter = (sub) => {
+            currentSubFilter = sub;
+            currentPage = 1;
+            renderSubFilters(getOpeningCategories());
+            renderArchive();
         };
 
         window.setSideFilter = (side) => { 
