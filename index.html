@@ -22,11 +22,11 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "The Chess Study Library",
-      "url": "https://studycreatorsandfriends.com",
+      "url": "https://the-chess-study-library.vercel.app/",
       "description": "A curated archive of original, high-quality chess studies from Study Creators & Friends.",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://studycreatorsandfriends.com/?q={search_term_string}",
+        "target": "https://the-chess-study-library.vercel.app/?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     }
@@ -1734,7 +1734,7 @@
                 || study.featuredDescription
                 || study.viewerNote
                 || study.notes.replace(/STAR/gi, '').trim()
-                || 'No description yet for this study — open it on Lichess to explore.';
+                || 'No description available yet. This study cannot be previewed here because the author has disabled sharing and exporting. Open it on Lichess to explore it.';
             document.getElementById('previewIntro').textContent = introText;
 
             const boardWrap = document.getElementById('previewBoardWrap');
