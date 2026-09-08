@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Chessendium mark">
-  <rect x="10" y="10" width="76" height="76" rx="8" fill="#161511"/>
-  <rect x="15" y="15" width="66" height="66" rx="5" fill="none" stroke="#5a503f" stroke-width="1.6"/>
-  <path fill="#24221d" stroke="#e9dfc8" stroke-width="2.1" stroke-linejoin="round" d="M22 31.5c7.8-2.9 16.5-.7 26 6.6 9.5-7.3 18.2-9.5 26-6.6v37.2c-9.4-2.6-18.1-.2-26 7.1-7.9-7.3-16.6-9.7-26-7.1V31.5z"/>
-  <path fill="#332d22" d="M29 38.5c5.5 0 10.8 2.2 16 6.5v19.8c-5.5-3.2-10.8-4.4-16-3.7V38.5zm38 0c-5.5 0-10.8 2.2-16 6.5v19.8c5.5-3.2 10.8-4.4 16-3.7V38.5z"/>
-  <path fill="#b79a55" d="M32 42h6v6h-6zm6 6h6v6h-6zm-6 6h6v6h-6zm32-12h-6v6h6zm-12 6h6v6h-6zm12 6h-6v6h6z"/>
-  <path fill="none" stroke="#e9dfc8" stroke-width="1.8" stroke-linecap="round" d="M48 38.5v36.2M29 38.7c5.4 0 10.7 2.1 16 6.3m22-6.3c-5.4 0-10.7 2.1-16 6.3"/>
-  <path fill="none" stroke="#b79a55" stroke-width="1.7" stroke-linecap="round" d="M25 25h46M25 73h46"/>
-  <path fill="#e9dfc8" d="M47.4 22.5h1.2l3 7.6h-2l-.5-1.5h-3l-.5 1.5h-2l3.8-7.6zm.3 2.3-1 2.3h1.8l-.8-2.3z"/>
+  <rect x="10" y="10" width="76" height="76" rx="7" fill="#F1E9D6"/>
+  <rect x="15" y="15" width="66" height="66" rx="4" fill="none" stroke="#C9B990" stroke-width="1.6"/>
+  <path fill="#E8DCBF" stroke="#2C2118" stroke-width="2.1" stroke-linejoin="round" d="M22 31.5c7.8-2.9 16.5-.7 26 6.6 9.5-7.3 18.2-9.5 26-6.6v37.2c-9.4-2.6-18.1-.2-26 7.1-7.9-7.3-16.6-9.7-26-7.1V31.5z"/>
+  <path fill="#F1E9D6" d="M29 38.5c5.5 0 10.8 2.2 16 6.5v19.8c-5.5-3.2-10.8-4.4-16-3.7V38.5zm38 0c-5.5 0-10.8 2.2-16 6.5v19.8c5.5-3.2 10.8-4.4 16-3.7V38.5z"/>
+  <path fill="#6B2B38" d="M32 42h6v6h-6zm6 6h6v6h-6zm-6 6h6v6h-6zm32-12h-6v6h6zm-12 6h6v6h-6zm12 6h-6v6h6z"/>
+  <path fill="none" stroke="#2C2118" stroke-width="1.8" stroke-linecap="round" d="M48 38.5v36.2M29 38.7c5.4 0 10.7 2.1 16 6.3m22-6.3c-5.4 0-10.7 2.1-16 6.3"/>
+  <path fill="none" stroke="#8C7A63" stroke-width="1.7" stroke-linecap="round" d="M25 25h46M25 73h46"/>
+  <path fill="#2C2118" d="M47.4 22.5h1.2l3 7.6h-2l-.5-1.5h-3l-.5 1.5h-2l3.8-7.6zm.3 2.3-1 2.3h1.8l-.8-2.3z"/>
 </svg>
