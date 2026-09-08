@@ -254,9 +254,25 @@
         <div id="paginationContainer" class="archive-pagination"></div>
 
         <footer class="site-footer">
-            <p class="text-zinc-500 italic text-sm">A curated compendium of original chess studies.</p>
-            <p class="gold-accent brand-font uppercase tracking-[0.25em] text-[9px] mt-3">Hosted by Study Creators &amp; Friends</p>
-            <p class="text-zinc-600 text-[10px] uppercase tracking-[0.2em] mt-4"></p>
+            <div class="footer-brand">
+                <img src="assets/brand/csl-mark.svg" alt="" class="footer-mark" aria-hidden="true">
+                <div>
+                    <p class="footer-title brand-font">Chessendium</p>
+                    <p class="footer-description">A curated chess-study compendium for players who like their opening notes, tactics, endgames, and model games in one calm place.</p>
+                </div>
+            </div>
+            <nav class="footer-nav brand-font" aria-label="Footer navigation">
+                <a href="#libraryControls">Library</a>
+                <button type="button" onclick="jumpToNewStudies()">Latest Studies</button>
+                <button type="button" onclick="toggleSubmit()">Submit Study</button>
+                <button type="button" onclick="toggleAbout()">About</button>
+                <a href="https://lichess.org/team/study-creators--friends" target="_blank" rel="noopener">Lichess Team</a>
+                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" rel="noopener">Discord</a>
+            </nav>
+            <div class="footer-meta">
+                <p>Chessendium links to original studies on Lichess and preserves creator attribution.</p>
+                <p>&copy; 2026 Chessendium. All study content remains with its respective creators.</p>
+            </div>
         </footer>
     </div>
 
