@@ -95,6 +95,7 @@ body::after {
 .site-layer {
     position: relative;
     z-index: 2;
+    min-height: 100vh;
 }
 
 .site-layer::before,
@@ -244,11 +245,30 @@ body.light-mode .site-header {
 }
 
 .filter-panel {
-    border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
     border-radius: var(--radius);
-    background: var(--accent-quiet);
+    background: rgba(255,253,248,0.94);
     padding: clamp(1rem, 3vw, 1.4rem);
-    box-shadow: var(--shadow-card);
+    box-shadow: 0 18px 42px -32px rgba(77,104,22,0.38);
+}
+
+.filter-panel::before {
+    content: "";
+    position: absolute;
+    inset: auto -40px -92px auto;
+    width: 360px;
+    height: 230px;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='360' height='230' viewBox='0 0 360 230' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M24 207C117 122 221 68 339 45' stroke='%234d6816' stroke-width='7' opacity='.1'/%3E%3Cpath d='M92 147c-42-12-70-40-84-84 45 3 73 31 84 84zM185 93c43-30 89-40 139-30-31 37-77 47-139 30zM232 72c-14-45-7-84 21-117 25 39 18 78-21 117z' stroke='%234d6816' stroke-width='3.6' opacity='.12'/%3E%3Cpath d='M92 147C66 115 38 87 8 63M185 93c51-6 97-16 139-30M232 72c2-45 9-84 21-117' stroke='%23a9c77c' stroke-width='2' opacity='.36'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.filter-panel > * {
+    position: relative;
+    z-index: 1;
 }
 
 .filter-row {
@@ -324,7 +344,7 @@ body.light-mode .site-header {
     border: 1px solid color-mix(in srgb, var(--accent) 36%, var(--border));
     border-radius: 999px;
     padding: 0.45rem 0.65rem;
-    background: color-mix(in srgb, var(--accent-soft) 78%, var(--card));
+    background: color-mix(in srgb, var(--accent-soft) 48%, var(--card));
     color: var(--heading);
     font-size: 10px;
     text-transform: uppercase;
@@ -332,7 +352,7 @@ body.light-mode .site-header {
 }
 
 .active-filter-chip button {
-    color: var(--gold);
+    color: var(--accent);
     font-size: 13px;
     line-height: 1;
 }
