@@ -1250,7 +1250,7 @@
 
     <div id="aboutPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center site-layer">
-            <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">â† Close</button>
+            <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">&larr; Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
               <p>We're a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
@@ -1262,7 +1262,7 @@
 
     <div id="submitPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center site-layer">
-            <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">â† Close</button>
+            <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">&larr; Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
             <div class="space-y-8 text-zinc-400 italic text-md leading-relaxed text-center max-w-2xl mx-auto">
                 <p>We are always looking for high-quality, educational chess studies to add to our archive.</p>
@@ -1326,6 +1326,13 @@
                         <select id="openingSelect" class="library-select brand-font"></select>
                     </label>
                     <label class="library-filter-field">
+                        <span class="filter-label">Staff Pick</span>
+                        <select id="staffSelect" class="library-select brand-font">
+                            <option value="Any">Any</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </label>
+                    <label class="library-filter-field">
                         <span class="filter-label">Side</span>
                         <select id="sideSelect" class="library-select brand-font"></select>
                     </label>
@@ -1372,7 +1379,7 @@
         <div id="newSinceVisitBanner" class="hidden max-w-2xl mx-auto -mt-10 mb-12 text-center">
             <button onclick="jumpToNewStudies()" class="inline-flex items-center gap-3 border border-[var(--gold)]/30 rounded-full px-5 py-2.5 text-[11px] brand-font uppercase tracking-widest gold-accent hover:border-[var(--gold)] transition-all bg-transparent">
                 <span id="newSinceVisitText"></span>
-                <span>â†’</span>
+                <span>&rarr;</span>
             </button>
         </div>
 
@@ -1380,7 +1387,7 @@
             <section class="author-profile-shell">
                 <div class="author-profile-header">
                     <div class="author-profile-header-inner">
-                        <button onclick="backToArchive()" class="back-btn">â† Back to Library</button>
+                        <button onclick="backToArchive()" class="back-btn">&larr; Back to Library</button>
                         <div class="author-profile-top-row">
                             <h2 id="authorProfileName" class="author-profile-name"></h2>
                             <div id="authorProfileBadge" class="author-profile-badge hidden"></div>
@@ -1415,8 +1422,8 @@
             <div class="section-heading">
                 <h3 class="section-kicker">Latest Additions</h3>
                 <div class="flex gap-4">
-                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">â†</button>
-                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">â†’</button>
+                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">&larr;</button>
+                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">&rarr;</button>
                 </div>
             </div>
             <div class="carousel-viewport">
@@ -1448,6 +1455,7 @@
         let currentFilter = 'All',
             currentOpeningFilter = 'All Openings',
             currentSideFilter = 'Any Side',
+            currentStaffPickFilter = 'Any',
             currentAuthor = null,
             currentAuthorFilter = 'All Authors',
             currentThemeFilter = 'All Themes',
@@ -1462,65 +1470,65 @@
             if (!category) return false;
             const c = category.trim().toLowerCase();
             return /^1\.\S/.test(c) || c.endsWith('defense') || c.includes('opening');
-        }        const OPENING_TAXONOMY = [
-            { categoryGroup: 'Sicilian Defense', opening: 'Accelerated Dragon', pattern: /\baccelerated dragon\b|\bhyper[-\s]?accelerated dragon\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Dragon', pattern: /\bdragon\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Najdorf', pattern: /\bnajdorf\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'O\'Kelly', pattern: /\bo['’]?kelly\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Alapin', pattern: /\balapin\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Smith-Morra', pattern: /\bsmith[-\s]?morra\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Kan', pattern: /\bkan\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Taimanov', pattern: /\btaimanov\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Sveshnikov', pattern: /\bsveshnikov\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Scheveningen', pattern: /\bscheveningen\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Kalashnikov', pattern: /\bkalashnikov\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: 'Maroczy Bind', pattern: /\bmaroczy\b/i },
-            { categoryGroup: 'Sicilian Defense', opening: '', pattern: /\bsicilian\b/i },
-            { categoryGroup: 'King\'s Pawn Opening', opening: 'Italian Game', pattern: /\bitalian\b|\bgiuoco piano\b|\btwo knights\b|\bfried liver\b|\bevans gambit\b|\bdubov italian\b|\brousseau gambit\b|\brosentreter\b/i },
-            { categoryGroup: 'King\'s Pawn Opening', opening: 'Scotch Game', pattern: /\bscotch\b|\bhaggis[-\s]?grodzize\b/i },
-            { categoryGroup: 'King\'s Pawn Opening', opening: 'Ruy Lopez', pattern: /\bruy lopez\b|\bspanish (game|opening)\b/i },
-            { categoryGroup: 'King\'s Pawn Opening', opening: 'King\'s Gambit', pattern: /\bking['’]?s gambit\b/i },
-            { categoryGroup: 'King\'s Pawn Opening', opening: 'Vienna Game', pattern: /\bvienna (game|gambit)\b/i },
-            { categoryGroup: 'King\'s Pawn Opening', opening: 'Bishop\'s Opening', pattern: /\bbishop['’]?s opening\b/i },
-            { categoryGroup: 'King\'s Pawn Opening', opening: 'Philidor Defense', pattern: /\bphilidor\b/i },
-            { categoryGroup: 'King\'s Pawn Opening', opening: 'Petrov Defense', pattern: /\bpetrov\b|\bpetroff\b/i },
-            { categoryGroup: 'Caro-Kann Defense', opening: 'Advance Variation', pattern: /\badvance caro[-\s]?kann\b|\bcaro[-\s]?kann advance\b/i },
-            { categoryGroup: 'Caro-Kann Defense', opening: 'Exchange Variation', pattern: /\bexchange caro[-\s]?kann\b|\bcaro[-\s]?kann exchange\b/i },
-            { categoryGroup: 'Caro-Kann Defense', opening: '', pattern: /\bcaro[-\s]?kann\b/i },
-            { categoryGroup: 'French Defense', opening: 'Advance Variation', pattern: /\badvance french\b|\bfrench advance\b/i },
-            { categoryGroup: 'French Defense', opening: 'Exchange Variation', pattern: /\bexchange french\b|\bfrench exchange\b/i },
-            { categoryGroup: 'French Defense', opening: 'Winawer Variation', pattern: /\bwinawer\b/i },
-            { categoryGroup: 'French Defense', opening: 'Tarrasch Variation', pattern: /\btarrasch french\b|\bfrench tarrasch\b/i },
-            { categoryGroup: 'French Defense', opening: '', pattern: /\bfrench (defen[cs]e|defence)\b|\bfrench\b/i },
-            { categoryGroup: 'Scandinavian Defense', opening: '', pattern: /\bscandinavian\b|\bcenter counter\b/i },
-            { categoryGroup: 'Alekhine Defense', opening: '', pattern: /\balekhine['’]?s? defense\b|\balekhine['’]?s? defence\b|\balekhine\b/i },
-            { categoryGroup: 'Pirc Defense', opening: '', pattern: /\bpirc\b/i },
-            { categoryGroup: 'Modern Defense', opening: '', pattern: /\bmodern defense\b|\bmodern defence\b/i },
-            { categoryGroup: 'Nimzowitsch Defense', opening: '', pattern: /\bnimzowitsch\b/i },
-            { categoryGroup: 'Owen Defense', opening: '', pattern: /\bowen['’]?s? defense\b|\bowen['’]?s? defence\b/i },
-            { categoryGroup: 'Queen\'s Gambit', opening: 'Accepted', pattern: /\bqueen['’]?s gambit accepted\b|\bqga\b/i },
-            { categoryGroup: 'Queen\'s Gambit', opening: 'Declined', pattern: /\bqueen['’]?s gambit declined\b|\bqgd\b/i },
-            { categoryGroup: 'Queen\'s Gambit', opening: 'Albin Countergambit', pattern: /\balbin countergambit\b/i },
-            { categoryGroup: 'Queen\'s Gambit', opening: '', pattern: /\bqueen['’]?s gambit\b/i },
-            { categoryGroup: 'Indian Defenses', opening: 'King\'s Indian Defense', pattern: /\bking['’]?s indian\b|\bkid\b|\bsamisch\b|\bsämisch\b|\bfianchetto\b|\bmakogonov\b/i },
-            { categoryGroup: 'Indian Defenses', opening: 'Nimzo-Indian Defense', pattern: /\bnimzo[-\s]?indian\b/i },
-            { categoryGroup: 'Indian Defenses', opening: 'Bogo-Indian Defense', pattern: /\bbogo[-\s]?indian\b/i },
-            { categoryGroup: 'Indian Defenses', opening: 'Trompowsky Attack', pattern: /\btrompowsky\b/i },
-            { categoryGroup: 'Indian Defenses', opening: 'Torre Attack', pattern: /\btorre attack\b/i },
-            { categoryGroup: 'Indian Defenses', opening: 'Benko Gambit', pattern: /\bbenko\b|\bvolga gambit\b/i },
-            { categoryGroup: 'Indian Defenses', opening: 'Benoni Defense', pattern: /\bbenoni\b/i },
-            { categoryGroup: 'Indian Defenses', opening: 'Grunfeld Defense', pattern: /\bgrunfeld\b|\bgruenfeld\b/i },
-            { categoryGroup: 'Queen\'s Pawn Opening', opening: 'London System', pattern: /\blondon system\b/i },
-            { categoryGroup: 'Queen\'s Pawn Opening', opening: 'Colle System', pattern: /\bcolle\b/i },
-            { categoryGroup: 'Queen\'s Pawn Opening', opening: 'Slav Defense', pattern: /\bslav defense\b|\bslav defence\b/i },
-            { categoryGroup: 'Queen\'s Pawn Opening', opening: 'Semi-Slav Defense', pattern: /\bsemi[-\s]?slav\b/i },
-            { categoryGroup: 'Queen\'s Pawn Opening', opening: 'Dutch Defense', pattern: /\bdutch defense\b|\bdutch defence\b/i },
-            { categoryGroup: 'English Opening', opening: '', pattern: /\benglish opening\b|\b1\.?\s*c4\b/i },
-            { categoryGroup: 'Bird Opening', opening: '', pattern: /\bbird['’]?s? opening\b|\b1\.?\s*f4\b/i },
-            { categoryGroup: 'Flank Openings', opening: 'Nimzo-Larsen Attack', pattern: /\bnimzo[-\s]?larsen\b|\b1\.?\s*b3\b/i },
-            { categoryGroup: 'Flank Openings', opening: 'Polish Opening', pattern: /\bpolish opening\b|\b1\.?\s*b4\b/i },
-            { categoryGroup: 'Unorthodox Openings', opening: 'Englund Gambit', pattern: /\benglund\b/i },
-            { categoryGroup: 'Unorthodox Openings', opening: 'Bongcloud', pattern: /\bbongcloud\b/i }
+        }
+
+        const OPENING_TAXONOMY = [
+            { opening: 'Sicilian Defense', specificOpening: 'Accelerated Dragon', pattern: /\baccelerated dragon\b|\bhyper[-\s]?accelerated dragon\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Dragon', pattern: /\bdragon\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Najdorf', pattern: /\bnajdorf\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'O\'Kelly', pattern: /\bo['’]?kelly\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Alapin', pattern: /\balapin\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Smith-Morra', pattern: /\bsmith[-\s]?morra\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Kan', pattern: /\bkan\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Taimanov', pattern: /\btaimanov\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Sveshnikov', pattern: /\bsveshnikov\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Scheveningen', pattern: /\bscheveningen\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Kalashnikov', pattern: /\bkalashnikov\b/i },
+            { opening: 'Sicilian Defense', specificOpening: 'Maroczy Bind', pattern: /\bmaroczy\b/i },
+            { opening: 'Sicilian Defense', specificOpening: '', pattern: /\bsicilian\b/i },
+            { opening: 'King\'s Pawn Opening', specificOpening: 'Italian Game', pattern: /\bitalian\b|\bgiuoco piano\b|\btwo knights\b|\bfried liver\b|\bevans gambit\b|\bdubov italian\b|\brousseau gambit\b|\brosentreter\b/i },
+            { opening: 'King\'s Pawn Opening', specificOpening: 'Scotch Game', pattern: /\bscotch\b|\bhaggis[-\s]?grodzize\b/i },
+            { opening: 'King\'s Pawn Opening', specificOpening: 'Ruy Lopez', pattern: /\bruy lopez\b|\bspanish (game|opening)\b/i },
+            { opening: 'King\'s Pawn Opening', specificOpening: 'King\'s Gambit', pattern: /\bking['’]?s gambit\b/i },
+            { opening: 'King\'s Pawn Opening', specificOpening: 'Vienna Game', pattern: /\bvienna (game|gambit)\b/i },
+            { opening: 'King\'s Pawn Opening', specificOpening: 'Bishop\'s Opening', pattern: /\bbishop['’]?s opening\b/i },
+            { opening: 'King\'s Pawn Opening', specificOpening: 'Philidor Defense', pattern: /\bphilidor\b/i },
+            { opening: 'King\'s Pawn Opening', specificOpening: 'Petrov Defense', pattern: /\bpetrov\b|\bpetroff\b/i },
+            { opening: 'Caro-Kann Defense', specificOpening: 'Advance Variation', pattern: /\badvance caro[-\s]?kann\b|\bcaro[-\s]?kann advance\b/i },
+            { opening: 'Caro-Kann Defense', specificOpening: 'Exchange Variation', pattern: /\bexchange caro[-\s]?kann\b|\bcaro[-\s]?kann exchange\b/i },
+            { opening: 'Caro-Kann Defense', specificOpening: '', pattern: /\bcaro[-\s]?kann\b/i },
+            { opening: 'French Defense', specificOpening: 'Advance Variation', pattern: /\badvance french\b|\bfrench advance\b/i },
+            { opening: 'French Defense', specificOpening: 'Exchange Variation', pattern: /\bexchange french\b|\bfrench exchange\b/i },
+            { opening: 'French Defense', specificOpening: 'Winawer Variation', pattern: /\bwinawer\b/i },
+            { opening: 'French Defense', specificOpening: 'Tarrasch Variation', pattern: /\btarrasch french\b|\bfrench tarrasch\b/i },
+            { opening: 'French Defense', specificOpening: '', pattern: /\bfrench (defen[cs]e|defence)\b|\bfrench\b/i },
+            { opening: 'Scandinavian Defense', specificOpening: '', pattern: /\bscandinavian\b|\bcenter counter\b/i },
+            { opening: 'Alekhine Defense', specificOpening: '', pattern: /\balekhine['’]?s? defense\b|\balekhine['’]?s? defence\b|\balekhine\b/i },
+            { opening: 'Pirc Defense', specificOpening: '', pattern: /\bpirc\b/i },
+            { opening: 'Modern Defense', specificOpening: '', pattern: /\bmodern defense\b|\bmodern defence\b/i },
+            { opening: 'Nimzowitsch Defense', specificOpening: '', pattern: /\bnimzowitsch\b/i },
+            { opening: 'Owen Defense', specificOpening: '', pattern: /\bowen['’]?s? defense\b|\bowen['’]?s? defence\b/i },
+            { opening: 'Queen\'s Pawn Opening', specificOpening: 'Queen\'s Gambit', pattern: /\bqueen['’]?s gambit\b|\bqg[ad]\b/i },
+            { opening: 'Queen\'s Pawn Opening', specificOpening: 'Albin Countergambit', pattern: /\balbin countergambit\b/i },
+            { opening: 'Indian Defenses', specificOpening: 'King\'s Indian Defense', pattern: /\bking['’]?s indian\b|\bkid\b|\bsamisch\b|\bsämisch\b|\bfianchetto\b|\bmakogonov\b/i },
+            { opening: 'Indian Defenses', specificOpening: 'Nimzo-Indian Defense', pattern: /\bnimzo[-\s]?indian\b/i },
+            { opening: 'Indian Defenses', specificOpening: 'Bogo-Indian Defense', pattern: /\bbogo[-\s]?indian\b/i },
+            { opening: 'Indian Defenses', specificOpening: 'Trompowsky Attack', pattern: /\btrompowsky\b/i },
+            { opening: 'Indian Defenses', specificOpening: 'Torre Attack', pattern: /\btorre attack\b/i },
+            { opening: 'Indian Defenses', specificOpening: 'Benko Gambit', pattern: /\bbenko\b|\bvolga gambit\b/i },
+            { opening: 'Indian Defenses', specificOpening: 'Benoni Defense', pattern: /\bbenoni\b/i },
+            { opening: 'Indian Defenses', specificOpening: 'Grunfeld Defense', pattern: /\bgrunfeld\b|\bgruenfeld\b/i },
+            { opening: 'Queen\'s Pawn Opening', specificOpening: 'London System', pattern: /\blondon system\b/i },
+            { opening: 'Queen\'s Pawn Opening', specificOpening: 'Colle System', pattern: /\bcolle\b/i },
+            { opening: 'Queen\'s Pawn Opening', specificOpening: 'Slav Defense', pattern: /\bslav defense\b|\bslav defence\b/i },
+            { opening: 'Queen\'s Pawn Opening', specificOpening: 'Semi-Slav Defense', pattern: /\bsemi[-\s]?slav\b/i },
+            { opening: 'Queen\'s Pawn Opening', specificOpening: 'Dutch Defense', pattern: /\bdutch defense\b|\bdutch defence\b/i },
+            { opening: 'English Opening', specificOpening: '', pattern: /\benglish opening\b|\b1\.?\s*c4\b/i },
+            { opening: 'Flank Openings', specificOpening: 'Bird Opening', pattern: /\bbird['’]?s? opening\b|\b1\.?\s*f4\b/i },
+            { opening: 'Flank Openings', specificOpening: 'Nimzo-Larsen Attack', pattern: /\bnimzo[-\s]?larsen\b|\b1\.?\s*b3\b/i },
+            { opening: 'Flank Openings', specificOpening: 'Polish Opening', pattern: /\bpolish opening\b|\b1\.?\s*b4\b/i },
+            { opening: 'Unorthodox Openings', specificOpening: 'Englund Gambit', pattern: /\benglund\b/i },
+            { opening: 'Unorthodox Openings', specificOpening: 'Bongcloud', pattern: /\bbongcloud\b/i }
         ];
 
         function normalizeSearchTerm(value) {
@@ -1536,6 +1544,47 @@
         }
 
         function normalizeCategoryGroup(category) {
+            const c = normalizeSearchTerm(category);
+            const map = {
+                '1 e4 c5 openings': 'Openings',
+                'sicilian defense': 'Openings',
+                '1 e4 c6 openings': 'Openings',
+                'caro kann defense': 'Openings',
+                '1 e4 e5 openings': 'Openings',
+                '1 e4 e6 openings': 'Openings',
+                'french defense': 'Openings',
+                '1 d4 openings': 'Openings',
+                '1 d4 d5 openings': 'Openings',
+                '1 d4 nf6 openings': 'Openings',
+                '1 d4 f5 openings': 'Openings',
+                '1 d4 e5 openings': 'Openings',
+                '1 c4': 'Openings',
+                '1 c4 openings': 'Openings',
+                '1 nf3': 'Openings',
+                '1 b4': 'Openings',
+                '1 b4 openings': 'Openings',
+                '1 f4': 'Openings',
+                '1 f4 openings': 'Openings',
+                'miscellaneous openings': 'Openings',
+                'alekhine s defense': 'Openings',
+                'alekhines defense': 'Openings',
+                'modern defense': 'Openings',
+                'nimzowitsch defense': 'Openings',
+                'owen s defense': 'Openings',
+                'owens defense': 'Openings',
+                'pirc defense': 'Openings',
+                'scandinavian defense': 'Openings',
+                'chess variants': 'Chess Variants',
+                'compositions': 'Puzzles',
+                'endgame': 'Endgames',
+                'games': 'Games',
+                'puzzles': 'Puzzles',
+                'strategy': 'Strategy'
+            };
+            return map[c] || category || 'General';
+        }
+
+        function deriveOpeningFamilyFromCategory(category) {
             const c = normalizeSearchTerm(category);
             const map = {
                 '1 e4 c5 openings': 'Sicilian Defense',
@@ -1555,28 +1604,23 @@
                 '1 nf3': 'Flank Openings',
                 '1 b4': 'Flank Openings',
                 '1 b4 openings': 'Flank Openings',
-                '1 f4': 'Bird Opening',
-                '1 f4 openings': 'Bird Opening',
+                '1 f4': 'Flank Openings',
+                '1 f4 openings': 'Flank Openings',
                 'miscellaneous openings': 'Unorthodox Openings',
+                'alekhine s defense': 'Alekhine Defense',
                 'alekhines defense': 'Alekhine Defense',
                 'modern defense': 'Modern Defense',
                 'nimzowitsch defense': 'Nimzowitsch Defense',
+                'owen s defense': 'Owen Defense',
+                'owens defense': 'Owen Defense',
                 'pirc defense': 'Pirc Defense',
-                'scandinavian defense': 'Scandinavian Defense',
-                'chess variants': 'Chess Variants',
-                'compositions': 'Puzzles',
-                'endgame': 'Endgames',
-                'games': 'Games',
-                'puzzles': 'Puzzles',
-                'strategy': 'Strategy'
+                'scandinavian defense': 'Scandinavian Defense'
             };
-            return map[c] || category || 'General';
+            return map[c] || '';
         }
 
         function isOpeningCategoryGroup(category) {
-            if (!category || category === 'All' || category === 'Staff Picks') return false;
-            return OPENING_TAXONOMY.some(entry => entry.categoryGroup === category)
-                || window.chessData?.some(study => study.categoryGroup === category && study.opening);
+            return category === 'Openings';
         }
 
         function deriveOpeningTaxonomy(study) {
@@ -1592,14 +1636,25 @@
             for (const entry of OPENING_TAXONOMY) {
                 if (!entry.pattern.test(haystack)) continue;
                 return {
-                    categoryGroup: entry.categoryGroup,
-                    opening: entry.opening
+                    categoryGroup: 'Openings',
+                    opening: entry.opening,
+                    specificOpening: entry.specificOpening
+                };
+            }
+
+            const categoryOpening = deriveOpeningFamilyFromCategory(study.category);
+            if (categoryOpening) {
+                return {
+                    categoryGroup: 'Openings',
+                    opening: categoryOpening,
+                    specificOpening: ''
                 };
             }
 
             return {
                 categoryGroup: normalizeCategoryGroup(study.category),
-                opening: isOpeningCategory(study.category) ? 'Unclassified Opening' : ''
+                opening: isOpeningCategory(study.category) ? 'Unclassified Opening' : '',
+                specificOpening: ''
             };
         }
 
@@ -1633,6 +1688,7 @@
                 study.category,
                 taxonomy.categoryGroup,
                 taxonomy.opening,
+                taxonomy.specificOpening,
                 study.side,
                 study.notes,
                 study.viewerNote,
@@ -1649,6 +1705,7 @@
                 rawCategory: study.category,
                 categoryGroup: taxonomy.categoryGroup,
                 opening: taxonomy.opening,
+                specificOpening: taxonomy.specificOpening,
                 themes,
                 normalizedSearchText: normalizeSearchTerm(searchFields.filter(Boolean).join(' '))
             };
@@ -1784,6 +1841,7 @@
             currentFilter = 'All';
             currentOpeningFilter = 'All Openings';
             currentSideFilter = 'Any Side';
+            currentStaffPickFilter = 'Any';
             currentAuthor = null;
             currentAuthorFilter = 'All Authors';
             currentThemeFilter = 'All Themes';
@@ -2294,6 +2352,13 @@
             return study.opening || study.categoryGroup || study.category;
         }
 
+        function taxonomySummary(study) {
+            if (study.categoryGroup === 'Openings') {
+                return study.opening ? `Openings: ${study.opening}` : 'Openings';
+            }
+            return study.categoryGroup || study.category || 'General';
+        }
+
         function getFeaturedStudy() {
             if (!window.chessData || window.chessData.length === 0) return null;
 
@@ -2347,7 +2412,7 @@
                                     ${spotlightText}
                                 </p>
                                 <p class="text-zinc-500 text-[11px] italic leading-relaxed">
-                                    Category: ${featured.category}
+                                    Category: ${taxonomySummary(featured)}
                                 </p>
                             </div>
 
@@ -2420,7 +2485,7 @@
             
             return `
             <div class="chess-card flex flex-col group relative">
-                ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">â˜… Staff Pick</div>` : ''}
+                ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">&#9733; Staff Pick</div>` : ''}
                 ${noteOverlay}
                 <button onclick="toggleFavorite('${i.link.replace(/'/g, "\\'")}', this)" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/70 hover:text-[#c5a059]" title="Save to favorites">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
@@ -2467,6 +2532,7 @@
             if (normalizeSearchTerm(study.title).includes(t)) score += 70;
             if (normalizeSearchTerm(authorDisplay(study)).includes(t)) score += 55;
             if (normalizeSearchTerm(study.opening).includes(t)) score += 45;
+            if (normalizeSearchTerm(study.specificOpening).includes(t)) score += 30;
             if (normalizeSearchTerm(study.categoryGroup).includes(t)) score += 35;
             if (normalizeSearchTerm(study.themes?.join(' ')).includes(t)) score += 28;
             if (normalizeSearchTerm(study.side).includes(t)) score += 15;
@@ -2681,12 +2747,12 @@
             let end = Math.min(totalPages, start + windowSize - 1);
             start = Math.max(1, end - windowSize + 1);
 
-            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.max(1, currentPage - 1)}" ${currentPage === 1 ? 'disabled' : ''}>â† Prev</button>`);
+            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.max(1, currentPage - 1)}" ${currentPage === 1 ? 'disabled' : ''}>&larr; Prev</button>`);
 
             if (start > 1) {
                 pages.push(`<button class="filter-chip brand-font page-chip" data-page="1">1</button>`);
                 if (start > 2) {
-                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">â€¦</span>`);
+                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">&hellip;</span>`);
                 }
             }
 
@@ -2696,12 +2762,12 @@
 
             if (end < totalPages) {
                 if (end < totalPages - 1) {
-                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">â€¦</span>`);
+                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">&hellip;</span>`);
                 }
                 pages.push(`<button class="filter-chip brand-font page-chip" data-page="${totalPages}">${totalPages}</button>`);
             }
 
-            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.min(totalPages, currentPage + 1)}" ${currentPage === totalPages ? 'disabled' : ''}>Next â†’</button>`);
+            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.min(totalPages, currentPage + 1)}" ${currentPage === totalPages ? 'disabled' : ''}>Next &rarr;</button>`);
 
             container.innerHTML = pages.join('');
             container.querySelectorAll('button[data-page]').forEach(btn => {
@@ -2726,13 +2792,14 @@
             let filtered = window.chessData.filter(i => {
                 const matchesText = matchesSearch(i, term) || term.length === 0;
                 const matchesOpening = currentOpeningFilter === 'All Openings' || i.opening === currentOpeningFilter;
-                const matchesCategory = currentFilter === 'All' || (currentFilter === 'Staff Picks' ? isStaffPickStudy(i) : i.categoryGroup === currentFilter);
+                const matchesCategory = currentFilter === 'All' || i.categoryGroup === currentFilter;
+                const matchesStaffPick = currentStaffPickFilter === 'Any' || isStaffPickStudy(i);
                 const matchesSide = (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
                 const matchesAuthor = (currentAuthorFilter === 'All Authors' || studyHasAuthor(i, currentAuthorFilter));
                 const matchesTheme = currentThemeFilter === 'All Themes' || (i.themes || []).includes(currentThemeFilter);
                 const matchesFavorite = (!showFavoritesOnly || renderFavorites.has(i.link));
 
-                return matchesText && matchesOpening && matchesCategory && matchesSide && matchesAuthor && matchesTheme && matchesFavorite;
+                return matchesText && matchesOpening && matchesCategory && matchesStaffPick && matchesSide && matchesAuthor && matchesTheme && matchesFavorite;
             });
 
             filtered = getSortedStudies(filtered, term);
@@ -2744,7 +2811,7 @@
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-            const isSearchingOrFiltering = term.length > 0 || currentOpeningFilter !== 'All Openings' || currentFilter !== 'All' || currentSideFilter !== 'Any Side' || currentAuthorFilter !== 'All Authors' || currentThemeFilter !== 'All Themes' || showFavoritesOnly;
+            const isSearchingOrFiltering = term.length > 0 || currentOpeningFilter !== 'All Openings' || currentFilter !== 'All' || currentStaffPickFilter !== 'Any' || currentSideFilter !== 'Any Side' || currentAuthorFilter !== 'All Authors' || currentThemeFilter !== 'All Themes' || showFavoritesOnly;
             const latestSec = document.getElementById('latestSection');
             const recentSec = document.getElementById('recentlyViewedSection');
             const featuredSec = document.getElementById('featuredSection');
@@ -2830,15 +2897,22 @@
             const category = params.get('category');
             const opening = params.get('opening');
             const side = params.get('side');
+            const staff = params.get('staff');
             const author = params.get('author');
             const authorFilter = params.get('authorFilter');
             const theme = params.get('theme');
             const sort = params.get('sort');
 
             if (q) document.getElementById('searchInput').value = q;
-            if (category) currentFilter = category;
+            if (category === 'Staff Picks') {
+                currentFilter = 'All';
+                currentStaffPickFilter = 'Yes';
+            } else if (category) {
+                currentFilter = category;
+            }
             if (opening) currentOpeningFilter = opening;
             if (side) currentSideFilter = side;
+            if (staff === '1' || staff === 'yes') currentStaffPickFilter = 'Yes';
             if (author) currentAuthor = cleanAuthorName(author);
             if (authorFilter) currentAuthorFilter = cleanAuthorName(authorFilter);
             if (theme) currentThemeFilter = theme;
@@ -2861,6 +2935,7 @@
             if (term) params.set('q', term);
             if (currentOpeningFilter !== 'All Openings') params.set('opening', currentOpeningFilter);
             if (currentFilter !== 'All') params.set('category', currentFilter);
+            if (currentStaffPickFilter !== 'Any') params.set('staff', '1');
             if (currentSideFilter !== 'Any Side') params.set('side', currentSideFilter);
             if (currentAuthorFilter !== 'All Authors') params.set('authorFilter', currentAuthorFilter);
             if (currentThemeFilter !== 'All Themes') params.set('theme', currentThemeFilter);
@@ -2894,6 +2969,7 @@
             currentFilter = 'All';
             currentOpeningFilter = 'All Openings';
             currentSideFilter = 'Any Side';
+            currentStaffPickFilter = 'Any';
             currentAuthor = null;
             currentAuthorFilter = 'All Authors';
             currentThemeFilter = 'All Themes';
@@ -2912,6 +2988,7 @@
 
         function createFilters() {
             populateSelect('categorySelect', ['All', ...getCategoryOptions()], currentFilter);
+            document.getElementById('staffSelect').value = currentStaffPickFilter;
             const openingField = document.getElementById('openingFilterField');
             if (isOpeningCategoryGroup(currentFilter)) {
                 openingField.classList.remove('hidden');
@@ -2933,10 +3010,9 @@
             return window.chessData.filter(study => {
                 if (exclude !== 'search' && term && !matchesSearch(study, term)) return false;
                 if (exclude !== 'opening' && currentOpeningFilter !== 'All Openings' && study.opening !== currentOpeningFilter) return false;
+                if (exclude !== 'staff' && currentStaffPickFilter !== 'Any' && !isStaffPickStudy(study)) return false;
                 if (exclude !== 'category' && currentFilter !== 'All') {
-                    if (currentFilter === 'Staff Picks') {
-                        if (!isStaffPickStudy(study)) return false;
-                    } else if (study.categoryGroup !== currentFilter) {
+                    if (study.categoryGroup !== currentFilter) {
                         return false;
                     }
                 }
@@ -2959,13 +3035,13 @@
             const categories = [...new Set(compatible.map(i => i.categoryGroup).filter(Boolean))]
                 .filter(value => value !== 'General')
                 .sort((a, b) => {
-                    const priority = ['Sicilian Defense', 'King\'s Pawn Opening', 'Caro-Kann Defense', 'French Defense', 'Queen\'s Pawn Opening', 'Indian Defenses', 'English Opening', 'Strategy', 'Tactics', 'Endgames', 'Puzzles', 'Games'];
+                    const priority = ['Openings', 'Strategy', 'Tactics', 'Endgames', 'Puzzles', 'Games', 'Chess Variants'];
                     const ai = priority.indexOf(a);
                     const bi = priority.indexOf(b);
                     if (ai !== -1 || bi !== -1) return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
                     return a.localeCompare(b);
                 });
-            return compatible.some(isStaffPickStudy) ? ['Staff Picks', ...categories] : categories;
+            return categories;
         }
 
         function getAuthorOptions(exclude = '') {
@@ -2993,6 +3069,7 @@
             if (term) filters.push(['Search', term, 'search']);
             if (currentFilter !== 'All') filters.push(['Category', currentFilter, 'category']);
             if (currentOpeningFilter !== 'All Openings') filters.push(['Opening', currentOpeningFilter, 'opening']);
+            if (currentStaffPickFilter !== 'Any') filters.push(['Staff Pick', 'Yes', 'staff']);
             if (currentSideFilter !== 'Any Side') filters.push(['Side', currentSideFilter, 'side']);
             if (currentAuthorFilter !== 'All Authors') filters.push(['Author', currentAuthorFilter, 'authorFilter']);
             if (currentThemeFilter !== 'All Themes') filters.push(['Theme', currentThemeFilter, 'theme']);
@@ -3021,6 +3098,7 @@
             if (key === 'search') document.getElementById('searchInput').value = '';
             if (key === 'opening') currentOpeningFilter = 'All Openings';
             if (key === 'category') currentFilter = 'All';
+            if (key === 'staff') currentStaffPickFilter = 'Any';
             if (key === 'side') currentSideFilter = 'Any Side';
             if (key === 'authorFilter') currentAuthorFilter = 'All Authors';
             if (key === 'theme') currentThemeFilter = 'All Themes';
@@ -3086,6 +3164,13 @@
             renderArchive();
         });
 
+        document.getElementById('staffSelect').addEventListener('change', (e) => {
+            currentStaffPickFilter = e.target.value;
+            currentAuthor = null;
+            currentPage = 1;
+            renderArchive();
+        });
+
         document.getElementById('authorSelect').addEventListener('change', (e) => {
             currentAuthorFilter = e.target.value;
             currentAuthor = null;
@@ -3104,6 +3189,7 @@
             currentFilter = 'All';
             currentOpeningFilter = 'All Openings';
             currentSideFilter = 'Any Side';
+            currentStaffPickFilter = 'Any';
             currentAuthor = null;
             currentAuthorFilter = 'All Authors';
             currentThemeFilter = 'All Themes';
