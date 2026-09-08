@@ -1325,6 +1325,10 @@
                         <span class="filter-label">Opening</span>
                         <select id="openingSelect" class="library-select brand-font"></select>
                     </label>
+                    <label id="variationFilterField" class="library-filter-field hidden">
+                        <span class="filter-label">Variation</span>
+                        <select id="variationSelect" class="library-select brand-font"></select>
+                    </label>
                     <label class="library-filter-field">
                         <span class="filter-label">Staff Pick</span>
                         <select id="staffSelect" class="library-select brand-font">
@@ -1454,6 +1458,7 @@
 
         let currentFilter = 'All',
             currentOpeningFilter = 'All Openings',
+            currentVariationFilter = 'All Variations',
             currentSideFilter = 'Any Side',
             currentStaffPickFilter = 'Any',
             currentAuthor = null,
@@ -1508,8 +1513,10 @@
             { opening: 'Modern Defense', specificOpening: '', pattern: /\bmodern defense\b|\bmodern defence\b/i },
             { opening: 'Nimzowitsch Defense', specificOpening: '', pattern: /\bnimzowitsch\b/i },
             { opening: 'Owen Defense', specificOpening: '', pattern: /\bowen['’]?s? defense\b|\bowen['’]?s? defence\b/i },
-            { opening: 'Queen\'s Pawn Opening', specificOpening: 'Queen\'s Gambit', pattern: /\bqueen['’]?s gambit\b|\bqg[ad]\b/i },
-            { opening: 'Queen\'s Pawn Opening', specificOpening: 'Albin Countergambit', pattern: /\balbin countergambit\b/i },
+            { opening: 'Queen\'s Gambit', specificOpening: 'Accepted', pattern: /\bqueen['’]?s gambit accepted\b|\bqga\b/i },
+            { opening: 'Queen\'s Gambit', specificOpening: 'Declined', pattern: /\bqueen['’]?s gambit declined\b|\bqgd\b/i },
+            { opening: 'Queen\'s Gambit', specificOpening: 'Albin Countergambit', pattern: /\balbin countergambit\b/i },
+            { opening: 'Queen\'s Gambit', specificOpening: '', pattern: /\bqueen['’]?s gambit\b/i },
             { opening: 'Indian Defenses', specificOpening: 'King\'s Indian Defense', pattern: /\bking['’]?s indian\b|\bkid\b|\bsamisch\b|\bsämisch\b|\bfianchetto\b|\bmakogonov\b/i },
             { opening: 'Indian Defenses', specificOpening: 'Nimzo-Indian Defense', pattern: /\bnimzo[-\s]?indian\b/i },
             { opening: 'Indian Defenses', specificOpening: 'Bogo-Indian Defense', pattern: /\bbogo[-\s]?indian\b/i },
@@ -1624,7 +1631,7 @@
         }
 
         function deriveOpeningTaxonomy(study) {
-            const haystack = [
+            const primaryHaystack = [
                 study.category,
                 study.title,
                 study.notes,
@@ -1633,29 +1640,51 @@
                 study.generated?.selectedChapterName
             ].filter(Boolean).join(' ');
 
+            const fullHaystack = [
+                primaryHaystack,
+                study.generated?.searchText,
+                ...(study.generated?.chapterNames || [])
+            ].filter(Boolean).join(' ');
+
             for (const entry of OPENING_TAXONOMY) {
-                if (!entry.pattern.test(haystack)) continue;
+                if (!entry.pattern.test(primaryHaystack)) continue;
+                const specificOpenings = getSpecificOpeningsForFamily(entry.opening, fullHaystack, entry.specificOpening);
                 return {
                     categoryGroup: 'Openings',
                     opening: entry.opening,
-                    specificOpening: entry.specificOpening
+                    specificOpening: specificOpenings[0] || entry.specificOpening,
+                    specificOpenings
                 };
             }
 
             const categoryOpening = deriveOpeningFamilyFromCategory(study.category);
             if (categoryOpening) {
+                const specificOpenings = getSpecificOpeningsForFamily(categoryOpening, fullHaystack);
                 return {
                     categoryGroup: 'Openings',
                     opening: categoryOpening,
-                    specificOpening: ''
+                    specificOpening: specificOpenings[0] || '',
+                    specificOpenings
                 };
             }
 
             return {
                 categoryGroup: normalizeCategoryGroup(study.category),
                 opening: isOpeningCategory(study.category) ? 'Unclassified Opening' : '',
-                specificOpening: ''
+                specificOpening: '',
+                specificOpenings: []
             };
+        }
+
+        function getSpecificOpeningsForFamily(opening, haystack, first = '') {
+            const matches = [];
+            if (first) matches.push(first);
+            OPENING_TAXONOMY
+                .filter(entry => entry.opening === opening && entry.specificOpening)
+                .forEach(entry => {
+                    if (entry.pattern.test(haystack)) matches.push(entry.specificOpening);
+                });
+            return [...new Set(matches)];
         }
 
         function deriveThemes(study) {
@@ -1689,6 +1718,7 @@
                 taxonomy.categoryGroup,
                 taxonomy.opening,
                 taxonomy.specificOpening,
+                ...(taxonomy.specificOpenings || []),
                 study.side,
                 study.notes,
                 study.viewerNote,
@@ -1706,6 +1736,7 @@
                 categoryGroup: taxonomy.categoryGroup,
                 opening: taxonomy.opening,
                 specificOpening: taxonomy.specificOpening,
+                specificOpenings: taxonomy.specificOpenings || [],
                 themes,
                 normalizedSearchText: normalizeSearchTerm(searchFields.filter(Boolean).join(' '))
             };
@@ -1729,11 +1760,15 @@
                 .filter(o => normalizeSearchTerm(o).includes(t))
                 .slice(0, 4);
 
+            const variations = getFilterOptions('specificOpening')
+                .filter(v => normalizeSearchTerm(v).includes(t))
+                .slice(0, 4);
+
             const categories = [...new Set(window.chessData.map(i => i.categoryGroup))]
                 .filter(c => c && c !== 'General' && normalizeSearchTerm(c).includes(t))
                 .slice(0, 4);
 
-            if (!authors.length && !openings.length && !categories.length) {
+            if (!authors.length && !openings.length && !variations.length && !categories.length) {
                 box.classList.add('hidden');
                 box.innerHTML = '';
                 return;
@@ -1742,6 +1777,7 @@
             const rows = [
                 ...authors.map(a => `<div class="suggestion-row" onclick="selectAuthorSuggestion('${a.replace(/'/g, "\\'")}')"><span>${escapeHTML(a)}</span><span class="suggestion-kind">Author</span></div>`),
                 ...openings.map(o => `<div class="suggestion-row" onclick="selectOpeningSuggestion('${o.replace(/'/g, "\\'")}')"><span>${escapeHTML(o)}</span><span class="suggestion-kind">Opening</span></div>`),
+                ...variations.map(v => `<div class="suggestion-row" onclick="selectVariationSuggestion('${v.replace(/'/g, "\\'")}')"><span>${escapeHTML(v)}</span><span class="suggestion-kind">Variation</span></div>`),
                 ...categories.map(c => `<div class="suggestion-row" onclick="selectCategorySuggestion('${c.replace(/'/g, "\\'")}')"><span>${escapeHTML(c)}</span><span class="suggestion-kind">Category</span></div>`)
             ];
 
@@ -1772,6 +1808,21 @@
             const matchingStudy = window.chessData.find(study => study.opening === opening);
             if (matchingStudy) currentFilter = matchingStudy.categoryGroup;
             currentOpeningFilter = opening;
+            currentAuthor = null;
+            currentPage = 1;
+            createFilters();
+            renderArchive();
+        }
+
+        function selectVariationSuggestion(variation) {
+            hideSearchSuggestions();
+            document.getElementById('searchInput').value = '';
+            const matchingStudy = window.chessData.find(study => (study.specificOpenings || [study.specificOpening]).includes(variation));
+            if (matchingStudy) {
+                currentFilter = matchingStudy.categoryGroup;
+                currentOpeningFilter = matchingStudy.opening || 'All Openings';
+            }
+            currentVariationFilter = variation;
             currentAuthor = null;
             currentPage = 1;
             createFilters();
@@ -1840,6 +1891,7 @@
             saveSurprisedLinks(shown);
             currentFilter = 'All';
             currentOpeningFilter = 'All Openings';
+            currentVariationFilter = 'All Variations';
             currentSideFilter = 'Any Side';
             currentStaffPickFilter = 'Any';
             currentAuthor = null;
@@ -2533,6 +2585,7 @@
             if (normalizeSearchTerm(authorDisplay(study)).includes(t)) score += 55;
             if (normalizeSearchTerm(study.opening).includes(t)) score += 45;
             if (normalizeSearchTerm(study.specificOpening).includes(t)) score += 30;
+            if (normalizeSearchTerm(study.specificOpenings?.join(' ')).includes(t)) score += 30;
             if (normalizeSearchTerm(study.categoryGroup).includes(t)) score += 35;
             if (normalizeSearchTerm(study.themes?.join(' ')).includes(t)) score += 28;
             if (normalizeSearchTerm(study.side).includes(t)) score += 15;
@@ -2784,7 +2837,11 @@
 
         function renderArchive() {
             document.getElementById('archiveHeader').style.display = '';
-            if (!isOpeningCategoryGroup(currentFilter)) currentOpeningFilter = 'All Openings';
+            if (!isOpeningCategoryGroup(currentFilter)) {
+                currentOpeningFilter = 'All Openings';
+                currentVariationFilter = 'All Variations';
+            }
+            if (currentOpeningFilter === 'All Openings') currentVariationFilter = 'All Variations';
 
             const term = document.getElementById('searchInput').value.trim().toLowerCase();
             const renderFavorites = getFavorites();
@@ -2792,6 +2849,7 @@
             let filtered = window.chessData.filter(i => {
                 const matchesText = matchesSearch(i, term) || term.length === 0;
                 const matchesOpening = currentOpeningFilter === 'All Openings' || i.opening === currentOpeningFilter;
+                const matchesVariation = currentVariationFilter === 'All Variations' || (i.specificOpenings || [i.specificOpening]).includes(currentVariationFilter);
                 const matchesCategory = currentFilter === 'All' || i.categoryGroup === currentFilter;
                 const matchesStaffPick = currentStaffPickFilter === 'Any' || isStaffPickStudy(i);
                 const matchesSide = (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
@@ -2799,7 +2857,7 @@
                 const matchesTheme = currentThemeFilter === 'All Themes' || (i.themes || []).includes(currentThemeFilter);
                 const matchesFavorite = (!showFavoritesOnly || renderFavorites.has(i.link));
 
-                return matchesText && matchesOpening && matchesCategory && matchesStaffPick && matchesSide && matchesAuthor && matchesTheme && matchesFavorite;
+                return matchesText && matchesOpening && matchesVariation && matchesCategory && matchesStaffPick && matchesSide && matchesAuthor && matchesTheme && matchesFavorite;
             });
 
             filtered = getSortedStudies(filtered, term);
@@ -2811,7 +2869,7 @@
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-            const isSearchingOrFiltering = term.length > 0 || currentOpeningFilter !== 'All Openings' || currentFilter !== 'All' || currentStaffPickFilter !== 'Any' || currentSideFilter !== 'Any Side' || currentAuthorFilter !== 'All Authors' || currentThemeFilter !== 'All Themes' || showFavoritesOnly;
+            const isSearchingOrFiltering = term.length > 0 || currentOpeningFilter !== 'All Openings' || currentVariationFilter !== 'All Variations' || currentFilter !== 'All' || currentStaffPickFilter !== 'Any' || currentSideFilter !== 'Any Side' || currentAuthorFilter !== 'All Authors' || currentThemeFilter !== 'All Themes' || showFavoritesOnly;
             const latestSec = document.getElementById('latestSection');
             const recentSec = document.getElementById('recentlyViewedSection');
             const featuredSec = document.getElementById('featuredSection');
@@ -2896,6 +2954,7 @@
             const q = params.get('q');
             const category = params.get('category');
             const opening = params.get('opening');
+            const variation = params.get('variation');
             const side = params.get('side');
             const staff = params.get('staff');
             const author = params.get('author');
@@ -2911,6 +2970,7 @@
                 currentFilter = category;
             }
             if (opening) currentOpeningFilter = opening;
+            if (variation) currentVariationFilter = variation;
             if (side) currentSideFilter = side;
             if (staff === '1' || staff === 'yes') currentStaffPickFilter = 'Yes';
             if (author) currentAuthor = cleanAuthorName(author);
@@ -2934,6 +2994,7 @@
 
             if (term) params.set('q', term);
             if (currentOpeningFilter !== 'All Openings') params.set('opening', currentOpeningFilter);
+            if (currentVariationFilter !== 'All Variations') params.set('variation', currentVariationFilter);
             if (currentFilter !== 'All') params.set('category', currentFilter);
             if (currentStaffPickFilter !== 'Any') params.set('staff', '1');
             if (currentSideFilter !== 'Any Side') params.set('side', currentSideFilter);
@@ -2968,6 +3029,7 @@
             document.getElementById('searchInput').value = '';
             currentFilter = 'All';
             currentOpeningFilter = 'All Openings';
+            currentVariationFilter = 'All Variations';
             currentSideFilter = 'Any Side';
             currentStaffPickFilter = 'Any';
             currentAuthor = null;
@@ -2990,6 +3052,7 @@
             populateSelect('categorySelect', ['All', ...getCategoryOptions()], currentFilter);
             document.getElementById('staffSelect').value = currentStaffPickFilter;
             const openingField = document.getElementById('openingFilterField');
+            const variationField = document.getElementById('variationFilterField');
             if (isOpeningCategoryGroup(currentFilter)) {
                 openingField.classList.remove('hidden');
                 populateSelect('openingSelect', ['All Openings', ...getFilterOptions('opening', 'opening')], currentOpeningFilter);
@@ -2997,6 +3060,14 @@
                 currentOpeningFilter = 'All Openings';
                 openingField.classList.add('hidden');
                 populateSelect('openingSelect', ['All Openings'], currentOpeningFilter);
+            }
+            if (isOpeningCategoryGroup(currentFilter) && currentOpeningFilter !== 'All Openings') {
+                variationField.classList.remove('hidden');
+                populateSelect('variationSelect', ['All Variations', ...getFilterOptions('specificOpening', 'specificOpening')], currentVariationFilter);
+            } else {
+                currentVariationFilter = 'All Variations';
+                variationField.classList.add('hidden');
+                populateSelect('variationSelect', ['All Variations'], currentVariationFilter);
             }
             populateSelect('sideSelect', ['Any Side', ...getFilterOptions('side', 'side')], currentSideFilter);
             populateSelect('authorSelect', ['All Authors', ...getAuthorOptions('author')], currentAuthorFilter);
@@ -3010,6 +3081,7 @@
             return window.chessData.filter(study => {
                 if (exclude !== 'search' && term && !matchesSearch(study, term)) return false;
                 if (exclude !== 'opening' && currentOpeningFilter !== 'All Openings' && study.opening !== currentOpeningFilter) return false;
+                if (exclude !== 'specificOpening' && currentVariationFilter !== 'All Variations' && !(study.specificOpenings || [study.specificOpening]).includes(currentVariationFilter)) return false;
                 if (exclude !== 'staff' && currentStaffPickFilter !== 'Any' && !isStaffPickStudy(study)) return false;
                 if (exclude !== 'category' && currentFilter !== 'All') {
                     if (study.categoryGroup !== currentFilter) {
@@ -3025,7 +3097,10 @@
         }
 
         function getFilterOptions(field, exclude = '') {
-            return [...new Set(getCompatibleStudies(exclude).map(i => i[field]).filter(Boolean))]
+            const values = field === 'specificOpening'
+                ? getCompatibleStudies(exclude).flatMap(i => i.specificOpenings || [i.specificOpening])
+                : getCompatibleStudies(exclude).map(i => i[field]);
+            return [...new Set(values.filter(Boolean))]
                 .filter(value => !['General', 'Not Opening Specific'].includes(value))
                 .sort((a, b) => a.localeCompare(b));
         }
@@ -3069,6 +3144,7 @@
             if (term) filters.push(['Search', term, 'search']);
             if (currentFilter !== 'All') filters.push(['Category', currentFilter, 'category']);
             if (currentOpeningFilter !== 'All Openings') filters.push(['Opening', currentOpeningFilter, 'opening']);
+            if (currentVariationFilter !== 'All Variations') filters.push(['Variation', currentVariationFilter, 'variation']);
             if (currentStaffPickFilter !== 'Any') filters.push(['Staff Pick', 'Yes', 'staff']);
             if (currentSideFilter !== 'Any Side') filters.push(['Side', currentSideFilter, 'side']);
             if (currentAuthorFilter !== 'All Authors') filters.push(['Author', currentAuthorFilter, 'authorFilter']);
@@ -3097,6 +3173,7 @@
         window.clearFilter = (key) => {
             if (key === 'search') document.getElementById('searchInput').value = '';
             if (key === 'opening') currentOpeningFilter = 'All Openings';
+            if (key === 'variation') currentVariationFilter = 'All Variations';
             if (key === 'category') currentFilter = 'All';
             if (key === 'staff') currentStaffPickFilter = 'Any';
             if (key === 'side') currentSideFilter = 'Any Side';
@@ -3144,6 +3221,14 @@
 
         document.getElementById('openingSelect').addEventListener('change', (e) => {
             currentOpeningFilter = e.target.value;
+            currentVariationFilter = 'All Variations';
+            currentAuthor = null;
+            currentPage = 1;
+            renderArchive();
+        });
+
+        document.getElementById('variationSelect').addEventListener('change', (e) => {
+            currentVariationFilter = e.target.value;
             currentAuthor = null;
             currentPage = 1;
             renderArchive();
@@ -3152,6 +3237,7 @@
         document.getElementById('categorySelect').addEventListener('change', (e) => {
             currentFilter = e.target.value;
             currentOpeningFilter = 'All Openings';
+            currentVariationFilter = 'All Variations';
             currentAuthor = null;
             currentPage = 1;
             renderArchive();
@@ -3188,6 +3274,7 @@
         window.addEventListener('popstate', () => {
             currentFilter = 'All';
             currentOpeningFilter = 'All Openings';
+            currentVariationFilter = 'All Variations';
             currentSideFilter = 'Any Side';
             currentStaffPickFilter = 'Any';
             currentAuthor = null;
