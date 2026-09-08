@@ -129,18 +129,18 @@ body.light-mode .hover\:text-\[var\(--accent\)\]:hover {
     border: 0;
     border-bottom: 1px solid var(--border);
     border-radius: 0;
-    background: rgba(22, 21, 17, 0.94);
+    background: transparent;
     backdrop-filter: blur(10px);
     box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22);
     overflow: hidden;
 }
 
 body.light-mode .site-header {
-    background: rgba(22, 21, 17, 0.94);
+    background: transparent;
 }
 
 .site-header .parchment-text {
-    color: var(--paper);
+    color: var(--ink);
 }
 
 .site-header::before {
@@ -150,7 +150,7 @@ body.light-mode .site-header {
     bottom: 6px;
     width: 150px;
     height: 42px;
-    background-image: url("data:image/svg+xml,%3Csvg width='150' height='42' viewBox='0 0 150 42' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23b79a55' stroke-width='1.2' stroke-linecap='round' opacity='.45'%3E%3Cpath d='M6 21h138M22 13h72M56 29h70'/%3E%3C/g%3E%3C/svg%3E");
+    background-image: none;
     background-repeat: no-repeat;
     background-size: contain;
     opacity: 0.65;
@@ -1556,8 +1556,8 @@ body::before {
     z-index: 0;
     pointer-events: none;
     background-color: var(--paper);
-    background-image: url("data:image/svg+xml,%3Csvg width='1400' height='1000' viewBox='0 0 1400 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%238C7A63' opacity='.12'%3E%3Ccircle cx='118' cy='155' r='58'/%3E%3Ccircle cx='1220' cy='110' r='46'/%3E%3Ccircle cx='210' cy='785' r='70'/%3E%3Ccircle cx='1195' cy='780' r='64'/%3E%3Ccircle cx='820' cy='430' r='84'/%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg width='900' height='700' viewBox='0 0 900 700' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018' numOctaves='2' seed='8'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.545 0 0 0 0 0.435 0 0 0 0 0.259 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='900' height='700' filter='url(%23p)'/%3E%3C/svg%3E");
+    opacity: 0.85;
 }
 
 body::after {
@@ -1582,24 +1582,25 @@ body > .site-layer {
     position: fixed;
     z-index: -1;
     pointer-events: none;
-    width: 210px;
-    height: 260px;
-    opacity: 0.55;
+    width: 260px;
+    height: 420px;
+    opacity: 0.42;
     background-repeat: no-repeat;
     background-size: contain;
 }
 
 .site-layer::before {
-    top: 18px;
-    left: -10px;
-    transform: scaleX(-1);
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 260' fill='none' stroke='%238C7A63' stroke-width='1' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 C40 30 55 70 40 120 C30 155 45 190 90 210' stroke-linecap='round'/%3E%3Cpath d='M20 40 C5 45 -8 60 -6 78 C12 74 24 60 20 40 Z'/%3E%3Cpath d='M45 90 C28 90 14 102 12 120 C30 120 44 108 45 90 Z'/%3E%3Cpath d='M35 150 C18 148 3 158 -2 175 C16 178 32 168 35 150 Z'/%3E%3Cpath d='M65 195 C50 190 33 197 26 213 C43 219 61 211 65 195 Z'/%3E%3Ccircle cx='90' cy='211' r='2' fill='%238C7A63' stroke='none'/%3E%3C/svg%3E");
+    top: 20px;
+    left: max(-118px, calc((100vw - 880px) / 2 - 185px));
+    background-image: url("../../assets/historical/moriarty-agapanthus-africanus-1807.jpg");
+    mix-blend-mode: multiply;
 }
 
 .site-layer::after {
-    right: -10px;
-    bottom: 40px;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' fill='none' stroke='%238C7A63' stroke-width='1' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M220 220 C175 205 150 170 160 125 C168 90 150 55 110 35' stroke-linecap='round'/%3E%3Cpath d='M185 195 C200 200 213 192 216 175 C198 174 184 180 185 195 Z'/%3E%3Cpath d='M160 140 C176 143 190 133 193 116 C175 114 161 122 160 140 Z'/%3E%3Cpath d='M165 80 C182 80 195 68 197 51 C179 50 165 62 165 80 Z'/%3E%3Cpath d='M130 40 C146 43 160 33 163 16 C145 15 131 25 130 40 Z'/%3E%3Ccircle cx='110' cy='35' r='2' fill='%238C7A63' stroke='none'/%3E%3C/svg%3E");
+    right: max(-132px, calc((100vw - 880px) / 2 - 190px));
+    bottom: 56px;
+    background-image: url("../../assets/historical/sowerby-convolvulus-tricolor-1787.jpg");
+    mix-blend-mode: multiply;
 }
 
 .brand-font,
@@ -1629,13 +1630,15 @@ body > .site-layer {
     content: "";
     position: static;
     display: block;
-    width: 64px;
-    height: 40px;
-    margin: 0 auto 4px;
-    opacity: 1;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 40' fill='none' stroke='%235A4A38' stroke-width='1.1' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 34 C48 22 44 14 30 6' stroke-linecap='round'/%3E%3Cpath d='M50 34 C52 22 56 14 70 6' stroke-linecap='round'/%3E%3Cpath d='M40 20 C36 16 34 11 36 5 C41 8 43 13 40 20 Z'/%3E%3Cpath d='M60 20 C64 16 66 11 64 5 C59 8 57 13 60 20 Z'/%3E%3Cpath d='M32 14 C28 11 26 7 27 3 C32 5 34 9 32 14 Z'/%3E%3Cpath d='M68 14 C72 11 74 7 73 3 C68 5 66 9 68 14 Z'/%3E%3Ccircle cx='50' cy='35' r='1.6' fill='%235A4A38' stroke='none'/%3E%3C/svg%3E");
+    width: 72px;
+    height: 54px;
+    margin: 0 auto -4px;
+    opacity: 0.62;
+    background-image: url("../../assets/historical/moriarty-agapanthus-africanus-1807.jpg");
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: 90px auto;
+    background-position: center 12%;
+    mix-blend-mode: multiply;
 }
 
 .brand-block {
@@ -1742,12 +1745,13 @@ body > .site-layer {
 .filter-panel::after {
     content: "";
     position: absolute;
-    width: 46px;
-    height: 46px;
-    opacity: 0.6;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 60 60' fill='none' stroke='%238C7A63' stroke-width='1' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 4 C4 22 18 30 34 28' stroke-linecap='round'/%3E%3Cpath d='M10 10 C6 8 3 4 4 -1 C9 0 12 5 10 10 Z'/%3E%3C/svg%3E");
+    width: 58px;
+    height: 76px;
+    opacity: 0.24;
+    background-image: url("../../assets/historical/sowerby-convolvulus-tricolor-1787.jpg");
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: 96px auto;
+    mix-blend-mode: multiply;
 }
 
 .filter-panel::before {
@@ -1829,12 +1833,9 @@ body > .site-layer {
 #liveCounter::after {
     content: "";
     display: block;
-    height: 28px;
+    height: 1px;
     margin: 40px 0 0;
-    opacity: 0.7;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 40' fill='none' stroke='%238C7A63' stroke-width='1' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 C150 5 250 35 400 20 C550 5 650 35 800 20' stroke-linecap='round'/%3E%3Cpath d='M120 14 C110 6 112 -2 122 -6 C128 2 128 10 120 14 Z'/%3E%3Cpath d='M280 27 C270 34 258 34 252 26 C260 20 272 20 280 27 Z'/%3E%3Cpath d='M470 14 C460 6 462 -2 472 -6 C478 2 478 10 470 14 Z'/%3E%3Cpath d='M640 27 C630 34 618 34 612 26 C620 20 632 20 640 27 Z'/%3E%3Ccircle cx='400' cy='20' r='2' fill='%238C7A63' stroke='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-size: 100% 28px;
+    background: var(--rule);
 }
 
 .section-heading {
