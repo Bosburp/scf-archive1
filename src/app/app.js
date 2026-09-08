@@ -1005,7 +1005,7 @@ function renderFeaturedStudy() {
                 </a>
 
                 <div class="featured-copy-panel p-6 md:p-8 flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l">
-                    <p class="gold-accent brand-font uppercase tracking-[0.18em] text-[10px] mb-3">Garden Shelf Pick</p>
+                    <p class="gold-accent brand-font uppercase tracking-[0.18em] text-[10px] mb-3">Staff Pick</p>
                     <h2 class="text-xl md:text-2xl brand-font parchment-text leading-snug mb-3">${featured.title}</h2>
                     <div class="featured-author-line brand-font text-xs mb-5">By ${authorLinksHtml(featured)}</div>
 
