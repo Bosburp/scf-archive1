@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1250,7 +1250,7 @@
 
     <div id="aboutPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center site-layer">
-            <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
+            <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">â† Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
               <p>We're a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
@@ -1262,7 +1262,7 @@
 
     <div id="submitPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center site-layer">
-            <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">← Close</button>
+            <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">â† Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
             <div class="space-y-8 text-zinc-400 italic text-md leading-relaxed text-center max-w-2xl mx-auto">
                 <p>We are always looking for high-quality, educational chess studies to add to our archive.</p>
@@ -1329,10 +1329,6 @@
                         <span class="filter-label">Side</span>
                         <select id="sideSelect" class="library-select brand-font"></select>
                     </label>
-                    <label id="difficultyFilterField" class="library-filter-field hidden">
-                        <span class="filter-label">Difficulty</span>
-                        <select id="difficultySelect" class="library-select brand-font"></select>
-                    </label>
                     <label class="library-filter-field">
                         <span class="filter-label">Author</span>
                         <select id="authorSelect" class="library-select brand-font"></select>
@@ -1348,8 +1344,6 @@
                             <option value="newest">Newest</option>
                             <option value="oldest">Oldest</option>
                             <option value="title-az">Alphabetical</option>
-                            <option value="difficulty-asc">Difficulty: Easy to Hard</option>
-                            <option value="difficulty-desc">Difficulty: Hard to Easy</option>
                         </select>
                     </label>
                 </div>
@@ -1378,7 +1372,7 @@
         <div id="newSinceVisitBanner" class="hidden max-w-2xl mx-auto -mt-10 mb-12 text-center">
             <button onclick="jumpToNewStudies()" class="inline-flex items-center gap-3 border border-[var(--gold)]/30 rounded-full px-5 py-2.5 text-[11px] brand-font uppercase tracking-widest gold-accent hover:border-[var(--gold)] transition-all bg-transparent">
                 <span id="newSinceVisitText"></span>
-                <span>→</span>
+                <span>â†’</span>
             </button>
         </div>
 
@@ -1386,7 +1380,7 @@
             <section class="author-profile-shell">
                 <div class="author-profile-header">
                     <div class="author-profile-header-inner">
-                        <button onclick="backToArchive()" class="back-btn">← Back to Library</button>
+                        <button onclick="backToArchive()" class="back-btn">â† Back to Library</button>
                         <div class="author-profile-top-row">
                             <h2 id="authorProfileName" class="author-profile-name"></h2>
                             <div id="authorProfileBadge" class="author-profile-badge hidden"></div>
@@ -1421,8 +1415,8 @@
             <div class="section-heading">
                 <h3 class="section-kicker">Latest Additions</h3>
                 <div class="flex gap-4">
-                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">←</button>
-                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">→</button>
+                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">â†</button>
+                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">â†’</button>
                 </div>
             </div>
             <div class="carousel-viewport">
@@ -1454,7 +1448,6 @@
         let currentFilter = 'All',
             currentOpeningFilter = 'All Openings',
             currentSideFilter = 'Any Side',
-            currentDifficultyFilter = 'Any Difficulty',
             currentAuthor = null,
             currentAuthorFilter = 'All Authors',
             currentThemeFilter = 'All Themes',
@@ -1472,50 +1465,79 @@
         }
 
         const OPENING_TAXONOMY = [
-            ['Caro-Kann Defense', /\bcaro[-\s]?kann\b/i],
-            ['Alapin Sicilian', /\balapin\b/i],
-            ['Smith-Morra Gambit', /\bsmith[-\s]?morra\b/i],
-            ['Najdorf Sicilian', /\bnajdorf\b/i],
-            ['Dragon Sicilian', /\bdragon\b/i],
-            ['Kan Sicilian', /\bkan\b/i],
-            ['Taimanov Sicilian', /\btaimanov\b/i],
-            ['Maroczy Bind', /\bmaroczy\b/i],
-            ['Sicilian Defense', /\bsicilian\b/i],
-            ['French Defense', /\bfrench (defen[cs]e|defence)\b/i],
-            ['Ruy Lopez', /\bruy lopez\b|\bspanish (game|opening)\b/i],
-            ['Italian Game', /\bitalian game\b|\bgiuoco piano\b|\btwo knights\b|\bfried liver\b/i],
-            ['Scotch Game', /\bscotch (game|opening)\b/i],
-            ['Queen\'s Gambit', /\bqueen'?s gambit\b|\bqg[ad]\b/i],
-            ['King\'s Indian Defense', /\bking'?s indian\b|\bkid\b/i],
-            ['Nimzo-Indian Defense', /\bnimzo[-\s]?indian\b/i],
-            ['Bogo-Indian Defense', /\bbogo[-\s]?indian\b/i],
-            ['English Opening', /\benglish opening\b|\b1\.?\s*c4\b/i],
-            ['London System', /\blondon system\b/i],
-            ['Scandinavian Defense', /\bscandinavian\b|\bcenter counter\b/i],
-            ['Pirc Defense', /\bpirc\b/i],
-            ['Modern Defense', /\bmodern defense\b|\bmodern defence\b/i],
-            ['Alekhine Defense', /\balekhine'?s? defense\b|\balekhine'?s? defence\b/i],
-            ['Nimzowitsch Defense', /\bnimzowitsch\b/i],
-            ['Bird Opening', /\bbird'?s? opening\b|\b1\.?\s*f4\b/i],
-            ['Nimzo-Larsen Attack', /\bnimzo[-\s]?larsen\b|\b1\.?\s*b3\b/i],
-            ['Polish Opening', /\bpolish opening\b|\b1\.?\s*b4\b/i],
-            ['King\'s Gambit', /\bking'?s gambit\b/i],
-            ['Vienna Game', /\bvienna game\b/i],
-            ['Philidor Defense', /\bphilidor\b/i],
-            ['Petrov Defense', /\bpetrov\b|\bpetroff\b/i],
-            ['Dutch Defense', /\bdutch defense\b|\bdutch defence\b/i],
-            ['Catalan Opening', /\bcatalan\b/i],
-            ['Benko Gambit', /\bbenko\b|\bvolga gambit\b/i],
-            ['Benoni Defense', /\bbenoni\b/i],
-            ['Grunfeld Defense', /\bgr[uü]nfeld\b|\bgruenfeld\b/i],
-            ['Slav Defense', /\bslav defense\b|\bslav defence\b/i],
-            ['Semi-Slav Defense', /\bsemi[-\s]?slav\b/i],
-            ['Trompowsky Attack', /\btrompowsky\b/i],
-            ['Torre Attack', /\btorre attack\b/i],
-            ['Colle System', /\bcolle\b/i],
-            ['Englund Gambit', /\benglund\b/i],
-            ['Owen Defense', /\bowen'?s? defense\b|\bowen'?s? defence\b/i],
-            ['Bongcloud', /\bbongcloud\b/i]
+            { family: 'Sicilian Defense', pattern: /\bsicilian\b|\bnajdorf\b|\balapin\b|\bdragon\b|\bkan\b|\btaimanov\b|\bmaroczy\b|\bsmith[-\s]?morra\b/i, variations: [
+                ['Alapin', /\balapin\b/i],
+                ['Smith-Morra Gambit', /\bsmith[-\s]?morra\b/i],
+                ['Najdorf', /\bnajdorf\b/i],
+                ['Dragon', /\bdragon\b/i],
+                ['Kan', /\bkan\b/i],
+                ['Taimanov', /\btaimanov\b/i],
+                ['Maroczy Bind', /\bmaroczy\b/i],
+                ['Classical', /\bclassical sicilian\b/i]
+            ] },
+            { family: 'Italian Game', pattern: /\bitalian\b|\bgiuoco piano\b|\btwo knights\b|\bfried liver\b|\bevans gambit\b|\bdubov italian\b|\brousseau gambit\b/i, variations: [
+                ['Giuoco Piano', /\bgiuoco piano\b/i],
+                ['Two Knights', /\btwo knights\b|\bfried liver\b/i],
+                ['Evans Gambit', /\bevans gambit\b/i],
+                ['Dubov Italian', /\bdubov italian\b/i],
+                ['Rousseau Gambit', /\brousseau gambit\b/i]
+            ] },
+            { family: 'Scotch Game', pattern: /\bscotch\b|\bhaggis[-\s]?grodzize\b/i, variations: [
+                ['Scotch Gambit', /\bscotch gambit\b|\bhaggis[-\s]?grodzize\b/i]
+            ] },
+            { family: 'Queen\'s Gambit', pattern: /\bqueen['’]?s gambit\b|\bqg[ad]\b|\balbin countergambit\b/i, variations: [
+                ['Accepted', /\bqueen['’]?s gambit accepted\b|\bqga\b/i],
+                ['Declined', /\bqueen['’]?s gambit declined\b|\bqgd\b/i],
+                ['Albin Countergambit', /\balbin countergambit\b/i]
+            ] },
+            { family: 'King\'s Indian Defense', pattern: /\bking['’]?s indian\b|\bkid\b|\bsamisch\b|\bsämisch\b|\bfianchetto\b/i, variations: [
+                ['Samisch', /\bsamisch\b|\bsämisch\b/i],
+                ['Fianchetto', /\bfianchetto\b/i],
+                ['Makogonov', /\bmakogonov\b/i]
+            ] },
+            { family: 'French Defense', pattern: /\bfrench (defen[cs]e|defence)\b|\bfrench\b/i, variations: [
+                ['Advance', /\badvance french\b|\bfrench advance\b/i],
+                ['Exchange', /\bexchange french\b|\bfrench exchange\b/i],
+                ['Winawer', /\bwinawer\b/i],
+                ['Tarrasch', /\btarrasch french\b|\bfrench tarrasch\b/i]
+            ] },
+            { family: 'Caro-Kann Defense', pattern: /\bcaro[-\s]?kann\b/i, variations: [
+                ['Advance', /\badvance caro[-\s]?kann\b|\bcaro[-\s]?kann advance\b/i],
+                ['Exchange', /\bexchange caro[-\s]?kann\b|\bcaro[-\s]?kann exchange\b/i]
+            ] },
+            { family: 'Ruy Lopez', pattern: /\bruy lopez\b|\bspanish (game|opening)\b/i, variations: [
+                ['Exchange', /\bruy lopez exchange\b|\bexchange ruy lopez\b/i],
+                ['Bird Defense', /\bbird defense\b|\bbird defence\b/i]
+            ] },
+            { family: 'English Opening', pattern: /\benglish opening\b|\b1\.?\s*c4\b/i, variations: [] },
+            { family: 'London System', pattern: /\blondon system\b/i, variations: [] },
+            { family: 'Scandinavian Defense', pattern: /\bscandinavian\b|\bcenter counter\b/i, variations: [] },
+            { family: 'Pirc Defense', pattern: /\bpirc\b/i, variations: [] },
+            { family: 'Modern Defense', pattern: /\bmodern defense\b|\bmodern defence\b/i, variations: [] },
+            { family: 'Alekhine Defense', pattern: /\balekhine['’]?s? defense\b|\balekhine['’]?s? defence\b|\balekhine\b/i, variations: [] },
+            { family: 'Nimzowitsch Defense', pattern: /\bnimzowitsch\b/i, variations: [] },
+            { family: 'Nimzo-Indian Defense', pattern: /\bnimzo[-\s]?indian\b/i, variations: [] },
+            { family: 'Bogo-Indian Defense', pattern: /\bbogo[-\s]?indian\b/i, variations: [] },
+            { family: 'Bird Opening', pattern: /\bbird['’]?s? opening\b|\b1\.?\s*f4\b/i, variations: [] },
+            { family: 'Nimzo-Larsen Attack', pattern: /\bnimzo[-\s]?larsen\b|\b1\.?\s*b3\b/i, variations: [] },
+            { family: 'Polish Opening', pattern: /\bpolish opening\b|\b1\.?\s*b4\b/i, variations: [] },
+            { family: 'King\'s Gambit', pattern: /\bking['’]?s gambit\b/i, variations: [] },
+            { family: 'Vienna Game', pattern: /\bvienna game\b/i, variations: [] },
+            { family: 'Philidor Defense', pattern: /\bphilidor\b/i, variations: [] },
+            { family: 'Petrov Defense', pattern: /\bpetrov\b|\bpetroff\b/i, variations: [] },
+            { family: 'Dutch Defense', pattern: /\bdutch defense\b|\bdutch defence\b/i, variations: [] },
+            { family: 'Catalan Opening', pattern: /\bcatalan\b/i, variations: [] },
+            { family: 'Benko Gambit', pattern: /\bbenko\b|\bvolga gambit\b/i, variations: [] },
+            { family: 'Benoni Defense', pattern: /\bbenoni\b/i, variations: [] },
+            { family: 'Grunfeld Defense', pattern: /\bgrunfeld\b|\bgruenfeld\b/i, variations: [] },
+            { family: 'Slav Defense', pattern: /\bslav defense\b|\bslav defence\b/i, variations: [] },
+            { family: 'Semi-Slav Defense', pattern: /\bsemi[-\s]?slav\b/i, variations: [] },
+            { family: 'Trompowsky Attack', pattern: /\btrompowsky\b/i, variations: [] },
+            { family: 'Torre Attack', pattern: /\btorre attack\b/i, variations: [] },
+            { family: 'Colle System', pattern: /\bcolle\b/i, variations: [] },
+            { family: 'Englund Gambit', pattern: /\benglund\b/i, variations: [] },
+            { family: 'Owen Defense', pattern: /\bowen['’]?s? defense\b|\bowen['’]?s? defence\b/i, variations: [] },
+            { family: 'Bongcloud', pattern: /\bbongcloud\b/i, variations: [] }
         ];
 
         function normalizeSearchTerm(value) {
@@ -1530,21 +1552,29 @@
                 .trim();
         }
 
-        function deriveOpening(study) {
+        function deriveOpeningTaxonomy(study) {
             const haystack = [
                 study.category,
                 study.title,
                 study.notes,
                 study.viewerNote,
-                study.generated?.searchText,
-                ...(study.generated?.chapterNames || [])
+                study.generated?.title,
+                study.generated?.selectedChapterName
             ].filter(Boolean).join(' ');
 
-            for (const [name, pattern] of OPENING_TAXONOMY) {
-                if (pattern.test(haystack)) return name;
+            for (const entry of OPENING_TAXONOMY) {
+                if (!entry.pattern.test(haystack)) continue;
+                const variation = (entry.variations || []).find(([, pattern]) => pattern.test(haystack));
+                return {
+                    openingFamily: entry.family,
+                    openingVariation: variation ? variation[0] : ''
+                };
             }
 
-            return isOpeningCategory(study.category) ? 'Other Openings' : 'Not Opening Specific';
+            return {
+                openingFamily: isOpeningCategory(study.category) ? 'Other Openings' : 'Not Opening Specific',
+                openingVariation: ''
+            };
         }
 
         function deriveThemes(study) {
@@ -1569,15 +1599,18 @@
         }
 
         function enrichStudyRecord(study) {
-            const opening = deriveOpening(study);
+            const taxonomy = deriveOpeningTaxonomy(study);
             const themes = deriveThemes(study);
+            const openingLabel = taxonomy.openingVariation
+                ? `${taxonomy.openingFamily} - ${taxonomy.openingVariation}`
+                : taxonomy.openingFamily;
             const searchFields = [
                 study.title,
                 authorDisplay(study),
                 study.category,
-                opening,
+                taxonomy.openingFamily,
+                taxonomy.openingVariation,
                 study.side,
-                study.difficulty,
                 study.notes,
                 study.viewerNote,
                 study.keyword,
@@ -1590,7 +1623,10 @@
 
             return {
                 ...study,
-                opening,
+                opening: taxonomy.openingFamily,
+                openingFamily: taxonomy.openingFamily,
+                openingVariation: taxonomy.openingVariation,
+                openingLabel,
                 themes,
                 normalizedSearchText: normalizeSearchTerm(searchFields.filter(Boolean).join(' '))
             };
@@ -1722,9 +1758,11 @@
             shown.add(randomStudy.link);
             saveSurprisedLinks(shown);
             currentFilter = 'All';
+            currentOpeningFilter = 'All Openings';
             currentSideFilter = 'Any Side';
-            currentDifficultyFilter = 'Any Difficulty';
             currentAuthor = null;
+            currentAuthorFilter = 'All Authors';
+            currentThemeFilter = 'All Themes';
             currentSubFilter = null;
             showFavoritesOnly = false;
             document.getElementById('searchInput').value = '';
@@ -2229,7 +2267,7 @@
         }
 
         function primaryTaxonomyLabel(study) {
-            return study.opening && study.opening !== 'Not Opening Specific' ? study.opening : study.category;
+            return study.openingLabel && study.openingLabel !== 'Not Opening Specific' ? study.openingLabel : study.category;
         }
 
         function getFeaturedStudy() {
@@ -2358,7 +2396,7 @@
             
             return `
             <div class="chess-card flex flex-col group relative">
-                ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">★ Staff Pick</div>` : ''}
+                ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">â˜… Staff Pick</div>` : ''}
                 ${noteOverlay}
                 <button onclick="toggleFavorite('${i.link.replace(/'/g, "\\'")}', this)" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/70 hover:text-[#c5a059]" title="Save to favorites">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
@@ -2404,26 +2442,16 @@
             if (normalizeSearchTerm(study.title) === t) score += 120;
             if (normalizeSearchTerm(study.title).includes(t)) score += 70;
             if (normalizeSearchTerm(authorDisplay(study)).includes(t)) score += 55;
-            if (normalizeSearchTerm(study.opening).includes(t)) score += 45;
+            if (normalizeSearchTerm(study.openingFamily).includes(t)) score += 45;
+            if (normalizeSearchTerm(study.openingVariation).includes(t)) score += 30;
             if (normalizeSearchTerm(study.category).includes(t)) score += 35;
             if (normalizeSearchTerm(study.themes?.join(' ')).includes(t)) score += 28;
-            if (normalizeSearchTerm(study.difficulty).includes(t)) score += 20;
             if (normalizeSearchTerm(study.side).includes(t)) score += 15;
             if (normalizeSearchTerm(study.viewerNote).includes(t)) score += 12;
             if (normalizeSearchTerm(study.featuredDescription).includes(t)) score += 10;
             if (normalizeSearchTerm(study.notes).includes(t)) score += 8;
             if (normalizeSearchTerm(study.generated?.searchText).includes(t)) score += 6;
             return score;
-        }
-
-        function difficultyRank(value) {
-            const v = normalizeText(value);
-            if (!v) return 99;
-            if (v.includes('quick')) return 0;
-            if (v.includes('easy') || v.includes('beginner')) return 1;
-            if (v.includes('intermediate') || v.includes('medium')) return 2;
-            if (v.includes('advanced') || v.includes('hard')) return 3;
-            return 50;
         }
 
         function getSortedStudies(data, term = '') {
@@ -2438,10 +2466,6 @@
                     return arr.reverse();
                 case 'title-az':
                     return arr.sort((a, b) => a.title.localeCompare(b.title));
-                case 'difficulty-asc':
-                    return arr.sort((a, b) => difficultyRank(a.difficulty) - difficultyRank(b.difficulty) || a.title.localeCompare(b.title));
-                case 'difficulty-desc':
-                    return arr.sort((a, b) => difficultyRank(b.difficulty) - difficultyRank(a.difficulty) || a.title.localeCompare(b.title));
                 case 'newest':
                 default:
                     return arr;
@@ -2498,7 +2522,7 @@
 
         function getCountryFlag(country) {
             const code = countryToCode(country);
-            if (!code || code.length !== 2) return '🌍';
+            if (!code || code.length !== 2) return 'ðŸŒ';
             return code.toUpperCase().replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt(0)));
         }
 
@@ -2634,12 +2658,12 @@
             let end = Math.min(totalPages, start + windowSize - 1);
             start = Math.max(1, end - windowSize + 1);
 
-            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.max(1, currentPage - 1)}" ${currentPage === 1 ? 'disabled' : ''}>← Prev</button>`);
+            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.max(1, currentPage - 1)}" ${currentPage === 1 ? 'disabled' : ''}>â† Prev</button>`);
 
             if (start > 1) {
                 pages.push(`<button class="filter-chip brand-font page-chip" data-page="1">1</button>`);
                 if (start > 2) {
-                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">…</span>`);
+                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">â€¦</span>`);
                 }
             }
 
@@ -2649,12 +2673,12 @@
 
             if (end < totalPages) {
                 if (end < totalPages - 1) {
-                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">…</span>`);
+                    pages.push(`<span class="filter-chip brand-font page-chip cursor-default">â€¦</span>`);
                 }
                 pages.push(`<button class="filter-chip brand-font page-chip" data-page="${totalPages}">${totalPages}</button>`);
             }
 
-            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.min(totalPages, currentPage + 1)}" ${currentPage === totalPages ? 'disabled' : ''}>Next →</button>`);
+            pages.push(`<button class="filter-chip brand-font page-chip" data-page="${Math.min(totalPages, currentPage + 1)}" ${currentPage === totalPages ? 'disabled' : ''}>Next â†’</button>`);
 
             container.innerHTML = pages.join('');
             container.querySelectorAll('button[data-page]').forEach(btn => {
@@ -2677,15 +2701,14 @@
 
             let filtered = window.chessData.filter(i => {
                 const matchesText = matchesSearch(i, term) || term.length === 0;
-                const matchesOpening = currentOpeningFilter === 'All Openings' || i.opening === currentOpeningFilter;
+                const matchesOpening = currentOpeningFilter === 'All Openings' || i.openingFamily === currentOpeningFilter;
                 const matchesCategory = currentFilter === 'All' || (currentFilter === 'Staff Picks' ? isStaffPickStudy(i) : i.category === currentFilter);
                 const matchesSide = (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
-                const matchesDifficulty = (currentDifficultyFilter === 'Any Difficulty' || i.difficulty === currentDifficultyFilter);
                 const matchesAuthor = (currentAuthorFilter === 'All Authors' || studyHasAuthor(i, currentAuthorFilter));
                 const matchesTheme = currentThemeFilter === 'All Themes' || (i.themes || []).includes(currentThemeFilter);
                 const matchesFavorite = (!showFavoritesOnly || renderFavorites.has(i.link));
 
-                return matchesText && matchesOpening && matchesCategory && matchesSide && matchesDifficulty && matchesAuthor && matchesTheme && matchesFavorite;
+                return matchesText && matchesOpening && matchesCategory && matchesSide && matchesAuthor && matchesTheme && matchesFavorite;
             });
 
             filtered = getSortedStudies(filtered, term);
@@ -2697,7 +2720,7 @@
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-            const isSearchingOrFiltering = term.length > 0 || currentOpeningFilter !== 'All Openings' || currentFilter !== 'All' || currentSideFilter !== 'Any Side' || currentDifficultyFilter !== 'Any Difficulty' || currentAuthorFilter !== 'All Authors' || currentThemeFilter !== 'All Themes' || showFavoritesOnly;
+            const isSearchingOrFiltering = term.length > 0 || currentOpeningFilter !== 'All Openings' || currentFilter !== 'All' || currentSideFilter !== 'Any Side' || currentAuthorFilter !== 'All Authors' || currentThemeFilter !== 'All Themes' || showFavoritesOnly;
             const latestSec = document.getElementById('latestSection');
             const recentSec = document.getElementById('recentlyViewedSection');
             const featuredSec = document.getElementById('featuredSection');
@@ -2728,6 +2751,7 @@
 
             authorSec.classList.add('hidden');
             libraryControls.classList.remove('hidden');
+            createFilters();
             renderActiveFilters(filtered.length);
 
             const featured = getFeaturedStudy();
@@ -2782,7 +2806,6 @@
             const category = params.get('category');
             const opening = params.get('opening');
             const side = params.get('side');
-            const difficulty = params.get('difficulty');
             const author = params.get('author');
             const authorFilter = params.get('authorFilter');
             const theme = params.get('theme');
@@ -2792,7 +2815,6 @@
             if (category) currentFilter = category;
             if (opening) currentOpeningFilter = opening;
             if (side) currentSideFilter = side;
-            if (difficulty) currentDifficultyFilter = difficulty;
             if (author) currentAuthor = cleanAuthorName(author);
             if (authorFilter) currentAuthorFilter = cleanAuthorName(authorFilter);
             if (theme) currentThemeFilter = theme;
@@ -2816,7 +2838,6 @@
             if (currentOpeningFilter !== 'All Openings') params.set('opening', currentOpeningFilter);
             if (currentFilter !== 'All') params.set('category', currentFilter);
             if (currentSideFilter !== 'Any Side') params.set('side', currentSideFilter);
-            if (currentDifficultyFilter !== 'Any Difficulty') params.set('difficulty', currentDifficultyFilter);
             if (currentAuthorFilter !== 'All Authors') params.set('authorFilter', currentAuthorFilter);
             if (currentThemeFilter !== 'All Themes') params.set('theme', currentThemeFilter);
             const sortValue = document.getElementById('sortSelect')?.value || 'relevance';
@@ -2849,7 +2870,6 @@
             currentFilter = 'All';
             currentOpeningFilter = 'All Openings';
             currentSideFilter = 'Any Side';
-            currentDifficultyFilter = 'Any Difficulty';
             currentAuthor = null;
             currentAuthorFilter = 'All Authors';
             currentThemeFilter = 'All Themes';
@@ -2867,36 +2887,56 @@
         };
 
         function createFilters() {
-            populateSelect('openingSelect', ['All Openings', ...getFilterOptions('opening')], currentOpeningFilter);
-            populateSelect('categorySelect', ['All', 'Staff Picks', ...getFilterOptions('category')], currentFilter);
-            populateSelect('sideSelect', ['Any Side', ...getFilterOptions('side')], currentSideFilter);
-            populateSelect('authorSelect', ['All Authors', ...getAuthorOptions()], currentAuthorFilter);
-            populateSelect('themeSelect', ['All Themes', ...getThemeOptions()], currentThemeFilter);
-
-            const difficulties = getFilterOptions('difficulty');
-            const difficultyField = document.getElementById('difficultyFilterField');
-            if (difficulties.length) {
-                difficultyField.classList.remove('hidden');
-                populateSelect('difficultySelect', ['Any Difficulty', ...difficulties], currentDifficultyFilter);
-            } else {
-                difficultyField.classList.add('hidden');
-                currentDifficultyFilter = 'Any Difficulty';
-            }
+            populateSelect('openingSelect', ['All Openings', ...getFilterOptions('openingFamily', 'opening')], currentOpeningFilter);
+            populateSelect('categorySelect', ['All', ...getCategoryOptions()], currentFilter);
+            populateSelect('sideSelect', ['Any Side', ...getFilterOptions('side', 'side')], currentSideFilter);
+            populateSelect('authorSelect', ['All Authors', ...getAuthorOptions('author')], currentAuthorFilter);
+            populateSelect('themeSelect', ['All Themes', ...getThemeOptions('theme')], currentThemeFilter);
         }
 
-        function getFilterOptions(field) {
-            return [...new Set(window.chessData.map(i => i[field]).filter(Boolean))]
+        function getCompatibleStudies(exclude = '') {
+            const term = document.getElementById('searchInput').value.trim();
+            const favorites = getFavorites();
+
+            return window.chessData.filter(study => {
+                if (exclude !== 'search' && term && !matchesSearch(study, term)) return false;
+                if (exclude !== 'opening' && currentOpeningFilter !== 'All Openings' && study.openingFamily !== currentOpeningFilter) return false;
+                if (exclude !== 'category' && currentFilter !== 'All') {
+                    if (currentFilter === 'Staff Picks') {
+                        if (!isStaffPickStudy(study)) return false;
+                    } else if (study.category !== currentFilter) {
+                        return false;
+                    }
+                }
+                if (exclude !== 'side' && currentSideFilter !== 'Any Side' && study.side !== currentSideFilter) return false;
+                if (exclude !== 'author' && currentAuthorFilter !== 'All Authors' && !studyHasAuthor(study, currentAuthorFilter)) return false;
+                if (exclude !== 'theme' && currentThemeFilter !== 'All Themes' && !(study.themes || []).includes(currentThemeFilter)) return false;
+                if (exclude !== 'favorites' && showFavoritesOnly && !favorites.has(study.link)) return false;
+                return true;
+            });
+        }
+
+        function getFilterOptions(field, exclude = '') {
+            return [...new Set(getCompatibleStudies(exclude).map(i => i[field]).filter(Boolean))]
                 .filter(value => !['General', 'Not Opening Specific'].includes(value))
                 .sort((a, b) => a.localeCompare(b));
         }
 
-        function getAuthorOptions() {
-            return [...new Set(window.chessData.flatMap(i => i.authors || [i.author]).filter(Boolean))]
+        function getCategoryOptions() {
+            const compatible = getCompatibleStudies('category');
+            const categories = [...new Set(compatible.map(i => i.category).filter(Boolean))]
+                .filter(value => value !== 'General')
+                .sort((a, b) => a.localeCompare(b));
+            return compatible.some(isStaffPickStudy) ? ['Staff Picks', ...categories] : categories;
+        }
+
+        function getAuthorOptions(exclude = '') {
+            return [...new Set(getCompatibleStudies(exclude).flatMap(i => i.authors || [i.author]).filter(Boolean))]
                 .sort((a, b) => a.localeCompare(b));
         }
 
-        function getThemeOptions() {
-            return [...new Set(window.chessData.flatMap(i => i.themes || []).filter(Boolean))]
+        function getThemeOptions(exclude = '') {
+            return [...new Set(getCompatibleStudies(exclude).flatMap(i => i.themes || []).filter(Boolean))]
                 .sort((a, b) => a.localeCompare(b));
         }
 
@@ -2916,7 +2956,6 @@
             if (currentOpeningFilter !== 'All Openings') filters.push(['Opening', currentOpeningFilter, 'opening']);
             if (currentFilter !== 'All') filters.push(['Category', currentFilter, 'category']);
             if (currentSideFilter !== 'Any Side') filters.push(['Side', currentSideFilter, 'side']);
-            if (currentDifficultyFilter !== 'Any Difficulty') filters.push(['Difficulty', currentDifficultyFilter, 'difficulty']);
             if (currentAuthorFilter !== 'All Authors') filters.push(['Author', currentAuthorFilter, 'authorFilter']);
             if (currentThemeFilter !== 'All Themes') filters.push(['Theme', currentThemeFilter, 'theme']);
             if (showFavoritesOnly) filters.push(['Saved', 'My Favorites', 'favorites']);
@@ -2933,7 +2972,7 @@
                 ${filters.map(([label, value, key]) => `
                     <span class="active-filter-chip brand-font">
                         <span>${label}: ${escapeHTML(value)}</span>
-                        <button type="button" onclick="clearFilter('${key}')" aria-label="Clear ${escapeHTML(label)}">×</button>
+                        <button type="button" onclick="clearFilter('${key}')" aria-label="Clear ${escapeHTML(label)}">Ã—</button>
                     </span>
                 `).join('')}
                 <button type="button" onclick="resetFilters()" class="filter-chip brand-font">Clear All</button>
@@ -2945,7 +2984,6 @@
             if (key === 'opening') currentOpeningFilter = 'All Openings';
             if (key === 'category') currentFilter = 'All';
             if (key === 'side') currentSideFilter = 'Any Side';
-            if (key === 'difficulty') currentDifficultyFilter = 'Any Difficulty';
             if (key === 'authorFilter') currentAuthorFilter = 'All Authors';
             if (key === 'theme') currentThemeFilter = 'All Themes';
             if (key === 'favorites') {
@@ -3009,13 +3047,6 @@
             renderArchive();
         });
 
-        document.getElementById('difficultySelect').addEventListener('change', (e) => {
-            currentDifficultyFilter = e.target.value;
-            currentAuthor = null;
-            currentPage = 1;
-            renderArchive();
-        });
-
         document.getElementById('authorSelect').addEventListener('change', (e) => {
             currentAuthorFilter = e.target.value;
             currentAuthor = null;
@@ -3034,7 +3065,6 @@
             currentFilter = 'All';
             currentOpeningFilter = 'All Openings';
             currentSideFilter = 'Any Side';
-            currentDifficultyFilter = 'Any Difficulty';
             currentAuthor = null;
             currentAuthorFilter = 'All Authors';
             currentThemeFilter = 'All Themes';
