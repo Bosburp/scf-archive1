@@ -678,10 +678,11 @@
 
         .author-profile-shell {
             width: 100%;
+            max-width: 1180px;
             margin: 0 auto 3rem auto;
             border: 1px solid rgba(197,160,89,0.14);
             background:
-                linear-gradient(135deg, rgba(197,160,89,0.12), transparent 42%),
+                linear-gradient(135deg, rgba(111,127,97,0.1), transparent 42%),
                 linear-gradient(180deg, rgba(255,255,255,0.03), transparent 28%),
                 var(--card);
             overflow: hidden;
@@ -694,8 +695,8 @@
             padding: 1.6rem 1.25rem 1.4rem;
             border-bottom: 1px solid rgba(197,160,89,0.12);
             background:
-                radial-gradient(circle at top left, rgba(197,160,89,0.15), transparent 34%),
-                linear-gradient(135deg, rgba(197,160,89,0.07), transparent 56%);
+                radial-gradient(circle at top left, rgba(111,127,97,0.14), transparent 34%),
+                linear-gradient(135deg, rgba(197,160,89,0.05), transparent 56%);
         }
 
         .author-profile-header-inner {
@@ -962,12 +963,38 @@
         }
 
         .card-author {
-            display: block;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.22rem;
             max-width: 100%;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
             font-size: 12px;
+        }
+
+        .card-author-link {
+            display: inline;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .card-author-link:hover {
+            color: var(--heading);
+            text-decoration: underline;
+        }
+
+        .card-author-separator {
+            color: var(--gold);
+            opacity: 0.55;
+        }
+
+        .featured-author-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            color: var(--gold);
         }
 
         .card-note {
@@ -1209,7 +1236,7 @@
             </div>
         </header>
 
-        <div class="max-w-3xl mx-auto mb-16 md:mb-20 text-center">
+        <div id="libraryControls" class="max-w-3xl mx-auto mb-16 md:mb-20 text-center">
             <div class="search-container relative mb-5">
                 <input type="text" id="searchInput" autocomplete="off" placeholder="Search by author, opening, or game stage... (press / to focus)" class="w-full rounded-sm py-3.5 px-5 text-sm focus:outline-none italic">
                 <div id="searchSuggestions" class="hidden text-left absolute left-0 right-0 mt-2 rounded-sm overflow-hidden z-30" style="background: var(--card); border: 1px solid var(--border);"></div>
@@ -1281,7 +1308,7 @@
             <section class="author-profile-shell">
                 <div class="author-profile-header">
                     <div class="author-profile-header-inner">
-                        <button onclick="backToArchive()" class="back-btn">← Back to Archive</button>
+                        <button onclick="backToArchive()" class="back-btn">← Back to Library</button>
                         <div class="author-profile-top-row">
                             <h2 id="authorProfileName" class="author-profile-name"></h2>
                             <div id="authorProfileBadge" class="author-profile-badge hidden"></div>
@@ -1293,6 +1320,11 @@
                 <div class="author-profile-body">
                     <div id="authorProfileContent" class="author-profile-grid"></div>
                     <div id="authorProfileFooter" class="author-profile-footer"></div>
+                    <div class="section-heading mt-10">
+                        <h3 class="section-kicker">Author Studies</h3>
+                        <p id="authorStudyCount" class="section-meta"></p>
+                    </div>
+                    <div id="authorStudiesGrid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-7"></div>
                 </div>
             </section>
         </div>
@@ -1349,6 +1381,7 @@
             currentPage = 1,
             carouselPos = 0,
             carouselInterval,
+            pendingUrlPush = false,
             searchTimer;
 
         function isOpeningCategory(category) {
@@ -1367,7 +1400,7 @@
 
             const t = term.toLowerCase();
 
-            const authors = [...new Set(window.chessData.map(i => i.author))]
+            const authors = [...new Set(window.chessData.flatMap(i => i.authors || [i.author]))]
                 .filter(a => a.toLowerCase().includes(t))
                 .slice(0, 4);
 
@@ -1556,7 +1589,42 @@
                 .toString()
                 .trim()
                 .toLowerCase()
+                .replace(/^@+/, '')
                 .replace(/\s+/g, ' ');
+        }
+
+        function cleanAuthorName(name) {
+            return (name || '')
+                .toString()
+                .trim()
+                .replace(/^@+/, '')
+                .replace(/\s+/g, ' ');
+        }
+
+        function parseAuthors(value) {
+            const authors = (value || '')
+                .toString()
+                .split(',')
+                .map(cleanAuthorName)
+                .filter(Boolean);
+            return authors.length ? [...new Map(authors.map(author => [normalizeAuthorName(author), author])).values()] : ['Anonymous'];
+        }
+
+        function authorDisplay(study) {
+            return (study.authors && study.authors.length ? study.authors : [study.author]).join(', ');
+        }
+
+        function studyHasAuthor(study, authorName) {
+            const target = normalizeAuthorName(authorName);
+            return (study.authors || [study.author]).some(author => normalizeAuthorName(author) === target);
+        }
+
+        function normalizeStudyLink(value) {
+            const link = (value || '').toString().replace(/"/g, '').trim();
+            if (!link) return '#';
+            if (/^https?:\/\//i.test(link)) return link;
+            if (/^(www\.)?lichess\.org\//i.test(link)) return `https://${link.replace(/^www\./i, '')}`;
+            return link;
         }
 
         function escapeHTML(value) {
@@ -1589,7 +1657,7 @@
             const t = term.toLowerCase();
             return [
                 study.title,
-                study.author,
+                authorDisplay(study),
                 study.difficulty,
                 study.category,
                 study.side,
@@ -1714,7 +1782,7 @@
                 const rows = parseCSV(csv);
 
                 window.authorData = rows.slice(1).map(c => ({
-                    author: c[0]?.trim() || "",
+                    author: cleanAuthorName(c[0]) || "",
                     bio: c[1]?.trim() || "",
                     country: c[2]?.trim() || "",
                     style: c[3]?.trim() || "",
@@ -1764,13 +1832,18 @@
                 const rows = parseCSV(csv);
 
                 window.chessData = rows.slice(1).map(c => {
-                    const link = c[5]?.replace(/"/g, '') || "#";
+                    const rawAuthor = c[4]?.replace(/"/g, '') || "Anonymous";
+                    const authors = parseAuthors(rawAuthor);
+                    const link = normalizeStudyLink(c[5]);
                     const generated = getGeneratedStudyData(link);
                     return {
                         side: c[1]?.replace(/"/g, '') || "Universal",
                         category: c[2]?.replace(/"/g, '') || "General",
                         title: c[3]?.replace(/"/g, '') || "Untitled",
-                        author: c[4]?.replace(/"/g, '') || "Anonymous",
+                        author: authors[0],
+                        authors,
+                        authorRaw: rawAuthor,
+                        authorDisplay: authors.join(', '),
                         link,
                         notes: c[6]?.replace(/"/g, '') || "",
                         viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
@@ -1936,6 +2009,13 @@
             return true;
         }
 
+        function authorLinksHtml(study) {
+            const authors = study.authors && study.authors.length ? study.authors : [study.author];
+            return authors.map(author =>
+                `<button type="button" onclick="filterByAuthor('${author.replace(/'/g, "\\'")}')" class="card-author-link gold-accent brand-font" title="View ${escapeHTML(author)}">${escapeHTML(author)}</button>`
+            ).join('<span class="card-author-separator">,</span>');
+        }
+
         function getFeaturedStudy() {
             if (!window.chessData || window.chessData.length === 0) return null;
 
@@ -1982,7 +2062,7 @@
                         <div class="p-6 md:p-8 flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l border-zinc-900/70">
                             <p class="gold-accent brand-font uppercase tracking-[0.18em] text-[10px] mb-3">Weekly Spotlight</p>
                             <h2 class="text-xl md:text-2xl brand-font parchment-text leading-snug mb-3">${featured.title}</h2>
-                            <p onclick="filterByAuthor('${featured.author.replace(/'/g, "\\'")}')" class="gold-accent brand-font text-xs mb-5 cursor-pointer hover:underline w-fit">By ${featured.author}</p>
+                            <div class="featured-author-line brand-font text-xs mb-5">By ${authorLinksHtml(featured)}</div>
 
                             <div class="space-y-3 mb-6">
                                 <p class="text-zinc-400 italic leading-relaxed text-sm max-w-xl line-clamp-3">
@@ -2092,7 +2172,7 @@
 
                     <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-title brand-font parchment-text hover:text-[#c5a059] transition-colors" title="${escapeHTML(i.title)}">${i.title}</a>
                     
-                    <p onclick="filterByAuthor('${i.author.replace(/'/g, "\\'")}')" class="card-author gold-accent brand-font cursor-pointer hover:underline w-fit" title="By ${escapeHTML(i.author)}">By ${i.author}</p>
+                    <div class="card-author" title="By ${escapeHTML(authorDisplay(i))}">By ${authorLinksHtml(i)}</div>
                     
                     <p class="card-note text-zinc-500 text-[11px] italic leading-relaxed">${i.notes.replace(/STAR/gi, '')}</p>
 
@@ -2106,7 +2186,7 @@
             const t = term.toLowerCase();
             let score = 0;
             if (normalizeText(study.title).includes(t)) score += 60;
-            if (normalizeText(study.author).includes(t)) score += 45;
+            if (normalizeText(authorDisplay(study)).includes(t)) score += 45;
             if (normalizeText(study.category).includes(t)) score += 35;
             if (normalizeText(study.difficulty).includes(t)) score += 20;
             if (normalizeText(study.side).includes(t)) score += 15;
@@ -2142,9 +2222,9 @@
                 case 'title-za':
                     return arr.sort((a, b) => b.title.localeCompare(a.title));
                 case 'author-az':
-                    return arr.sort((a, b) => a.author.localeCompare(b.author));
+                    return arr.sort((a, b) => authorDisplay(a).localeCompare(authorDisplay(b)));
                 case 'author-za':
-                    return arr.sort((a, b) => b.author.localeCompare(a.author));
+                    return arr.sort((a, b) => authorDisplay(b).localeCompare(authorDisplay(a)));
                 case 'difficulty-asc':
                     return arr.sort((a, b) => difficultyRank(a.difficulty) - difficultyRank(b.difficulty) || a.title.localeCompare(b.title));
                 case 'difficulty-desc':
@@ -2231,6 +2311,8 @@
             const badge = document.getElementById('authorProfileBadge');
             const subtitle = document.getElementById('authorProfileSubtitle');
             const footer = document.getElementById('authorProfileFooter');
+            const studyGrid = document.getElementById('authorStudiesGrid');
+            const studyCountEl = document.getElementById('authorStudyCount');
 
             const profile = (window.authorData || []).find(a => normalizeAuthorName(a.author) === normalizeAuthorName(authorName));
 
@@ -2244,8 +2326,9 @@
             const links = splitLinks(linksRaw);
             const flag = getCountryFlag(country);
 
-            title.textContent = authorName;
+            title.textContent = cleanAuthorName(authorName);
             subtitle.textContent = `${studyCount} ${studyWord} in the library`;
+            studyCountEl.textContent = `${studyCount} ${studyWord}`;
 
             if (country) {
                 badge.classList.remove('hidden');
@@ -2317,6 +2400,8 @@
 
             content.innerHTML = cards.join('');
             footer.textContent = country ? `${flag} ${country}` : '';
+            studyGrid.innerHTML = studies.map(i => cardHtml(i, getFavorites())).join('');
+            studyGrid.querySelectorAll('.chess-card').forEach(el => revealObserver.observe(el));
 
             section.classList.remove('hidden');
         }
@@ -2393,7 +2478,7 @@
 
                 const matchesSide = (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
                 const matchesDifficulty = (currentDifficultyFilter === 'Any Difficulty' || i.difficulty === currentDifficultyFilter);
-                const matchesAuthor = (!currentAuthor || normalizeAuthorName(i.author) === normalizeAuthorName(currentAuthor));
+                const matchesAuthor = (!currentAuthor || studyHasAuthor(i, currentAuthor));
                 const matchesFavorite = (!showFavoritesOnly || renderFavorites.has(i.link));
 
                 return matchesText && matchesCategory && matchesSide && matchesDifficulty && matchesAuthor && matchesFavorite;
@@ -2414,6 +2499,31 @@
             const featuredSec = document.getElementById('featuredSection');
             const authorSec = document.getElementById('authorProfileSection');
             const archiveHeader = document.getElementById('archiveHeader');
+            const libraryControls = document.getElementById('libraryControls');
+            const newSinceVisitBanner = document.getElementById('newSinceVisitBanner');
+            const grid = document.getElementById('resultsGrid');
+            const noRes = document.getElementById('noResults');
+            const pagination = document.getElementById('paginationContainer');
+
+            if (currentAuthor) {
+                latestSec.style.display = 'none';
+                recentSec.classList.add('hidden');
+                featuredSec.style.display = 'none';
+                authorSec.classList.remove('hidden');
+                libraryControls.classList.add('hidden');
+                if (newSinceVisitBanner) newSinceVisitBanner.classList.add('hidden');
+                archiveHeader.style.display = 'none';
+                grid.style.display = 'none';
+                noRes.style.display = 'none';
+                pagination.innerHTML = '';
+                const authorStudies = getSortedStudies(window.chessData.filter(study => studyHasAuthor(study, currentAuthor)), '');
+                renderAuthorProfile(currentAuthor, authorStudies);
+                syncUrlParams('');
+                return;
+            }
+
+            authorSec.classList.add('hidden');
+            libraryControls.classList.remove('hidden');
 
             const featured = getFeaturedStudy();
             const featuredMatchesSearch = !!featured && matchesSearch(featured, term);
@@ -2450,9 +2560,6 @@
 
             syncUrlParams(term);
             
-            const grid = document.getElementById('resultsGrid');
-            const noRes = document.getElementById('noResults');
-
             if (filtered.length === 0) {
                 grid.style.display = 'none';
                 noRes.innerHTML = `
@@ -2484,11 +2591,21 @@
             if (sub) currentSubFilter = sub;
             if (side) currentSideFilter = side;
             if (difficulty) currentDifficultyFilter = difficulty;
-            if (author) currentAuthor = author;
+            if (author) currentAuthor = cleanAuthorName(author);
         }
 
         function syncUrlParams(term) {
             const params = new URLSearchParams();
+
+            if (currentAuthor) {
+                params.set('author', currentAuthor);
+                const query = params.toString();
+                const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+                const method = pendingUrlPush ? 'pushState' : 'replaceState';
+                window.history[method]({}, '', newUrl);
+                pendingUrlPush = false;
+                return;
+            }
 
             if (term) params.set('q', term);
             if (currentFilter !== 'All') params.set('category', currentFilter);
@@ -2499,22 +2616,24 @@
 
             const query = params.toString();
             const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
-            window.history.replaceState({}, '', newUrl);
+            const method = pendingUrlPush ? 'pushState' : 'replaceState';
+            window.history[method]({}, '', newUrl);
+            pendingUrlPush = false;
         }
 
         function filterByAuthor(author) {
-            currentAuthor = author;
+            currentAuthor = cleanAuthorName(author);
             currentPage = 1;
             document.getElementById('searchInput').value = '';
+            pendingUrlPush = true;
             renderArchive();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function backToArchive() {
             currentAuthor = null;
             currentPage = 1;
+            pendingUrlPush = true;
             renderArchive();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function resetFilters() {
@@ -2649,6 +2768,21 @@
 
         document.getElementById('sortSelect').addEventListener('change', () => {
             currentPage = 1;
+            renderArchive();
+        });
+
+        window.addEventListener('popstate', () => {
+            currentFilter = 'All';
+            currentSideFilter = 'Any Side';
+            currentDifficultyFilter = 'Any Difficulty';
+            currentAuthor = null;
+            currentSubFilter = null;
+            currentPage = 1;
+            document.getElementById('searchInput').value = '';
+            readUrlParams();
+            createFilters();
+            createSideFilters();
+            createDifficultyFilters();
             renderArchive();
         });
 
