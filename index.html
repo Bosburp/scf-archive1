@@ -1718,6 +1718,21 @@
             }
         }
 
+        async function loadGeneratedStudyData() {
+            try {
+                const res = await fetch('generated/lichess-study-data.json', { cache: 'no-cache' });
+                if (!res.ok) throw new Error('not found');
+                window.generatedStudyData = await res.json();
+            } catch (e) {
+                window.generatedStudyData = { studies: {} };
+            }
+        }
+
+        function getGeneratedStudyData(link) {
+            const id = getLichessStudyId(link);
+            return id && window.generatedStudyData?.studies ? window.generatedStudyData.studies[id] : null;
+        }
+
         async function loadData() {
             document.getElementById('noResults').style.display = 'none';
             showLoadingState();
@@ -1725,23 +1740,29 @@
             try {
                 await loadAuthorData();
                 await loadStudyPreviewData();
+                await loadGeneratedStudyData();
 
                 const csv = await fetchCsvCached(sheetUrl, 'scf-studies-csv');
                 const rows = parseCSV(csv);
 
-                window.chessData = rows.slice(1).map(c => ({
-                    side: c[1]?.replace(/"/g, '') || "Universal",
-                    category: c[2]?.replace(/"/g, '') || "General",
-                    title: c[3]?.replace(/"/g, '') || "Untitled",
-                    author: c[4]?.replace(/"/g, '') || "Anonymous",
-                    link: c[5]?.replace(/"/g, '') || "#",
-                    notes: c[6]?.replace(/"/g, '') || "",
-                    viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
-                    image: (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80",
-                    difficulty: c[9]?.replace(/"/g, '').trim() || "",
-                    keyword: c[11]?.replace(/"/g, '').trim() || "",
-                    featuredDescription: c[12]?.replace(/"/g, '').trim() || ""
-                })).filter(i => i.title !== "").reverse();
+                window.chessData = rows.slice(1).map(c => {
+                    const link = c[5]?.replace(/"/g, '') || "#";
+                    const generated = getGeneratedStudyData(link);
+                    return {
+                        side: c[1]?.replace(/"/g, '') || "Universal",
+                        category: c[2]?.replace(/"/g, '') || "General",
+                        title: c[3]?.replace(/"/g, '') || "Untitled",
+                        author: c[4]?.replace(/"/g, '') || "Anonymous",
+                        link,
+                        notes: c[6]?.replace(/"/g, '') || "",
+                        viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
+                        image: generated?.thumbnailPath || ((c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80"),
+                        generated,
+                        difficulty: c[9]?.replace(/"/g, '').trim() || "",
+                        keyword: c[11]?.replace(/"/g, '').trim() || "",
+                        featuredDescription: c[12]?.replace(/"/g, '').trim() || ""
+                    };
+                }).filter(i => i.title !== "").reverse();
 
                 markNewStudies(window.chessData);
 
@@ -1944,8 +1965,10 @@
 
             const studyId = getLichessStudyId(study.link);
             const previewData = (window.studyPreviewData && studyId) ? window.studyPreviewData[studyId] : null;
+            const generatedData = study.generated || getGeneratedStudyData(study.link);
 
             const introText = (previewData && previewData.intro)
+                || generatedData?.intro
                 || study.featuredDescription
                 || study.viewerNote
                 || study.notes.replace(/STAR/gi, '').trim()
@@ -1953,7 +1976,8 @@
             document.getElementById('previewIntro').textContent = introText;
 
             const boardWrap = document.getElementById('previewBoardWrap');
-            const svg = previewData && previewData.fen ? renderStaticBoardSVG(previewData.fen) : null;
+            const previewFen = generatedData?.thumbnailFen || previewData?.fen;
+            const svg = previewFen ? renderStaticBoardSVG(previewFen) : null;
             if (svg) {
                 boardWrap.innerHTML = svg;
                 boardWrap.classList.remove('hidden');

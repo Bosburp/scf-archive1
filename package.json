@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "generate:thumbnails": "node scripts/generate-thumbnails.mjs",
+    "check": "node scripts/check-inline-script.mjs"
+  },
+  "dependencies": {
+    "chess.js": "^1.0.0"
+  },
+  "devDependencies": {}
+}
