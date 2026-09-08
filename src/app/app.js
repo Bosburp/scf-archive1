@@ -994,7 +994,7 @@ function renderFeaturedStudy() {
 
     container.innerHTML = `
         <div class="featured-shell">
-            <div class="grid md:grid-cols-[0.9fr_1.1fr] min-h-[240px]">
+            <div class="featured-layout grid md:grid-cols-[0.95fr_1.05fr]">
                 <a href="${featured.link}" onclick="return handleStudyLinkClick(event, '${featured.link.replace(/'/g, "\\'")}')" class="featured-image block relative">
                     <img src="${featured.image}" alt="${featured.title}" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
                     <div class="absolute top-4 left-4 flex flex-wrap items-center gap-2 z-10 max-w-[calc(100%-2rem)]">
@@ -1010,10 +1010,10 @@ function renderFeaturedStudy() {
                     <div class="featured-author-line brand-font text-xs mb-5">By ${authorLinksHtml(featured)}</div>
 
                     <div class="space-y-3 mb-6">
-                        <p class="text-zinc-400 italic leading-relaxed text-sm max-w-xl line-clamp-3">
+                        <p class="featured-spotlight-text italic leading-relaxed text-sm max-w-xl line-clamp-3">
                             ${spotlightText}
                         </p>
-                        <p class="text-zinc-500 text-[11px] italic leading-relaxed">
+                        <p class="featured-taxonomy-text text-[11px] italic leading-relaxed">
                             Category: ${taxonomySummary(featured)}
                         </p>
                     </div>
