@@ -153,9 +153,9 @@ function escapeXml(value) {
 }
 
 async function loadPieceSymbolDefs() {
-  const html = await fs.readFile('index.html', 'utf8');
-  const match = html.match(/const PIECE_SYMBOL_DEFS = `([\s\S]*?)`;/);
-  if (!match) throw new Error('Could not find PIECE_SYMBOL_DEFS in index.html');
+  const source = await fs.readFile('src/app/app.js', 'utf8');
+  const match = source.match(/const PIECE_SYMBOL_DEFS = `([\s\S]*?)`;/);
+  if (!match) throw new Error('Could not find PIECE_SYMBOL_DEFS in src/app/app.js');
   return match[1].trim();
 }
 
@@ -165,13 +165,12 @@ function renderBoardSvg({ fen, title, orientation = 'white' }) {
   if (rows.length !== 8) throw new Error(`Invalid FEN rows: ${fen}`);
 
   const size = 640;
-  const pad = 8;
+  const pad = 0;
   const boardSize = size - pad * 2;
   const sq = boardSize / 8;
   const light = '#e8dcc4';
   const dark = '#8a7458';
-  const bg = '#eef3e7';
-  const frame = '#b8cbbb';
+  const bg = '#fbf7ed';
   const normalizedOrientation = orientation === 'black' ? 'black' : 'white';
   const coords = normalizedOrientation === 'black'
     ? { row: r => 7 - r, col: c => 7 - c }
@@ -214,7 +213,6 @@ function renderBoardSvg({ fen, title, orientation = 'white' }) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${label}">
   <defs>${pieceSymbolDefs}</defs>
   <rect width="${size}" height="${size}" fill="${bg}"/>
-  <rect x="${pad}" y="${pad}" width="${boardSize}" height="${boardSize}" rx="6" fill="#f7f3e8" stroke="${frame}" stroke-opacity="0.8"/>
   ${squares}
   ${pieces}
 </svg>`;
@@ -270,9 +268,6 @@ async function main() {
       console.log(`rerendered ${study.studyId} ${study.thumbnailPath}`);
     }
 
-    generated.renderer = 'site-piece-symbols-v2';
-    generated.rerenderedAt = new Date().toISOString();
-    await fs.writeFile(OUT_FILE, `${JSON.stringify(generated, null, 2)}\n`, 'utf8');
     console.log(JSON.stringify({ rerendered }, null, 2));
     return;
   }
