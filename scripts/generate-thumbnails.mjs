@@ -15,6 +15,8 @@ const args = new Map(process.argv.slice(2).map(arg => {
 
 const limit = args.has('limit') ? Number(args.get('limit')) : Infinity;
 const only = args.get('only');
+const rerenderExisting = args.has('rerender-existing');
+let pieceSymbolDefs = '';
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -150,28 +152,28 @@ function escapeXml(value) {
     .replace(/"/g, '&quot;');
 }
 
-function pieceGlyph(piece) {
-  const glyphs = {
-    p: '♟', n: '♞', b: '♝', r: '♜', q: '♛', k: '♚',
-    P: '♙', N: '♘', B: '♗', R: '♖', Q: '♕', K: '♔',
-  };
-  return glyphs[piece] || '';
+async function loadPieceSymbolDefs() {
+  const html = await fs.readFile('index.html', 'utf8');
+  const match = html.match(/const PIECE_SYMBOL_DEFS = `([\s\S]*?)`;/);
+  if (!match) throw new Error('Could not find PIECE_SYMBOL_DEFS in index.html');
+  return match[1].trim();
 }
 
-function renderBoardSvg({ fen, title, side = 'Universal', orientation = 'white' }) {
+function renderBoardSvg({ fen, title, orientation = 'white' }) {
   const board = fenBoardOnly(fen);
   const rows = board.split('/');
   if (rows.length !== 8) throw new Error(`Invalid FEN rows: ${fen}`);
 
   const size = 640;
-  const pad = 48;
-  const boardSize = 544;
+  const pad = 40;
+  const boardSize = 560;
   const sq = boardSize / 8;
-  const light = '#d8ccb7';
-  const dark = '#7e694f';
+  const light = '#e8dcc4';
+  const dark = '#8a7458';
   const bg = '#101010';
   const gold = '#c5a059';
-  const coords = orientation === 'black'
+  const normalizedOrientation = orientation === 'black' ? 'black' : 'white';
+  const coords = normalizedOrientation === 'black'
     ? { row: r => 7 - r, col: c => 7 - c }
     : { row: r => r, col: c => c };
 
@@ -200,22 +202,22 @@ function renderBoardSvg({ fen, title, side = 'Universal', orientation = 'white' 
       const piece = grid[boardRow][boardCol];
       if (piece) {
         const isWhite = piece === piece.toUpperCase();
-        pieces += `<text x="${x + sq / 2}" y="${y + sq * 0.73}" text-anchor="middle" font-size="54" font-family="Georgia, 'Times New Roman', serif" fill="${isWhite ? '#f3f0e8' : '#111111'}" stroke="${isWhite ? '#111111' : '#e9e1d2'}" stroke-width="1.4">${pieceGlyph(piece)}</text>`;
+        const colorPrefix = isWhite ? 'w' : 'b';
+        const piecePad = sq * 0.035;
+        pieces += `<use href="#piece-${colorPrefix}${piece.toLowerCase()}" x="${x + piecePad}" y="${y + piecePad}" width="${sq - piecePad * 2}" height="${sq - piecePad * 2}"/>`;
       }
     }
   }
 
   const label = escapeXml(title).slice(0, 72);
-  const sideLabel = escapeXml(side || 'Universal').toUpperCase();
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${label}">
+  <defs>${pieceSymbolDefs}</defs>
   <rect width="${size}" height="${size}" fill="${bg}"/>
-  <rect x="24" y="24" width="592" height="592" rx="18" fill="#151515" stroke="#2b261c"/>
-  <rect x="${pad}" y="${pad}" width="${boardSize}" height="${boardSize}" rx="8" fill="#111" stroke="${gold}" stroke-opacity="0.42"/>
+  <rect x="20" y="20" width="600" height="600" rx="16" fill="#151515" stroke="#2b261c"/>
+  <rect x="${pad}" y="${pad}" width="${boardSize}" height="${boardSize}" rx="8" fill="#111" stroke="${gold}" stroke-opacity="0.38"/>
   ${squares}
   ${pieces}
-  <rect x="48" y="560" width="544" height="32" fill="#101010" fill-opacity="0.78"/>
-  <text x="68" y="581" font-size="11" font-family="Josefin Sans, Arial, sans-serif" fill="${gold}" letter-spacing="3">${sideLabel}</text>
 </svg>`;
 }
 
@@ -246,8 +248,35 @@ async function fetchStudyPgn(studyId) {
 }
 
 async function main() {
+  pieceSymbolDefs = await loadPieceSymbolDefs();
   await fs.mkdir(THUMB_DIR, { recursive: true });
   await fs.mkdir(path.dirname(OUT_FILE), { recursive: true });
+
+  if (rerenderExisting) {
+    const generated = await readExistingGenerated();
+    const entries = Object.values(generated.studies || {})
+      .filter(study => study.thumbnailFen && study.thumbnailPath)
+      .filter(study => !only || study.studyId === only)
+      .slice(0, Number.isFinite(limit) ? limit : undefined);
+
+    let rerendered = 0;
+    for (const study of entries) {
+      await fs.writeFile(study.thumbnailPath, renderBoardSvg({
+        fen: study.thumbnailFen,
+        title: study.title || study.studyId,
+        side: study.side || 'Universal',
+        orientation: study.orientation,
+      }), 'utf8');
+      rerendered++;
+      console.log(`rerendered ${study.studyId} ${study.thumbnailPath}`);
+    }
+
+    generated.renderer = 'site-piece-symbols-v2';
+    generated.rerenderedAt = new Date().toISOString();
+    await fs.writeFile(OUT_FILE, `${JSON.stringify(generated, null, 2)}\n`, 'utf8');
+    console.log(JSON.stringify({ rerendered }, null, 2));
+    return;
+  }
 
   const csv = await fetchText(SHEET_URL);
   const rows = parseCSV(csv);
@@ -309,16 +338,12 @@ async function main() {
       const hash = fenHash(thumbnailFen);
       const thumbnailPath = `${THUMB_DIR}/${parts.studyId}-${selected.chapterId || 'chapter1'}-${hash}.svg`.replace(/\\/g, '/');
 
-      try {
-        await fs.access(thumbnailPath);
-      } catch {
-        await fs.writeFile(thumbnailPath, renderBoardSvg({
-          fen: thumbnailFen,
-          title: study.title,
-          side: study.side,
-          orientation: selected.orientation,
-        }), 'utf8');
-      }
+      await fs.writeFile(thumbnailPath, renderBoardSvg({
+        fen: thumbnailFen,
+        title: study.title,
+        side: study.side,
+        orientation: selected.orientation,
+      }), 'utf8');
 
       generated.studies[parts.studyId] = {
         studyId: parts.studyId,
@@ -347,6 +372,7 @@ async function main() {
           chapterEntries.map(chapter => chapter.chapterName).join(' '),
         ].filter(Boolean).join(' '),
         thumbnailPath,
+        renderer: 'site-piece-symbols-v2',
         pgnFetched: true,
         pgnLength: pgn.length,
         error: '',

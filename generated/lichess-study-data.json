@@ -8119,5 +8119,7 @@
     "failures": 135,
     "successfulThumbnails": 132,
     "totalGeneratedStudies": 267
-  }
+  },
+  "renderer": "site-piece-symbols-v2",
+  "rerenderedAt": "2026-09-08T11:52:24.974Z"
 }
