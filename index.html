@@ -327,30 +327,34 @@
             position: relative;
             overflow: hidden;
             height: 220px;
-            background: #0c0c0c;
+            background:
+                linear-gradient(135deg, rgba(197,160,89,0.08), transparent 40%),
+                #0c0c0c;
         }
 
         .featured-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0.72;
-            filter: grayscale(25%);
-            transform: scale(1.02);
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease, filter 0.8s ease;
+            object-fit: contain;
+            object-position: center;
+            opacity: 0.82;
+            filter: grayscale(55%) contrast(0.95);
+            transform: none;
+            transition: opacity 0.35s ease, filter 0.35s ease;
         }
 
         .featured-shell:hover .featured-image img {
-            transform: scale(1.05);
-            opacity: 0.88;
-            filter: grayscale(0%);
+            opacity: 0.94;
+            filter: grayscale(25%) contrast(1);
         }
 
         .featured-image::after {
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(10,10,10,0.18), rgba(10,10,10,0));
+            background:
+                linear-gradient(to right, rgba(10,10,10,0.2), transparent 45%, rgba(10,10,10,0.08)),
+                linear-gradient(to top, rgba(10,10,10,0.22), rgba(10,10,10,0));
             pointer-events: none;
         }
 
@@ -420,24 +424,25 @@
             overflow: hidden;
             height: 100%;
             width: 100%;
+            background:
+                linear-gradient(135deg, rgba(197,160,89,0.05), transparent 44%),
+                #0d0d0d;
         }
 
         .card-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0.5;
-            transform: scale(1.02);
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-                        opacity 0.8s ease,
-                        filter 0.8s ease;
-            filter: grayscale(100%);
+            object-fit: contain;
+            object-position: center;
+            opacity: 0.62;
+            transform: none;
+            transition: opacity 0.35s ease, filter 0.35s ease;
+            filter: grayscale(100%) contrast(0.95);
         }
 
         .chess-card:hover .card-image {
-            transform: scale(1.06);
-            opacity: 0.72;
-            filter: grayscale(0%);
+            opacity: 0.82;
+            filter: grayscale(35%) contrast(1);
         }
 
         .image-vignette {
@@ -1154,14 +1159,6 @@
             </div>
         </header>
 
-        <section id="featuredSection" class="mb-14 md:mb-16 hidden">
-            <div class="section-heading">
-                <h3 class="section-kicker">Featured Study of the Week</h3>
-                <p class="section-meta">Curated Spotlight</p>
-            </div>
-            <div id="featuredStudyContainer"></div>
-        </section>
-
         <div class="max-w-3xl mx-auto mb-16 md:mb-20 text-center">
             <div class="search-container relative mb-5">
                 <input type="text" id="searchInput" autocomplete="off" placeholder="Search by author, opening, or game stage... (press / to focus)" class="w-full rounded-sm py-3.5 px-5 text-sm focus:outline-none italic">
@@ -1173,12 +1170,15 @@
                     <div class="filter-row">
                         <div class="filter-label">Sort</div>
                         <select id="sortSelect" class="filter-chip brand-font bg-transparent px-4 py-2">
+                            <option value="relevance">Relevance</option>
                             <option value="newest">Newest First</option>
                             <option value="oldest">Oldest First</option>
                             <option value="title-az">Title A-Z</option>
                             <option value="title-za">Title Z-A</option>
                             <option value="author-az">Author A-Z</option>
                             <option value="author-za">Author Z-A</option>
+                            <option value="difficulty-asc">Difficulty Easy-Hard</option>
+                            <option value="difficulty-desc">Difficulty Hard-Easy</option>
                         </select>
                     </div>
                     <div class="filter-row md:text-right">
@@ -1208,8 +1208,17 @@
                         <div id="difficultyFilterContainer" class="filter-group"></div>
                     </div>
                 </div>
-            </div>            <div id="liveCounter" class="mt-6 gold-accent brand-font font-bold uppercase"></div>
+            </div>
+            <div id="liveCounter" class="mt-6 gold-accent brand-font font-bold uppercase"></div>
         </div>
+
+        <section id="featuredSection" class="mb-14 md:mb-16 hidden">
+            <div class="section-heading">
+                <h3 class="section-kicker">Featured Study of the Week</h3>
+                <p class="section-meta">Curated Spotlight</p>
+            </div>
+            <div id="featuredStudyContainer"></div>
+        </section>
 
         <div id="newSinceVisitBanner" class="hidden max-w-2xl mx-auto -mt-10 mb-12 text-center">
             <button onclick="jumpToNewStudies()" class="inline-flex items-center gap-3 border border-[var(--gold)]/30 rounded-full px-5 py-2.5 text-[11px] brand-font uppercase tracking-widest gold-accent hover:border-[var(--gold)] transition-all bg-transparent">
@@ -2127,11 +2136,40 @@
             </div>`;
         }
 
-        function getSortedStudies(data) {
+        function getSearchScore(study, term) {
+            if (!term) return 0;
+            const t = term.toLowerCase();
+            let score = 0;
+            if (normalizeText(study.title).includes(t)) score += 60;
+            if (normalizeText(study.author).includes(t)) score += 45;
+            if (normalizeText(study.category).includes(t)) score += 35;
+            if (normalizeText(study.difficulty).includes(t)) score += 20;
+            if (normalizeText(study.side).includes(t)) score += 15;
+            if (normalizeText(study.keyword).includes(t)) score += 18;
+            if (normalizeText(study.viewerNote).includes(t)) score += 12;
+            if (normalizeText(study.featuredDescription).includes(t)) score += 10;
+            if (normalizeText(study.notes).includes(t)) score += 8;
+            return score;
+        }
+
+        function difficultyRank(value) {
+            const v = normalizeText(value);
+            if (!v) return 99;
+            if (v.includes('quick')) return 0;
+            if (v.includes('easy') || v.includes('beginner')) return 1;
+            if (v.includes('intermediate') || v.includes('medium')) return 2;
+            if (v.includes('advanced') || v.includes('hard')) return 3;
+            return 50;
+        }
+
+        function getSortedStudies(data, term = '') {
             const sortValue = document.getElementById('sortSelect')?.value || 'newest';
             const arr = [...data];
 
             switch (sortValue) {
+                case 'relevance':
+                    if (!term) return arr;
+                    return arr.sort((a, b) => getSearchScore(b, term) - getSearchScore(a, term));
                 case 'oldest':
                     return arr.reverse();
                 case 'title-az':
@@ -2142,6 +2180,10 @@
                     return arr.sort((a, b) => a.author.localeCompare(b.author));
                 case 'author-za':
                     return arr.sort((a, b) => b.author.localeCompare(a.author));
+                case 'difficulty-asc':
+                    return arr.sort((a, b) => difficultyRank(a.difficulty) - difficultyRank(b.difficulty) || a.title.localeCompare(b.title));
+                case 'difficulty-desc':
+                    return arr.sort((a, b) => difficultyRank(b.difficulty) - difficultyRank(a.difficulty) || a.title.localeCompare(b.title));
                 case 'newest':
                 default:
                     return arr;
@@ -2415,7 +2457,7 @@
                 return matchesText && matchesCategory && matchesSide && matchesDifficulty && matchesAuthor && matchesFavorite;
             });
 
-            filtered = getSortedStudies(filtered);
+            filtered = getSortedStudies(filtered, term);
 
             const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
             if (currentPage > totalPages) currentPage = totalPages;
@@ -2547,7 +2589,7 @@
             currentAuthor = null;
             currentSubFilter = null;
             currentPage = 1;
-            document.getElementById('sortSelect').value = 'newest';
+            document.getElementById('sortSelect').value = 'relevance';
             createFilters();
             createSideFilters();
             createDifficultyFilters();
