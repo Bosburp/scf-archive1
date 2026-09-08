@@ -170,8 +170,8 @@ function renderBoardSvg({ fen, title, orientation = 'white' }) {
   const sq = boardSize / 8;
   const light = '#e8dcc4';
   const dark = '#8a7458';
-  const bg = '#090a08';
-  const gold = '#c5a059';
+  const bg = '#eef3e7';
+  const frame = '#b8cbbb';
   const normalizedOrientation = orientation === 'black' ? 'black' : 'white';
   const coords = normalizedOrientation === 'black'
     ? { row: r => 7 - r, col: c => 7 - c }
@@ -214,7 +214,7 @@ function renderBoardSvg({ fen, title, orientation = 'white' }) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${label}">
   <defs>${pieceSymbolDefs}</defs>
   <rect width="${size}" height="${size}" fill="${bg}"/>
-  <rect x="${pad}" y="${pad}" width="${boardSize}" height="${boardSize}" rx="6" fill="#111" stroke="${gold}" stroke-opacity="0.28"/>
+  <rect x="${pad}" y="${pad}" width="${boardSize}" height="${boardSize}" rx="6" fill="#f7f3e8" stroke="${frame}" stroke-opacity="0.8"/>
   ${squares}
   ${pieces}
 </svg>`;

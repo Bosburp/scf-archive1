@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Chess Study Library | SCF</title>
-    <meta name="description" content="A curated archive of original, high-quality chess studies from Study Creators & Friends. Browse by author, category, and side, or search the archive instantly.">
+    <title>Chessendium | A Curated Chess Study Compendium</title>
+    <meta name="description" content="Chessendium is a curated compendium of original, high-quality chess studies. Browse by author, opening, category, side, and theme.">
     <meta name="robots" content="index,follow">
-    <meta property="og:title" content="The Chess Study Library | SCF">
-    <meta property="og:description" content="A curated archive of original, high-quality chess studies from Study Creators & Friends.">
-    <meta name="theme-color" content="#0b0c0a">
+    <meta property="og:title" content="Chessendium">
+    <meta property="og:description" content="A calm, curated compendium of original chess studies.">
+    <meta name="theme-color" content="#f7f3e8">
     <link rel="icon" type="image/svg+xml" href="assets/brand/csl-mark.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,9 +21,9 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "The Chess Study Library",
+      "name": "Chessendium",
       "url": "https://the-chess-study-library.vercel.app/",
-      "description": "A curated archive of original, high-quality chess studies from Study Creators & Friends.",
+      "description": "A calm, curated compendium of original chess studies.",
       "potentialAction": {
         "@type": "SearchAction",
         "target": "https://the-chess-study-library.vercel.app/?q={search_term_string}",
@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="src/styles/main.css">
 
 </head>
-<body class="min-h-screen px-5 py-8 sm:px-8 md:px-12 md:py-12">
+<body class="light-mode min-h-screen px-5 py-8 sm:px-8 md:px-12 md:py-12">
 
     <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
@@ -59,7 +59,7 @@
 
     <div id="aboutPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center site-layer">
-            <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">&larr; Close</button>
+            <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-[var(--heading)] transition-colors">&larr; Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
             <div class="space-y-6 text-zinc-400 italic text-md leading-relaxed text-left max-w-2xl mx-auto">
               <p>We're a community dedicated to creating and sharing original, high-quality work, completely free and accessible to all.</p>
@@ -71,16 +71,16 @@
 
     <div id="submitPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center site-layer">
-            <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-white transition-colors">&larr; Close</button>
+            <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-[var(--heading)] transition-colors">&larr; Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
             <div class="space-y-8 text-zinc-400 italic text-md leading-relaxed text-center max-w-2xl mx-auto">
                 <p>We are always looking for high-quality, educational chess studies to add to our archive.</p>
-                <div class="border border-zinc-900 p-8 rounded-sm bg-black/20">
+                <div class="contribute-panel p-8 rounded-sm">
                     <h4 class="gold-accent brand-font font-bold uppercase tracking-widest text-xs mb-4">How to contribute:</h4>
                     <p class="text-sm mb-6">All submissions are handled via our Discord server to ensure a proper review process.</p>
                     <ol class="text-left text-sm space-y-4 max-w-sm mx-auto list-decimal">
-                        <li>Join our <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="underline hover:text-[#c5a059]">Discord Server</a>.</li>
-                        <li>Navigate to the <span class="text-white">#study-submissions</span> channel.</li>
+                        <li>Join our <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="underline hover:text-[var(--accent)]">Discord Server</a>.</li>
+                        <li>Navigate to the <span class="parchment-text">#study-submissions</span> channel.</li>
                         <li>Follow the pinned template to post your link.</li>
                     </ol>
                 </div>
@@ -93,8 +93,8 @@
             <div class="brand-block">
                 <img src="assets/brand/csl-mark.svg" alt="" class="brand-mark" aria-hidden="true">
                 <div class="brand-copy">
-                    <h1 class="brand-title brand-font font-light parchment-text uppercase">The Chess Study Library</h1>
-                    <p class="brand-subtitle brand-font font-semibold uppercase">Hosted by Study Creators & Friends</p>
+                    <h1 class="brand-title brand-font font-light parchment-text">Chessendium</h1>
+                    <p class="brand-subtitle brand-font font-semibold uppercase">A living compendium of chess studies</p>
                 </div>
             </div>
             <div class="header-actions">
@@ -103,7 +103,7 @@
                     <span class="relative z-10">Discord</span>
                 </a>
 
-                <button onclick="toggleSubmit()" class="header-btn bg-[#c5a059] border-[#c5a059] text-[#0a0a0a] px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase transition-all hover:bg-transparent hover:text-[#c5a059]">
+                <button onclick="toggleSubmit()" class="header-btn primary-action px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase transition-all">
                     <span class="relative z-10">Submit Study</span>
                 </button>
 
@@ -235,8 +235,8 @@
             <div class="section-heading">
                 <h3 class="section-kicker">Latest Additions</h3>
                 <div class="flex gap-4">
-                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">&larr;</button>
-                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[#c5a059] transition-colors text-xs">&rarr;</button>
+                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[var(--accent)] transition-colors text-xs">&larr;</button>
+                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[var(--accent)] transition-colors text-xs">&rarr;</button>
                 </div>
             </div>
             <div class="carousel-viewport">
@@ -254,8 +254,8 @@
         <div id="paginationContainer" class="archive-pagination"></div>
 
         <footer class="site-footer">
-            <p class="text-zinc-500 italic text-sm">A curated archive of original chess studies.</p>
-            <p class="gold-accent brand-font uppercase tracking-[0.25em] text-[9px] mt-3">Study Creators &amp; Friends</p>
+            <p class="text-zinc-500 italic text-sm">A curated compendium of original chess studies.</p>
+            <p class="gold-accent brand-font uppercase tracking-[0.25em] text-[9px] mt-3">Chessendium</p>
             <p class="text-zinc-600 text-[10px] uppercase tracking-[0.2em] mt-4"></p>
         </footer>
     </div>

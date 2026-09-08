@@ -407,6 +407,9 @@ function applyStoredTheme() {
     if (stored === 'light') {
         document.body.classList.add('light-mode');
         document.getElementById('themeIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />';
+    } else if (stored === 'dark') {
+        document.body.classList.remove('light-mode');
+        document.getElementById('themeIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
     }
 }
 
@@ -1001,8 +1004,8 @@ function renderFeaturedStudy() {
                     </div>
                 </a>
 
-                <div class="p-6 md:p-8 flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l border-zinc-900/70">
-                    <p class="gold-accent brand-font uppercase tracking-[0.18em] text-[10px] mb-3">Weekly Spotlight</p>
+                <div class="featured-copy-panel p-6 md:p-8 flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l">
+                    <p class="gold-accent brand-font uppercase tracking-[0.18em] text-[10px] mb-3">Garden Shelf Pick</p>
                     <h2 class="text-xl md:text-2xl brand-font parchment-text leading-snug mb-3">${featured.title}</h2>
                     <div class="featured-author-line brand-font text-xs mb-5">By ${authorLinksHtml(featured)}</div>
 
@@ -1016,11 +1019,11 @@ function renderFeaturedStudy() {
                     </div>
 
                     <div class="flex flex-wrap gap-3">
-                        <a href="${featured.link}" target="_blank" onclick="recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-btn bg-[#c5a059] text-[#0a0a0a] px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] hover:bg-transparent hover:text-[#c5a059] transition-all">
+                        <a href="${featured.link}" target="_blank" onclick="recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-btn primary-action px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] transition-all">
                             Open Study
                         </a>
 
-                        <button onclick="copyLink('${featured.link}')" class="featured-btn px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] text-[var(--heading)] hover:text-[#c5a059] transition-all">
+                        <button onclick="copyLink('${featured.link}')" class="featured-btn px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] text-[var(--heading)] hover:text-[var(--accent)] transition-all">
                             Copy Link
                         </button>
                     </div>
@@ -1084,9 +1087,9 @@ function cardHtml(i, favorites = getFavorites()) {
 
     return `
     <div class="chess-card flex flex-col group relative">
-        ${isStar ? `<div class="absolute top-0 right-0 z-40 bg-[#c5a059] text-[#0a0a0a] px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">&#9733; Staff Pick</div>` : ''}
+        ${isStar ? `<div class="absolute top-0 right-0 z-40 staff-pick-ribbon px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">&#9733; Staff Pick</div>` : ''}
         ${noteOverlay}
-        <button onclick="toggleFavorite('${i.link.replace(/'/g, "\\'")}', this)" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/70 hover:text-[#c5a059]" title="Save to favorites">
+        <button onclick="toggleFavorite('${i.link.replace(/'/g, "\\'")}', this)" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/80 hover:text-[var(--accent)]" title="Save to favorites">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
         </button>
 
@@ -1105,14 +1108,14 @@ function cardHtml(i, favorites = getFavorites()) {
         <div class="study-card-body">
             <div class="flex justify-between items-start mb-2">
                 <span class="card-category text-[9px] brand-font font-semibold tracking-[0.16em] text-zinc-600 uppercase block italic" title="${escapeHTML(i.category)}">${escapeHTML(primaryTaxonomyLabel(i))}</span>
-                <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors" title="Copy Study Link">
+                <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[var(--accent)] transition-colors" title="Copy Study Link">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                 </button>
             </div>
 
-            <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-title brand-font parchment-text hover:text-[#c5a059] transition-colors" title="${escapeHTML(i.title)}">${i.title}</a>
+            <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-title brand-font parchment-text hover:text-[var(--accent)] transition-colors" title="${escapeHTML(i.title)}">${i.title}</a>
 
             <div class="card-author" title="By ${escapeHTML(authorDisplay(i))}">By ${authorLinksHtml(i)}</div>
 
