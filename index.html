@@ -225,6 +225,79 @@
             align-items: center;
         }
 
+        .library-filter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.85rem;
+        }
+
+        .library-filter-field {
+            display: grid;
+            gap: 0.45rem;
+            text-align: left;
+        }
+
+        .library-filter-field.hidden {
+            display: none;
+        }
+
+        .library-select {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+            color: var(--heading);
+            padding: 0.65rem 0.8rem;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+        }
+
+        .library-select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(197,160,89,0.12);
+            outline: none;
+        }
+
+        .active-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            padding-top: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .active-filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            border: 1px solid rgba(197,160,89,0.38);
+            border-radius: 999px;
+            padding: 0.45rem 0.65rem;
+            background: rgba(197,160,89,0.08);
+            color: var(--heading);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .active-filter-chip button {
+            color: var(--gold);
+            font-size: 13px;
+            line-height: 1;
+        }
+
+        @media (max-width: 700px) {
+            .library-filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .search-container input { 
             background-color: var(--card); 
             border: 1px solid var(--border); 
@@ -1236,54 +1309,59 @@
             </div>
         </header>
 
-        <div id="libraryControls" class="max-w-3xl mx-auto mb-16 md:mb-20 text-center">
+        <div id="libraryControls" class="max-w-5xl mx-auto mb-16 md:mb-20 text-center">
             <div class="search-container relative mb-5">
-                <input type="text" id="searchInput" autocomplete="off" placeholder="Search by author, opening, or game stage... (press / to focus)" class="w-full rounded-sm py-3.5 px-5 text-sm focus:outline-none italic">
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Search studies, authors, openings, notes, themes... (press / to focus)" class="w-full rounded-sm py-3.5 px-5 text-sm focus:outline-none italic">
                 <div id="searchSuggestions" class="hidden text-left absolute left-0 right-0 mt-2 rounded-sm overflow-hidden z-30" style="background: var(--card); border: 1px solid var(--border);"></div>
             </div>
 
             <div class="filter-panel">
-                <div class="grid gap-4 md:grid-cols-[1fr_auto] md:items-start">
-                    <div class="filter-row">
-                        <div class="filter-label">Sort</div>
-                        <select id="sortSelect" class="filter-chip brand-font bg-transparent px-4 py-2">
+                <div class="library-filter-grid">
+                    <label class="library-filter-field">
+                        <span class="filter-label">Opening</span>
+                        <select id="openingSelect" class="library-select brand-font"></select>
+                    </label>
+                    <label class="library-filter-field">
+                        <span class="filter-label">Category</span>
+                        <select id="categorySelect" class="library-select brand-font"></select>
+                    </label>
+                    <label class="library-filter-field">
+                        <span class="filter-label">Side</span>
+                        <select id="sideSelect" class="library-select brand-font"></select>
+                    </label>
+                    <label id="difficultyFilterField" class="library-filter-field hidden">
+                        <span class="filter-label">Difficulty</span>
+                        <select id="difficultySelect" class="library-select brand-font"></select>
+                    </label>
+                    <label class="library-filter-field">
+                        <span class="filter-label">Author</span>
+                        <select id="authorSelect" class="library-select brand-font"></select>
+                    </label>
+                    <label class="library-filter-field">
+                        <span class="filter-label">Theme</span>
+                        <select id="themeSelect" class="library-select brand-font"></select>
+                    </label>
+                    <label class="library-filter-field">
+                        <span class="filter-label">Sort</span>
+                        <select id="sortSelect" class="library-select brand-font">
                             <option value="relevance">Relevance</option>
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="title-az">Title A-Z</option>
-                            <option value="title-za">Title Z-A</option>
-                            <option value="author-az">Author A-Z</option>
-                            <option value="author-za">Author Z-A</option>
-                            <option value="difficulty-asc">Difficulty Easy-Hard</option>
-                            <option value="difficulty-desc">Difficulty Hard-Easy</option>
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                            <option value="title-az">Alphabetical</option>
+                            <option value="difficulty-asc">Difficulty: Easy to Hard</option>
+                            <option value="difficulty-desc">Difficulty: Hard to Easy</option>
                         </select>
-                    </div>
-                    <div class="filter-row md:text-right">
-                        <div class="filter-label">Saved</div>
-                        <div id="favoritesToggle" onclick="toggleFavoritesFilter()" class="filter-chip brand-font inline-flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-                            <span>My Favorites</span>
-                        </div>
-                    </div>
+                    </label>
                 </div>
 
-                <div class="filter-row mt-4">
-                    <div class="filter-label">Category / Opening</div>
-                    <div id="filterContainer" class="filter-group"></div>
-                </div>
-                <div id="subFilterPanel" class="filter-row mt-4 hidden">
-                    <div class="filter-label">Opening Line</div>
-                    <div id="subFilterContainer" class="filter-group"></div>
-                </div>
-                <div class="grid gap-4 md:grid-cols-2 mt-4">
-                    <div class="filter-row">
-                        <div class="filter-label">Side</div>
-                        <div id="sideFilterContainer" class="filter-group"></div>
-                    </div>
-                    <div id="difficultyFilterPanel" class="filter-row hidden">
-                        <div class="filter-label">Difficulty</div>
-                        <div id="difficultyFilterContainer" class="filter-group"></div>
-                    </div>
+                <div id="activeFilters" class="active-filter-bar hidden"></div>
+
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <button id="favoritesToggle" onclick="toggleFavoritesFilter()" class="filter-chip brand-font inline-flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                        <span>My Favorites</span>
+                    </button>
+                    <button onclick="resetFilters()" class="filter-chip brand-font">Reset Library</button>
                 </div>
             </div>
             <div id="liveCounter" class="mt-6 gold-accent brand-font font-bold uppercase"></div>
@@ -1354,7 +1432,7 @@
 
         <h3 id="archiveHeader" class="section-kicker mb-5 border-b border-[var(--border)] pb-2">Full Archive</h3>
         <div id="noResults" class="empty-state brand-font italic text-zinc-600" style="display:none;">
-            <p class="text-lg">No studies match your current search.</p>
+            <p class="text-lg">No studies match this library view.</p>`r`n                    <p class="text-sm mt-2 text-zinc-500">Try a broader opening, category, author, or search term.</p>
             <button onclick="resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
         </div>
         <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
@@ -1374,9 +1452,12 @@
         const ITEMS_PER_PAGE = 12;
 
         let currentFilter = 'All',
+            currentOpeningFilter = 'All Openings',
             currentSideFilter = 'Any Side',
             currentDifficultyFilter = 'Any Difficulty',
             currentAuthor = null,
+            currentAuthorFilter = 'All Authors',
+            currentThemeFilter = 'All Themes',
             currentSubFilter = null,
             currentPage = 1,
             carouselPos = 0,
@@ -1390,6 +1471,131 @@
             return /^1\.\S/.test(c) || c.endsWith('defense') || c.includes('opening');
         }
 
+        const OPENING_TAXONOMY = [
+            ['Caro-Kann Defense', /\bcaro[-\s]?kann\b/i],
+            ['Alapin Sicilian', /\balapin\b/i],
+            ['Smith-Morra Gambit', /\bsmith[-\s]?morra\b/i],
+            ['Najdorf Sicilian', /\bnajdorf\b/i],
+            ['Dragon Sicilian', /\bdragon\b/i],
+            ['Kan Sicilian', /\bkan\b/i],
+            ['Taimanov Sicilian', /\btaimanov\b/i],
+            ['Maroczy Bind', /\bmaroczy\b/i],
+            ['Sicilian Defense', /\bsicilian\b/i],
+            ['French Defense', /\bfrench (defen[cs]e|defence)\b/i],
+            ['Ruy Lopez', /\bruy lopez\b|\bspanish (game|opening)\b/i],
+            ['Italian Game', /\bitalian game\b|\bgiuoco piano\b|\btwo knights\b|\bfried liver\b/i],
+            ['Scotch Game', /\bscotch (game|opening)\b/i],
+            ['Queen\'s Gambit', /\bqueen'?s gambit\b|\bqg[ad]\b/i],
+            ['King\'s Indian Defense', /\bking'?s indian\b|\bkid\b/i],
+            ['Nimzo-Indian Defense', /\bnimzo[-\s]?indian\b/i],
+            ['Bogo-Indian Defense', /\bbogo[-\s]?indian\b/i],
+            ['English Opening', /\benglish opening\b|\b1\.?\s*c4\b/i],
+            ['London System', /\blondon system\b/i],
+            ['Scandinavian Defense', /\bscandinavian\b|\bcenter counter\b/i],
+            ['Pirc Defense', /\bpirc\b/i],
+            ['Modern Defense', /\bmodern defense\b|\bmodern defence\b/i],
+            ['Alekhine Defense', /\balekhine'?s? defense\b|\balekhine'?s? defence\b/i],
+            ['Nimzowitsch Defense', /\bnimzowitsch\b/i],
+            ['Bird Opening', /\bbird'?s? opening\b|\b1\.?\s*f4\b/i],
+            ['Nimzo-Larsen Attack', /\bnimzo[-\s]?larsen\b|\b1\.?\s*b3\b/i],
+            ['Polish Opening', /\bpolish opening\b|\b1\.?\s*b4\b/i],
+            ['King\'s Gambit', /\bking'?s gambit\b/i],
+            ['Vienna Game', /\bvienna game\b/i],
+            ['Philidor Defense', /\bphilidor\b/i],
+            ['Petrov Defense', /\bpetrov\b|\bpetroff\b/i],
+            ['Dutch Defense', /\bdutch defense\b|\bdutch defence\b/i],
+            ['Catalan Opening', /\bcatalan\b/i],
+            ['Benko Gambit', /\bbenko\b|\bvolga gambit\b/i],
+            ['Benoni Defense', /\bbenoni\b/i],
+            ['Grunfeld Defense', /\bgr[uü]nfeld\b|\bgruenfeld\b/i],
+            ['Slav Defense', /\bslav defense\b|\bslav defence\b/i],
+            ['Semi-Slav Defense', /\bsemi[-\s]?slav\b/i],
+            ['Trompowsky Attack', /\btrompowsky\b/i],
+            ['Torre Attack', /\btorre attack\b/i],
+            ['Colle System', /\bcolle\b/i],
+            ['Englund Gambit', /\benglund\b/i],
+            ['Owen Defense', /\bowen'?s? defense\b|\bowen'?s? defence\b/i],
+            ['Bongcloud', /\bbongcloud\b/i]
+        ];
+
+        function normalizeSearchTerm(value) {
+            return (value || '')
+                .toString()
+                .toLowerCase()
+                .replace(/^@+/, '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9\s]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function deriveOpening(study) {
+            const haystack = [
+                study.category,
+                study.title,
+                study.notes,
+                study.viewerNote,
+                study.generated?.searchText,
+                ...(study.generated?.chapterNames || [])
+            ].filter(Boolean).join(' ');
+
+            for (const [name, pattern] of OPENING_TAXONOMY) {
+                if (pattern.test(haystack)) return name;
+            }
+
+            return isOpeningCategory(study.category) ? 'Other Openings' : 'Not Opening Specific';
+        }
+
+        function deriveThemes(study) {
+            const text = normalizeSearchTerm([
+                study.category,
+                study.title,
+                study.notes,
+                study.viewerNote,
+                study.generated?.searchText
+            ].filter(Boolean).join(' '));
+            const themes = new Set();
+            const addIf = (label, pattern) => { if (pattern.test(text)) themes.add(label); };
+
+            addIf('Tactics', /\btactic|trap|sacrifice|attack|mate\b/);
+            addIf('Strategy', /\bstrategy|positional|structure|imbalance|plan|outpost|space\b/);
+            addIf('Endgame', /\bendgame|opposition|checkmate with|rook ending|pawn ending\b/);
+            addIf('Puzzles', /\bpuzzle|composition|mate in|study problem\b/);
+            addIf('Repertoire', /\brepertoire|full repertoire|system against\b/);
+            addIf('Model Games', /\bgame analysis|sample game|grandmaster games|history\b/);
+
+            return [...themes];
+        }
+
+        function enrichStudyRecord(study) {
+            const opening = deriveOpening(study);
+            const themes = deriveThemes(study);
+            const searchFields = [
+                study.title,
+                authorDisplay(study),
+                study.category,
+                opening,
+                study.side,
+                study.difficulty,
+                study.notes,
+                study.viewerNote,
+                study.keyword,
+                study.featuredDescription,
+                themes.join(' '),
+                study.generated?.intro,
+                study.generated?.searchText,
+                ...(study.generated?.chapterNames || [])
+            ];
+
+            return {
+                ...study,
+                opening,
+                themes,
+                normalizedSearchText: normalizeSearchTerm(searchFields.filter(Boolean).join(' '))
+            };
+        }
+
         function updateSearchSuggestions(term) {
             const box = document.getElementById('searchSuggestions');
             if (!term || term.length < 2 || !window.chessData) {
@@ -1398,17 +1604,21 @@
                 return;
             }
 
-            const t = term.toLowerCase();
+            const t = normalizeSearchTerm(term);
 
             const authors = [...new Set(window.chessData.flatMap(i => i.authors || [i.author]))]
-                .filter(a => a.toLowerCase().includes(t))
+                .filter(a => normalizeSearchTerm(a).includes(t))
+                .slice(0, 4);
+
+            const openings = getFilterOptions('opening')
+                .filter(o => normalizeSearchTerm(o).includes(t))
                 .slice(0, 4);
 
             const categories = [...new Set(window.chessData.map(i => i.category))]
-                .filter(c => c && c !== 'General' && c.toLowerCase().includes(t))
+                .filter(c => c && c !== 'General' && normalizeSearchTerm(c).includes(t))
                 .slice(0, 4);
 
-            if (!authors.length && !categories.length) {
+            if (!authors.length && !openings.length && !categories.length) {
                 box.classList.add('hidden');
                 box.innerHTML = '';
                 return;
@@ -1416,6 +1626,7 @@
 
             const rows = [
                 ...authors.map(a => `<div class="suggestion-row" onclick="selectAuthorSuggestion('${a.replace(/'/g, "\\'")}')"><span>${escapeHTML(a)}</span><span class="suggestion-kind">Author</span></div>`),
+                ...openings.map(o => `<div class="suggestion-row" onclick="selectOpeningSuggestion('${o.replace(/'/g, "\\'")}')"><span>${escapeHTML(o)}</span><span class="suggestion-kind">Opening</span></div>`),
                 ...categories.map(c => `<div class="suggestion-row" onclick="selectCategorySuggestion('${c.replace(/'/g, "\\'")}')"><span>${escapeHTML(c)}</span><span class="suggestion-kind">Category</span></div>`)
             ];
 
@@ -1438,6 +1649,16 @@
             hideSearchSuggestions();
             document.getElementById('searchInput').value = '';
             setFilter(category);
+        }
+
+        function selectOpeningSuggestion(opening) {
+            hideSearchSuggestions();
+            document.getElementById('searchInput').value = '';
+            currentOpeningFilter = opening;
+            currentAuthor = null;
+            currentPage = 1;
+            createFilters();
+            renderArchive();
         }
 
         function toggleAbout() {
@@ -1654,18 +1875,9 @@
 
         function matchesSearch(study, term) {
             if (!term) return false;
-            const t = term.toLowerCase();
-            return [
-                study.title,
-                authorDisplay(study),
-                study.difficulty,
-                study.category,
-                study.side,
-                study.notes,
-                study.viewerNote,
-                study.keyword,
-                study.featuredDescription
-            ].some(field => normalizeText(field).includes(t));
+            const t = normalizeSearchTerm(term);
+            if (!t) return false;
+            return (study.normalizedSearchText || '').includes(t);
         }
 
         function parseCSV(text) {
@@ -1831,12 +2043,12 @@
                 const csv = await fetchCsvCached(sheetUrl, 'scf-studies-csv');
                 const rows = parseCSV(csv);
 
-                window.chessData = rows.slice(1).map(c => {
+                window.chessData = rows.slice(1).map((c, index) => {
                     const rawAuthor = c[4]?.replace(/"/g, '') || "Anonymous";
                     const authors = parseAuthors(rawAuthor);
                     const link = normalizeStudyLink(c[5]);
                     const generated = getGeneratedStudyData(link);
-                    return {
+                    return enrichStudyRecord({
                         side: c[1]?.replace(/"/g, '') || "Universal",
                         category: c[2]?.replace(/"/g, '') || "General",
                         title: c[3]?.replace(/"/g, '') || "Untitled",
@@ -1850,9 +2062,11 @@
                         image: generated?.thumbnailPath || ((c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80"),
                         generated,
                         difficulty: c[9]?.replace(/"/g, '').trim() || "",
+                        createdAt: c[10]?.replace(/"/g, '').trim() || "",
+                        sourceIndex: index,
                         keyword: c[11]?.replace(/"/g, '').trim() || "",
                         featuredDescription: c[12]?.replace(/"/g, '').trim() || ""
-                    };
+                    });
                 }).filter(i => i.title !== "").reverse();
 
                 markNewStudies(window.chessData);
@@ -1862,8 +2076,6 @@
                 renderLatest();
                 renderRecentlyViewed();
                 createFilters();
-                createSideFilters();
-                createDifficultyFilters();
                 renderArchive();
                 startCarouselAutoplay();
             } catch (err) { 
@@ -2016,6 +2228,10 @@
             ).join('<span class="card-author-separator">,</span>');
         }
 
+        function primaryTaxonomyLabel(study) {
+            return study.opening && study.opening !== 'Not Opening Specific' ? study.opening : study.category;
+        }
+
         function getFeaturedStudy() {
             if (!window.chessData || window.chessData.length === 0) return null;
 
@@ -2162,7 +2378,7 @@
 
                 <div class="study-card-body">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="card-category text-[9px] brand-font font-semibold tracking-[0.16em] text-zinc-600 uppercase block italic" title="${escapeHTML(i.category)}">${i.category}</span>
+                        <span class="card-category text-[9px] brand-font font-semibold tracking-[0.16em] text-zinc-600 uppercase block italic" title="${escapeHTML(i.category)}">${escapeHTML(primaryTaxonomyLabel(i))}</span>
                         <button onclick="copyLink('${i.link}')" class="text-zinc-600 hover:text-[#c5a059] transition-colors" title="Copy Study Link">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -2183,17 +2399,20 @@
 
         function getSearchScore(study, term) {
             if (!term) return 0;
-            const t = term.toLowerCase();
+            const t = normalizeSearchTerm(term);
             let score = 0;
-            if (normalizeText(study.title).includes(t)) score += 60;
-            if (normalizeText(authorDisplay(study)).includes(t)) score += 45;
-            if (normalizeText(study.category).includes(t)) score += 35;
-            if (normalizeText(study.difficulty).includes(t)) score += 20;
-            if (normalizeText(study.side).includes(t)) score += 15;
-            if (normalizeText(study.keyword).includes(t)) score += 18;
-            if (normalizeText(study.viewerNote).includes(t)) score += 12;
-            if (normalizeText(study.featuredDescription).includes(t)) score += 10;
-            if (normalizeText(study.notes).includes(t)) score += 8;
+            if (normalizeSearchTerm(study.title) === t) score += 120;
+            if (normalizeSearchTerm(study.title).includes(t)) score += 70;
+            if (normalizeSearchTerm(authorDisplay(study)).includes(t)) score += 55;
+            if (normalizeSearchTerm(study.opening).includes(t)) score += 45;
+            if (normalizeSearchTerm(study.category).includes(t)) score += 35;
+            if (normalizeSearchTerm(study.themes?.join(' ')).includes(t)) score += 28;
+            if (normalizeSearchTerm(study.difficulty).includes(t)) score += 20;
+            if (normalizeSearchTerm(study.side).includes(t)) score += 15;
+            if (normalizeSearchTerm(study.viewerNote).includes(t)) score += 12;
+            if (normalizeSearchTerm(study.featuredDescription).includes(t)) score += 10;
+            if (normalizeSearchTerm(study.notes).includes(t)) score += 8;
+            if (normalizeSearchTerm(study.generated?.searchText).includes(t)) score += 6;
             return score;
         }
 
@@ -2219,12 +2438,6 @@
                     return arr.reverse();
                 case 'title-az':
                     return arr.sort((a, b) => a.title.localeCompare(b.title));
-                case 'title-za':
-                    return arr.sort((a, b) => b.title.localeCompare(a.title));
-                case 'author-az':
-                    return arr.sort((a, b) => authorDisplay(a).localeCompare(authorDisplay(b)));
-                case 'author-za':
-                    return arr.sort((a, b) => authorDisplay(b).localeCompare(authorDisplay(a)));
                 case 'difficulty-asc':
                     return arr.sort((a, b) => difficultyRank(a.difficulty) - difficultyRank(b.difficulty) || a.title.localeCompare(b.title));
                 case 'difficulty-desc':
@@ -2464,24 +2677,15 @@
 
             let filtered = window.chessData.filter(i => {
                 const matchesText = matchesSearch(i, term) || term.length === 0;
-
-                let matchesCategory;
-                if (currentFilter === 'All') {
-                    matchesCategory = true;
-                } else if (currentFilter === 'Staff Picks') {
-                    matchesCategory = isStaffPickStudy(i);
-                } else if (currentFilter === 'Openings') {
-                    matchesCategory = currentSubFilter ? i.category === currentSubFilter : isOpeningCategory(i.category);
-                } else {
-                    matchesCategory = i.category === currentFilter;
-                }
-
+                const matchesOpening = currentOpeningFilter === 'All Openings' || i.opening === currentOpeningFilter;
+                const matchesCategory = currentFilter === 'All' || (currentFilter === 'Staff Picks' ? isStaffPickStudy(i) : i.category === currentFilter);
                 const matchesSide = (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
                 const matchesDifficulty = (currentDifficultyFilter === 'Any Difficulty' || i.difficulty === currentDifficultyFilter);
-                const matchesAuthor = (!currentAuthor || studyHasAuthor(i, currentAuthor));
+                const matchesAuthor = (currentAuthorFilter === 'All Authors' || studyHasAuthor(i, currentAuthorFilter));
+                const matchesTheme = currentThemeFilter === 'All Themes' || (i.themes || []).includes(currentThemeFilter);
                 const matchesFavorite = (!showFavoritesOnly || renderFavorites.has(i.link));
 
-                return matchesText && matchesCategory && matchesSide && matchesDifficulty && matchesAuthor && matchesFavorite;
+                return matchesText && matchesOpening && matchesCategory && matchesSide && matchesDifficulty && matchesAuthor && matchesTheme && matchesFavorite;
             });
 
             filtered = getSortedStudies(filtered, term);
@@ -2493,7 +2697,7 @@
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-            const isSearchingOrFiltering = term.length > 0 || currentFilter !== 'All' || currentSideFilter !== 'Any Side' || currentDifficultyFilter !== 'Any Difficulty' || currentAuthor || showFavoritesOnly;
+            const isSearchingOrFiltering = term.length > 0 || currentOpeningFilter !== 'All Openings' || currentFilter !== 'All' || currentSideFilter !== 'Any Side' || currentDifficultyFilter !== 'Any Difficulty' || currentAuthorFilter !== 'All Authors' || currentThemeFilter !== 'All Themes' || showFavoritesOnly;
             const latestSec = document.getElementById('latestSection');
             const recentSec = document.getElementById('recentlyViewedSection');
             const featuredSec = document.getElementById('featuredSection');
@@ -2524,6 +2728,7 @@
 
             authorSec.classList.add('hidden');
             libraryControls.classList.remove('hidden');
+            renderActiveFilters(filtered.length);
 
             const featured = getFeaturedStudy();
             const featuredMatchesSearch = !!featured && matchesSearch(featured, term);
@@ -2543,19 +2748,12 @@
             } else {
                 featuredSec.style.display = 'block';
             }
-
-            if (currentAuthor) {
-                renderAuthorProfile(currentAuthor, filtered);
-                archiveHeader.textContent = `${currentAuthor}'s Studies`;
-                authorSec.classList.remove('hidden');
-            } else {
-                authorSec.classList.add('hidden');
-                archiveHeader.textContent = totalPages > 1 ? `Full Archive — Page ${currentPage} of ${totalPages}` : 'Full Archive';
-            }
+            authorSec.classList.add('hidden');
+            archiveHeader.textContent = totalPages > 1 ? `Full Archive - Page ${currentPage} of ${totalPages}` : 'Full Archive';
 
             const counter = document.getElementById('liveCounter');
             counter.innerText = isSearchingOrFiltering
-                ? `FOUND ${filtered.length} MATCHING STUDIES • PAGE ${currentPage}/${totalPages}`
+                ? `SHOWING ${filtered.length} OF ${window.chessData.length} STUDIES - PAGE ${currentPage}/${totalPages}`
                 : `LIBRARY TOTAL: ${window.chessData.length}`;
 
             syncUrlParams(term);
@@ -2563,7 +2761,8 @@
             if (filtered.length === 0) {
                 grid.style.display = 'none';
                 noRes.innerHTML = `
-                    <p class="text-lg">No studies match your current search.</p>
+                    <p class="text-lg">No studies match this library view.</p>
+                    <p class="text-sm mt-2 text-zinc-500">Try a broader opening, category, author, or search term.</p>
                     <button onclick="resetFilters()" class="gold-accent text-[10px] mt-4 uppercase tracking-widest underline">Clear all filters</button>
                 `;
                 noRes.style.display = 'block';
@@ -2581,17 +2780,23 @@
             const params = new URLSearchParams(window.location.search);
             const q = params.get('q');
             const category = params.get('category');
-            const sub = params.get('sub');
+            const opening = params.get('opening');
             const side = params.get('side');
             const difficulty = params.get('difficulty');
             const author = params.get('author');
+            const authorFilter = params.get('authorFilter');
+            const theme = params.get('theme');
+            const sort = params.get('sort');
 
             if (q) document.getElementById('searchInput').value = q;
             if (category) currentFilter = category;
-            if (sub) currentSubFilter = sub;
+            if (opening) currentOpeningFilter = opening;
             if (side) currentSideFilter = side;
             if (difficulty) currentDifficultyFilter = difficulty;
             if (author) currentAuthor = cleanAuthorName(author);
+            if (authorFilter) currentAuthorFilter = cleanAuthorName(authorFilter);
+            if (theme) currentThemeFilter = theme;
+            if (sort && document.getElementById('sortSelect')) document.getElementById('sortSelect').value = sort;
         }
 
         function syncUrlParams(term) {
@@ -2608,11 +2813,14 @@
             }
 
             if (term) params.set('q', term);
+            if (currentOpeningFilter !== 'All Openings') params.set('opening', currentOpeningFilter);
             if (currentFilter !== 'All') params.set('category', currentFilter);
-            if (currentFilter === 'Openings' && currentSubFilter) params.set('sub', currentSubFilter);
             if (currentSideFilter !== 'Any Side') params.set('side', currentSideFilter);
             if (currentDifficultyFilter !== 'Any Difficulty') params.set('difficulty', currentDifficultyFilter);
-            if (currentAuthor) params.set('author', currentAuthor);
+            if (currentAuthorFilter !== 'All Authors') params.set('authorFilter', currentAuthorFilter);
+            if (currentThemeFilter !== 'All Themes') params.set('theme', currentThemeFilter);
+            const sortValue = document.getElementById('sortSelect')?.value || 'relevance';
+            if (sortValue !== 'relevance') params.set('sort', sortValue);
 
             const query = params.toString();
             const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
@@ -2639,15 +2847,16 @@
         function resetFilters() {
             document.getElementById('searchInput').value = '';
             currentFilter = 'All';
+            currentOpeningFilter = 'All Openings';
             currentSideFilter = 'Any Side';
             currentDifficultyFilter = 'Any Difficulty';
             currentAuthor = null;
+            currentAuthorFilter = 'All Authors';
+            currentThemeFilter = 'All Themes';
             currentSubFilter = null;
             currentPage = 1;
             document.getElementById('sortSelect').value = 'relevance';
             createFilters();
-            createSideFilters();
-            createDifficultyFilters();
             renderArchive();
         }
 
@@ -2658,93 +2867,101 @@
         };
 
         function createFilters() {
-            const allCats = [...new Set(window.chessData.map(i => i.category))].filter(c => c && c !== 'General');
-            const openingCats = allCats.filter(isOpeningCategory);
-            const otherCats = allCats.filter(c => !isOpeningCategory(c));
+            populateSelect('openingSelect', ['All Openings', ...getFilterOptions('opening')], currentOpeningFilter);
+            populateSelect('categorySelect', ['All', 'Staff Picks', ...getFilterOptions('category')], currentFilter);
+            populateSelect('sideSelect', ['Any Side', ...getFilterOptions('side')], currentSideFilter);
+            populateSelect('authorSelect', ['All Authors', ...getAuthorOptions()], currentAuthorFilter);
+            populateSelect('themeSelect', ['All Themes', ...getThemeOptions()], currentThemeFilter);
 
-            const topLevel = ['All', 'Staff Picks'];
-            if (openingCats.length) topLevel.push('Openings');
-            topLevel.push(...otherCats);
-
-            document.getElementById('filterContainer').innerHTML = topLevel.map(c =>
-                `<div onclick="setFilter('${c.replace(/'/g, "\\'")}')" class="filter-chip brand-font ${currentFilter === c ? 'active' : ''}">${c}</div>`
-            ).join('');
-
-            renderSubFilters(openingCats);
-        }
-
-        function renderSubFilters(openingCats) {
-            const box = document.getElementById('subFilterContainer');
-            const panel = document.getElementById('subFilterPanel');
-
-            if (currentFilter !== 'Openings' || !openingCats.length) {
-                if (panel) panel.classList.add('hidden');
-                box.innerHTML = '';
-                return;
-            }
-
-            const chips = ['All Openings', ...openingCats];
-            box.innerHTML = chips.map(c => {
-                const isAll = c === 'All Openings';
-                const active = isAll ? !currentSubFilter : currentSubFilter === c;
-                return `<div onclick="setSubFilter(${isAll ? 'null' : `'${c.replace(/'/g, "\\'")}'`})" class="filter-chip brand-font ${active ? 'active' : ''}">${c}</div>`;
-            }).join('');
-            if (panel) panel.classList.remove('hidden');
-        }
-
-        function getOpeningCategories() {
-            return [...new Set(window.chessData.map(i => i.category))].filter(isOpeningCategory);
-        }
-
-        function createSideFilters() {
-            const sides = ['Any Side', 'White', 'Black', 'Universal'];
-            document.getElementById('sideFilterContainer').innerHTML = sides.map(s => `<div onclick="setSideFilter('${s}')" class="filter-chip brand-font ${currentSideFilter === s ? 'active' : ''}">${s}</div>`).join('');
-        }
-
-        function createDifficultyFilters() {
-            const box = document.getElementById('difficultyFilterContainer');
-            const panel = document.getElementById('difficultyFilterPanel');
-            if (!box || !panel) return;
-
-            const difficulties = [...new Set(window.chessData.map(i => i.difficulty).filter(Boolean))];
-            if (!difficulties.length) {
-                panel.classList.add('hidden');
-                box.innerHTML = '';
+            const difficulties = getFilterOptions('difficulty');
+            const difficultyField = document.getElementById('difficultyFilterField');
+            if (difficulties.length) {
+                difficultyField.classList.remove('hidden');
+                populateSelect('difficultySelect', ['Any Difficulty', ...difficulties], currentDifficultyFilter);
+            } else {
+                difficultyField.classList.add('hidden');
                 currentDifficultyFilter = 'Any Difficulty';
+            }
+        }
+
+        function getFilterOptions(field) {
+            return [...new Set(window.chessData.map(i => i[field]).filter(Boolean))]
+                .filter(value => !['General', 'Not Opening Specific'].includes(value))
+                .sort((a, b) => a.localeCompare(b));
+        }
+
+        function getAuthorOptions() {
+            return [...new Set(window.chessData.flatMap(i => i.authors || [i.author]).filter(Boolean))]
+                .sort((a, b) => a.localeCompare(b));
+        }
+
+        function getThemeOptions() {
+            return [...new Set(window.chessData.flatMap(i => i.themes || []).filter(Boolean))]
+                .sort((a, b) => a.localeCompare(b));
+        }
+
+        function populateSelect(id, options, selected) {
+            const select = document.getElementById(id);
+            if (!select) return;
+            select.innerHTML = options.map(option => `<option value="${escapeHTML(option)}" ${option === selected ? 'selected' : ''}>${escapeHTML(option)}</option>`).join('');
+        }
+
+        function renderActiveFilters(resultCount) {
+            const box = document.getElementById('activeFilters');
+            if (!box) return;
+
+            const term = document.getElementById('searchInput').value.trim();
+            const filters = [];
+            if (term) filters.push(['Search', term, 'search']);
+            if (currentOpeningFilter !== 'All Openings') filters.push(['Opening', currentOpeningFilter, 'opening']);
+            if (currentFilter !== 'All') filters.push(['Category', currentFilter, 'category']);
+            if (currentSideFilter !== 'Any Side') filters.push(['Side', currentSideFilter, 'side']);
+            if (currentDifficultyFilter !== 'Any Difficulty') filters.push(['Difficulty', currentDifficultyFilter, 'difficulty']);
+            if (currentAuthorFilter !== 'All Authors') filters.push(['Author', currentAuthorFilter, 'authorFilter']);
+            if (currentThemeFilter !== 'All Themes') filters.push(['Theme', currentThemeFilter, 'theme']);
+            if (showFavoritesOnly) filters.push(['Saved', 'My Favorites', 'favorites']);
+
+            if (!filters.length) {
+                box.classList.add('hidden');
+                box.innerHTML = '';
                 return;
             }
 
-            const options = ['Any Difficulty', ...difficulties];
-            box.innerHTML = options.map(d => `<div onclick="setDifficultyFilter('${d.replace(/'/g, "\\'")}')" class="filter-chip brand-font ${currentDifficultyFilter === d ? 'active' : ''}">${d}</div>`).join('');
-            panel.classList.remove('hidden');
+            box.classList.remove('hidden');
+            box.innerHTML = `
+                <span class="filter-label">${resultCount} matching</span>
+                ${filters.map(([label, value, key]) => `
+                    <span class="active-filter-chip brand-font">
+                        <span>${label}: ${escapeHTML(value)}</span>
+                        <button type="button" onclick="clearFilter('${key}')" aria-label="Clear ${escapeHTML(label)}">×</button>
+                    </span>
+                `).join('')}
+                <button type="button" onclick="resetFilters()" class="filter-chip brand-font">Clear All</button>
+            `;
         }
 
-        window.setFilter = (cat) => { 
-            currentFilter = cat; 
-            currentSubFilter = null;
+        window.clearFilter = (key) => {
+            if (key === 'search') document.getElementById('searchInput').value = '';
+            if (key === 'opening') currentOpeningFilter = 'All Openings';
+            if (key === 'category') currentFilter = 'All';
+            if (key === 'side') currentSideFilter = 'Any Side';
+            if (key === 'difficulty') currentDifficultyFilter = 'Any Difficulty';
+            if (key === 'authorFilter') currentAuthorFilter = 'All Authors';
+            if (key === 'theme') currentThemeFilter = 'All Themes';
+            if (key === 'favorites') {
+                showFavoritesOnly = false;
+                document.getElementById('favoritesToggle').classList.remove('active');
+            }
             currentPage = 1;
-            createFilters(); 
-            renderArchive(); 
-        };
-
-        window.setSubFilter = (sub) => {
-            currentSubFilter = sub;
-            currentPage = 1;
-            renderSubFilters(getOpeningCategories());
+            createFilters();
             renderArchive();
         };
 
-        window.setSideFilter = (side) => { 
-            currentSideFilter = side; 
+        window.setFilter = (cat) => {
+            currentFilter = cat;
+            currentAuthor = null;
             currentPage = 1;
-            createSideFilters(); 
-            renderArchive(); 
-        };
-
-        window.setDifficultyFilter = (difficulty) => {
-            currentDifficultyFilter = difficulty;
-            currentPage = 1;
-            createDifficultyFilters();
+            createFilters();
             renderArchive();
         };
 
@@ -2771,18 +2988,62 @@
             renderArchive();
         });
 
+        document.getElementById('openingSelect').addEventListener('change', (e) => {
+            currentOpeningFilter = e.target.value;
+            currentAuthor = null;
+            currentPage = 1;
+            renderArchive();
+        });
+
+        document.getElementById('categorySelect').addEventListener('change', (e) => {
+            currentFilter = e.target.value;
+            currentAuthor = null;
+            currentPage = 1;
+            renderArchive();
+        });
+
+        document.getElementById('sideSelect').addEventListener('change', (e) => {
+            currentSideFilter = e.target.value;
+            currentAuthor = null;
+            currentPage = 1;
+            renderArchive();
+        });
+
+        document.getElementById('difficultySelect').addEventListener('change', (e) => {
+            currentDifficultyFilter = e.target.value;
+            currentAuthor = null;
+            currentPage = 1;
+            renderArchive();
+        });
+
+        document.getElementById('authorSelect').addEventListener('change', (e) => {
+            currentAuthorFilter = e.target.value;
+            currentAuthor = null;
+            currentPage = 1;
+            renderArchive();
+        });
+
+        document.getElementById('themeSelect').addEventListener('change', (e) => {
+            currentThemeFilter = e.target.value;
+            currentAuthor = null;
+            currentPage = 1;
+            renderArchive();
+        });
+
         window.addEventListener('popstate', () => {
             currentFilter = 'All';
+            currentOpeningFilter = 'All Openings';
             currentSideFilter = 'Any Side';
             currentDifficultyFilter = 'Any Difficulty';
             currentAuthor = null;
+            currentAuthorFilter = 'All Authors';
+            currentThemeFilter = 'All Themes';
             currentSubFilter = null;
             currentPage = 1;
             document.getElementById('searchInput').value = '';
+            document.getElementById('sortSelect').value = 'relevance';
             readUrlParams();
             createFilters();
-            createSideFilters();
-            createDifficultyFilters();
             renderArchive();
         });
 
