@@ -1318,12 +1318,12 @@
             <div class="filter-panel">
                 <div class="library-filter-grid">
                     <label class="library-filter-field">
-                        <span class="filter-label">Opening</span>
-                        <select id="openingSelect" class="library-select brand-font"></select>
-                    </label>
-                    <label class="library-filter-field">
                         <span class="filter-label">Category</span>
                         <select id="categorySelect" class="library-select brand-font"></select>
+                    </label>
+                    <label class="library-filter-field">
+                        <span class="filter-label">Opening</span>
+                        <select id="openingSelect" class="library-select brand-font"></select>
                     </label>
                     <label class="library-filter-field">
                         <span class="filter-label">Side</span>
@@ -1462,85 +1462,45 @@
             if (!category) return false;
             const c = category.trim().toLowerCase();
             return /^1\.\S/.test(c) || c.endsWith('defense') || c.includes('opening');
-        }
-
-        const OPENING_TAXONOMY = [
-            { family: 'Sicilian Defense', pattern: /\bsicilian\b|\bnajdorf\b|\balapin\b|\bdragon\b|\bkan\b|\btaimanov\b|\bmaroczy\b|\bsmith[-\s]?morra\b/i, variations: [
-                ['Alapin', /\balapin\b/i],
-                ['Smith-Morra Gambit', /\bsmith[-\s]?morra\b/i],
-                ['Najdorf', /\bnajdorf\b/i],
-                ['Dragon', /\bdragon\b/i],
-                ['Kan', /\bkan\b/i],
-                ['Taimanov', /\btaimanov\b/i],
-                ['Maroczy Bind', /\bmaroczy\b/i],
-                ['Classical', /\bclassical sicilian\b/i]
-            ] },
-            { family: 'Italian Game', pattern: /\bitalian\b|\bgiuoco piano\b|\btwo knights\b|\bfried liver\b|\bevans gambit\b|\bdubov italian\b|\brousseau gambit\b/i, variations: [
-                ['Giuoco Piano', /\bgiuoco piano\b/i],
-                ['Two Knights', /\btwo knights\b|\bfried liver\b/i],
-                ['Evans Gambit', /\bevans gambit\b/i],
-                ['Dubov Italian', /\bdubov italian\b/i],
-                ['Rousseau Gambit', /\brousseau gambit\b/i]
-            ] },
-            { family: 'Scotch Game', pattern: /\bscotch\b|\bhaggis[-\s]?grodzize\b/i, variations: [
-                ['Scotch Gambit', /\bscotch gambit\b|\bhaggis[-\s]?grodzize\b/i]
-            ] },
-            { family: 'Queen\'s Gambit', pattern: /\bqueen['’]?s gambit\b|\bqg[ad]\b|\balbin countergambit\b/i, variations: [
-                ['Accepted', /\bqueen['’]?s gambit accepted\b|\bqga\b/i],
-                ['Declined', /\bqueen['’]?s gambit declined\b|\bqgd\b/i],
-                ['Albin Countergambit', /\balbin countergambit\b/i]
-            ] },
-            { family: 'King\'s Indian Defense', pattern: /\bking['’]?s indian\b|\bkid\b|\bsamisch\b|\bsämisch\b|\bfianchetto\b/i, variations: [
-                ['Samisch', /\bsamisch\b|\bsämisch\b/i],
-                ['Fianchetto', /\bfianchetto\b/i],
-                ['Makogonov', /\bmakogonov\b/i]
-            ] },
-            { family: 'French Defense', pattern: /\bfrench (defen[cs]e|defence)\b|\bfrench\b/i, variations: [
-                ['Advance', /\badvance french\b|\bfrench advance\b/i],
-                ['Exchange', /\bexchange french\b|\bfrench exchange\b/i],
-                ['Winawer', /\bwinawer\b/i],
-                ['Tarrasch', /\btarrasch french\b|\bfrench tarrasch\b/i]
-            ] },
-            { family: 'Caro-Kann Defense', pattern: /\bcaro[-\s]?kann\b/i, variations: [
-                ['Advance', /\badvance caro[-\s]?kann\b|\bcaro[-\s]?kann advance\b/i],
-                ['Exchange', /\bexchange caro[-\s]?kann\b|\bcaro[-\s]?kann exchange\b/i]
-            ] },
-            { family: 'Ruy Lopez', pattern: /\bruy lopez\b|\bspanish (game|opening)\b/i, variations: [
-                ['Exchange', /\bruy lopez exchange\b|\bexchange ruy lopez\b/i],
-                ['Bird Defense', /\bbird defense\b|\bbird defence\b/i]
-            ] },
-            { family: 'English Opening', pattern: /\benglish opening\b|\b1\.?\s*c4\b/i, variations: [] },
-            { family: 'London System', pattern: /\blondon system\b/i, variations: [] },
-            { family: 'Scandinavian Defense', pattern: /\bscandinavian\b|\bcenter counter\b/i, variations: [] },
-            { family: 'Pirc Defense', pattern: /\bpirc\b/i, variations: [] },
-            { family: 'Modern Defense', pattern: /\bmodern defense\b|\bmodern defence\b/i, variations: [] },
-            { family: 'Alekhine Defense', pattern: /\balekhine['’]?s? defense\b|\balekhine['’]?s? defence\b|\balekhine\b/i, variations: [] },
-            { family: 'Nimzowitsch Defense', pattern: /\bnimzowitsch\b/i, variations: [] },
-            { family: 'Nimzo-Indian Defense', pattern: /\bnimzo[-\s]?indian\b/i, variations: [] },
-            { family: 'Bogo-Indian Defense', pattern: /\bbogo[-\s]?indian\b/i, variations: [] },
-            { family: 'Bird Opening', pattern: /\bbird['’]?s? opening\b|\b1\.?\s*f4\b/i, variations: [] },
-            { family: 'Nimzo-Larsen Attack', pattern: /\bnimzo[-\s]?larsen\b|\b1\.?\s*b3\b/i, variations: [] },
-            { family: 'Polish Opening', pattern: /\bpolish opening\b|\b1\.?\s*b4\b/i, variations: [] },
-            { family: 'King\'s Gambit', pattern: /\bking['’]?s gambit\b/i, variations: [] },
-            { family: 'Vienna Game', pattern: /\bvienna game\b/i, variations: [] },
-            { family: 'Philidor Defense', pattern: /\bphilidor\b/i, variations: [] },
-            { family: 'Petrov Defense', pattern: /\bpetrov\b|\bpetroff\b/i, variations: [] },
-            { family: 'Dutch Defense', pattern: /\bdutch defense\b|\bdutch defence\b/i, variations: [] },
-            { family: 'Catalan Opening', pattern: /\bcatalan\b/i, variations: [] },
-            { family: 'Benko Gambit', pattern: /\bbenko\b|\bvolga gambit\b/i, variations: [] },
-            { family: 'Benoni Defense', pattern: /\bbenoni\b/i, variations: [] },
-            { family: 'Grunfeld Defense', pattern: /\bgrunfeld\b|\bgruenfeld\b/i, variations: [] },
-            { family: 'Slav Defense', pattern: /\bslav defense\b|\bslav defence\b/i, variations: [] },
-            { family: 'Semi-Slav Defense', pattern: /\bsemi[-\s]?slav\b/i, variations: [] },
-            { family: 'Trompowsky Attack', pattern: /\btrompowsky\b/i, variations: [] },
-            { family: 'Torre Attack', pattern: /\btorre attack\b/i, variations: [] },
-            { family: 'Colle System', pattern: /\bcolle\b/i, variations: [] },
-            { family: 'Englund Gambit', pattern: /\benglund\b/i, variations: [] },
-            { family: 'Owen Defense', pattern: /\bowen['’]?s? defense\b|\bowen['’]?s? defence\b/i, variations: [] },
-            { family: 'Bongcloud', pattern: /\bbongcloud\b/i, variations: [] }
+        }        const OPENING_TAXONOMY = [
+            { opening: 'Sicilian Defense', pattern: /\bsicilian\b|\bnajdorf\b|\balapin\b|\bdragon\b|\bo['’]?kelly\b|\bkan\b|\btaimanov\b|\bsveshnikov\b|\bscheveningen\b|\bkalashnikov\b|\bmaroczy\b|\bsmith[-\s]?morra\b/i, categoryGroup: '1.e4 c5 Openings' },
+            { opening: 'Italian Game', pattern: /\bitalian\b|\bgiuoco piano\b|\btwo knights\b|\bfried liver\b|\bevans gambit\b|\bdubov italian\b|\brousseau gambit\b|\brosentreter\b/i, categoryGroup: '1.e4 e5 Openings' },
+            { opening: 'Scotch Game', pattern: /\bscotch\b|\bhaggis[-\s]?grodzize\b/i, categoryGroup: '1.e4 e5 Openings' },
+            { opening: 'Ruy Lopez', pattern: /\bruy lopez\b|\bspanish (game|opening)\b/i, categoryGroup: '1.e4 e5 Openings' },
+            { opening: 'King\'s Gambit', pattern: /\bking['’]?s gambit\b/i, categoryGroup: '1.e4 e5 Openings' },
+            { opening: 'Vienna Game', pattern: /\bvienna (game|gambit)\b/i, categoryGroup: '1.e4 e5 Openings' },
+            { opening: 'Philidor Defense', pattern: /\bphilidor\b/i, categoryGroup: '1.e4 e5 Openings' },
+            { opening: 'Petrov Defense', pattern: /\bpetrov\b|\bpetroff\b/i, categoryGroup: '1.e4 e5 Openings' },
+            { opening: 'Caro-Kann Defense', pattern: /\bcaro[-\s]?kann\b/i, categoryGroup: '1.e4 c6 Openings' },
+            { opening: 'French Defense', pattern: /\bfrench (defen[cs]e|defence)\b|\bfrench\b/i, categoryGroup: '1.e4 e6 Openings' },
+            { opening: 'Scandinavian Defense', pattern: /\bscandinavian\b|\bcenter counter\b/i, categoryGroup: '1.e4 d5 Openings' },
+            { opening: 'Alekhine Defense', pattern: /\balekhine['’]?s? defense\b|\balekhine['’]?s? defence\b|\balekhine\b/i, categoryGroup: '1.e4 Nf6 Openings' },
+            { opening: 'Pirc Defense', pattern: /\bpirc\b/i, categoryGroup: '1.e4 d6 Openings' },
+            { opening: 'Modern Defense', pattern: /\bmodern defense\b|\bmodern defence\b/i, categoryGroup: '1.e4 g6 Openings' },
+            { opening: 'Nimzowitsch Defense', pattern: /\bnimzowitsch\b/i, categoryGroup: '1.e4 Nc6 Openings' },
+            { opening: 'Owen Defense', pattern: /\bowen['’]?s? defense\b|\bowen['’]?s? defence\b/i, categoryGroup: '1.e4 b6 Openings' },
+            { opening: 'Queen\'s Gambit', pattern: /\bqueen['’]?s gambit\b|\bqg[ad]\b|\balbin countergambit\b/i, categoryGroup: '1.d4 d5 Openings' },
+            { opening: 'King\'s Indian Defense', pattern: /\bking['’]?s indian\b|\bkid\b|\bsamisch\b|\bsämisch\b|\bfianchetto\b|\bmakogonov\b/i, categoryGroup: '1.d4 Nf6 Openings' },
+            { opening: 'Nimzo-Indian Defense', pattern: /\bnimzo[-\s]?indian\b/i, categoryGroup: '1.d4 Nf6 Openings' },
+            { opening: 'Bogo-Indian Defense', pattern: /\bbogo[-\s]?indian\b/i, categoryGroup: '1.d4 Nf6 Openings' },
+            { opening: 'London System', pattern: /\blondon system\b/i, categoryGroup: '1.d4 Openings' },
+            { opening: 'Colle System', pattern: /\bcolle\b/i, categoryGroup: '1.d4 Openings' },
+            { opening: 'Trompowsky Attack', pattern: /\btrompowsky\b/i, categoryGroup: '1.d4 Nf6 Openings' },
+            { opening: 'Torre Attack', pattern: /\btorre attack\b/i, categoryGroup: '1.d4 Nf6 Openings' },
+            { opening: 'Dutch Defense', pattern: /\bdutch defense\b|\bdutch defence\b/i, categoryGroup: '1.d4 f5 Openings' },
+            { opening: 'Benko Gambit', pattern: /\bbenko\b|\bvolga gambit\b/i, categoryGroup: '1.d4 Nf6 Openings' },
+            { opening: 'Benoni Defense', pattern: /\bbenoni\b/i, categoryGroup: '1.d4 Nf6 Openings' },
+            { opening: 'Grunfeld Defense', pattern: /\bgrunfeld\b|\bgruenfeld\b/i, categoryGroup: '1.d4 Nf6 Openings' },
+            { opening: 'Slav Defense', pattern: /\bslav defense\b|\bslav defence\b/i, categoryGroup: '1.d4 d5 Openings' },
+            { opening: 'Semi-Slav Defense', pattern: /\bsemi[-\s]?slav\b/i, categoryGroup: '1.d4 d5 Openings' },
+            { opening: 'English Opening', pattern: /\benglish opening\b|\b1\.?\s*c4\b/i, categoryGroup: '1.c4 Openings' },
+            { opening: 'Bird Opening', pattern: /\bbird['’]?s? opening\b|\b1\.?\s*f4\b/i, categoryGroup: '1.f4 Openings' },
+            { opening: 'Nimzo-Larsen Attack', pattern: /\bnimzo[-\s]?larsen\b|\b1\.?\s*b3\b/i, categoryGroup: '1.b3 Openings' },
+            { opening: 'Polish Opening', pattern: /\bpolish opening\b|\b1\.?\s*b4\b/i, categoryGroup: '1.b4 Openings' },
+            { opening: 'Englund Gambit', pattern: /\benglund\b/i, categoryGroup: '1.d4 e5 Openings' },
+            { opening: 'Bongcloud', pattern: /\bbongcloud\b/i, categoryGroup: 'Unorthodox Openings' }
         ];
-
-        function normalizeSearchTerm(value) {
+function normalizeSearchTerm(value) {
             return (value || '')
                 .toString()
                 .toLowerCase()
@@ -1564,16 +1524,15 @@
 
             for (const entry of OPENING_TAXONOMY) {
                 if (!entry.pattern.test(haystack)) continue;
-                const variation = (entry.variations || []).find(([, pattern]) => pattern.test(haystack));
                 return {
-                    openingFamily: entry.family,
-                    openingVariation: variation ? variation[0] : ''
+                    categoryGroup: entry.categoryGroup,
+                    opening: entry.opening
                 };
             }
 
             return {
-                openingFamily: isOpeningCategory(study.category) ? 'Other Openings' : 'Not Opening Specific',
-                openingVariation: ''
+                categoryGroup: isOpeningCategory(study.category) ? study.category : study.category,
+                opening: isOpeningCategory(study.category) ? 'Unclassified Opening' : ''
             };
         }
 
@@ -1601,15 +1560,12 @@
         function enrichStudyRecord(study) {
             const taxonomy = deriveOpeningTaxonomy(study);
             const themes = deriveThemes(study);
-            const openingLabel = taxonomy.openingVariation
-                ? `${taxonomy.openingFamily} - ${taxonomy.openingVariation}`
-                : taxonomy.openingFamily;
             const searchFields = [
                 study.title,
                 authorDisplay(study),
                 study.category,
-                taxonomy.openingFamily,
-                taxonomy.openingVariation,
+                taxonomy.categoryGroup,
+                taxonomy.opening,
                 study.side,
                 study.notes,
                 study.viewerNote,
@@ -1623,10 +1579,9 @@
 
             return {
                 ...study,
-                opening: taxonomy.openingFamily,
-                openingFamily: taxonomy.openingFamily,
-                openingVariation: taxonomy.openingVariation,
-                openingLabel,
+                rawCategory: study.category,
+                categoryGroup: taxonomy.categoryGroup,
+                opening: taxonomy.opening,
                 themes,
                 normalizedSearchText: normalizeSearchTerm(searchFields.filter(Boolean).join(' '))
             };
@@ -1650,7 +1605,7 @@
                 .filter(o => normalizeSearchTerm(o).includes(t))
                 .slice(0, 4);
 
-            const categories = [...new Set(window.chessData.map(i => i.category))]
+            const categories = [...new Set(window.chessData.map(i => i.categoryGroup))]
                 .filter(c => c && c !== 'General' && normalizeSearchTerm(c).includes(t))
                 .slice(0, 4);
 
@@ -2267,7 +2222,7 @@
         }
 
         function primaryTaxonomyLabel(study) {
-            return study.openingLabel && study.openingLabel !== 'Not Opening Specific' ? study.openingLabel : study.category;
+            return study.opening || study.categoryGroup || study.category;
         }
 
         function getFeaturedStudy() {
@@ -2442,9 +2397,8 @@
             if (normalizeSearchTerm(study.title) === t) score += 120;
             if (normalizeSearchTerm(study.title).includes(t)) score += 70;
             if (normalizeSearchTerm(authorDisplay(study)).includes(t)) score += 55;
-            if (normalizeSearchTerm(study.openingFamily).includes(t)) score += 45;
-            if (normalizeSearchTerm(study.openingVariation).includes(t)) score += 30;
-            if (normalizeSearchTerm(study.category).includes(t)) score += 35;
+            if (normalizeSearchTerm(study.opening).includes(t)) score += 45;
+            if (normalizeSearchTerm(study.categoryGroup).includes(t)) score += 35;
             if (normalizeSearchTerm(study.themes?.join(' ')).includes(t)) score += 28;
             if (normalizeSearchTerm(study.side).includes(t)) score += 15;
             if (normalizeSearchTerm(study.viewerNote).includes(t)) score += 12;
@@ -2701,8 +2655,8 @@
 
             let filtered = window.chessData.filter(i => {
                 const matchesText = matchesSearch(i, term) || term.length === 0;
-                const matchesOpening = currentOpeningFilter === 'All Openings' || i.openingFamily === currentOpeningFilter;
-                const matchesCategory = currentFilter === 'All' || (currentFilter === 'Staff Picks' ? isStaffPickStudy(i) : i.category === currentFilter);
+                const matchesOpening = currentOpeningFilter === 'All Openings' || i.opening === currentOpeningFilter;
+                const matchesCategory = currentFilter === 'All' || (currentFilter === 'Staff Picks' ? isStaffPickStudy(i) : i.categoryGroup === currentFilter);
                 const matchesSide = (currentSideFilter === 'Any Side' || i.side === currentSideFilter);
                 const matchesAuthor = (currentAuthorFilter === 'All Authors' || studyHasAuthor(i, currentAuthorFilter));
                 const matchesTheme = currentThemeFilter === 'All Themes' || (i.themes || []).includes(currentThemeFilter);
@@ -2887,8 +2841,8 @@
         };
 
         function createFilters() {
-            populateSelect('openingSelect', ['All Openings', ...getFilterOptions('openingFamily', 'opening')], currentOpeningFilter);
             populateSelect('categorySelect', ['All', ...getCategoryOptions()], currentFilter);
+            populateSelect('openingSelect', ['All Openings', ...getFilterOptions('opening', 'opening')], currentOpeningFilter);
             populateSelect('sideSelect', ['Any Side', ...getFilterOptions('side', 'side')], currentSideFilter);
             populateSelect('authorSelect', ['All Authors', ...getAuthorOptions('author')], currentAuthorFilter);
             populateSelect('themeSelect', ['All Themes', ...getThemeOptions('theme')], currentThemeFilter);
@@ -2900,11 +2854,11 @@
 
             return window.chessData.filter(study => {
                 if (exclude !== 'search' && term && !matchesSearch(study, term)) return false;
-                if (exclude !== 'opening' && currentOpeningFilter !== 'All Openings' && study.openingFamily !== currentOpeningFilter) return false;
+                if (exclude !== 'opening' && currentOpeningFilter !== 'All Openings' && study.opening !== currentOpeningFilter) return false;
                 if (exclude !== 'category' && currentFilter !== 'All') {
                     if (currentFilter === 'Staff Picks') {
                         if (!isStaffPickStudy(study)) return false;
-                    } else if (study.category !== currentFilter) {
+                    } else if (study.categoryGroup !== currentFilter) {
                         return false;
                     }
                 }
@@ -2924,7 +2878,7 @@
 
         function getCategoryOptions() {
             const compatible = getCompatibleStudies('category');
-            const categories = [...new Set(compatible.map(i => i.category).filter(Boolean))]
+            const categories = [...new Set(compatible.map(i => i.categoryGroup).filter(Boolean))]
                 .filter(value => value !== 'General')
                 .sort((a, b) => a.localeCompare(b));
             return compatible.some(isStaffPickStudy) ? ['Staff Picks', ...categories] : categories;
@@ -2972,7 +2926,7 @@
                 ${filters.map(([label, value, key]) => `
                     <span class="active-filter-chip brand-font">
                         <span>${label}: ${escapeHTML(value)}</span>
-                        <button type="button" onclick="clearFilter('${key}')" aria-label="Clear ${escapeHTML(label)}">Ã—</button>
+                        <button type="button" onclick="clearFilter('${key}')" aria-label="Clear ${escapeHTML(label)}">&times;</button>
                     </span>
                 `).join('')}
                 <button type="button" onclick="resetFilters()" class="filter-chip brand-font">Clear All</button>
