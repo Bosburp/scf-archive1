@@ -8,8 +8,8 @@
     <meta name="robots" content="index,follow">
     <meta property="og:title" content="The Chess Study Library | SCF">
     <meta property="og:description" content="A curated archive of original, high-quality chess studies from Study Creators & Friends.">
-    <meta name="theme-color" content="#0a0a0a">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZyBmaWxsPSIjYzVhMDU5Ij48cGF0aCBkPSJNNTAgMTBsLTUgNWgtMTBsLTUgNSAxMCAxMGgtMTBsLTUgNSAyMCAyMEgyNWwtNSA1aDYwbC01LTVINTVsMjAtMjAtMTAtMTBoLTEwbDEwLTEwLTUtNS0xMC01LTUtNXoiLz48cmVjdCB4PSIzMCIgeT0iNzUiIHdpZHRoPSI0MCIgaGVpZ2h0PSIxMCIgcng9IjIiLz48L2c+PC9zdmc+">
+    <meta name="theme-color" content="#0b0c0a">
+    <link rel="icon" type="image/svg+xml" href="assets/brand/csl-mark.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://docs.google.com">
@@ -34,17 +34,21 @@
 
     <style>
         :root { 
-            --bg: #0a0a0a; 
-            --card: #121212; 
-            --text: #d1d5db; 
-            --border: #262626; 
-            --heading: #f5f5dc; 
-            --gold: #c5a059;
-            --surface-soft: rgba(255,255,255,0.025);
-            --surface-lift: rgba(255,255,255,0.04);
+            --bg: #080907; 
+            --card: #11120f; 
+            --text: #cfd2c8; 
+            --border: #282a22; 
+            --heading: #f5f0df; 
+            --gold: #c4a05a;
+            --forest: #6f7f61;
+            --forest-dark: #183927;
+            --ink: #0b0c0a;
+            --parchment: #eee3ca;
+            --surface-soft: rgba(238,227,202,0.035);
+            --surface-lift: rgba(238,227,202,0.06);
             --radius: 6px;
             --shadow-card: 0 16px 34px -28px rgba(0,0,0,0.75);
-            --shadow-gold: 0 18px 36px -28px rgba(197,160,89,0.28);
+            --shadow-gold: 0 18px 36px -28px rgba(196,160,90,0.28);
             --space-section: clamp(3rem, 7vw, 5rem);
             --carousel-gap: 1.25rem;
         }
@@ -55,7 +59,11 @@
             --text: #4b5563; 
             --border: #e5e7eb; 
             --heading: #1a1a1a; 
-            --gold: #b88d3b;
+            --gold: #a97f35;
+            --forest: #607452;
+            --forest-dark: #dce6d3;
+            --ink: #191814;
+            --parchment: #2f2b22;
             --surface-soft: rgba(0,0,0,0.025);
             --surface-lift: rgba(0,0,0,0.035);
         }
@@ -116,10 +124,30 @@
             background: linear-gradient(180deg, var(--surface-lift), transparent 55%), rgba(255,255,255,0.86);
         }
 
+        .brand-block {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            align-items: center;
+            gap: 0.85rem;
+            min-width: 0;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            flex: 0 0 auto;
+            border-radius: 12px;
+            box-shadow: inset 0 0 0 1px rgba(245,240,223,0.06), 0 12px 24px -18px rgba(196,160,90,0.55);
+        }
+
+        .brand-copy {
+            min-width: 0;
+        }
+
         .brand-title {
             margin: 0;
             font-size: clamp(1.05rem, 2vw, 1.45rem);
-            letter-spacing: 0.14em;
+            letter-spacing: 0.12em;
             line-height: 1.15;
         }
 
@@ -306,21 +334,25 @@
 
         .featured-shell {
             position: relative;
-            border: 1px solid rgba(197, 160, 89, 0.16);
+            border: 1px solid rgba(196, 160, 90, 0.18);
             background:
-                linear-gradient(135deg, rgba(197, 160, 89, 0.08), transparent 35%),
+                linear-gradient(135deg, rgba(111, 127, 97, 0.08), transparent 32%),
                 linear-gradient(180deg, rgba(255,255,255,0.02), transparent 28%),
                 var(--card);
             overflow: hidden;
-            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
             max-width: 100%;
             margin: 0 auto;
             border-radius: var(--radius);
         }
 
         .featured-shell:hover {
-            border-color: rgba(197, 160, 89, 0.28);
-            box-shadow: var(--shadow-gold);
+            border-color: rgba(196, 160, 90, 0.42);
+            box-shadow: 0 20px 46px -32px rgba(196,160,90,0.45);
+            background:
+                linear-gradient(135deg, rgba(196, 160, 90, 0.08), transparent 34%),
+                linear-gradient(180deg, rgba(255,255,255,0.025), transparent 28%),
+                var(--card);
         }
 
         .featured-image {
@@ -328,8 +360,8 @@
             overflow: hidden;
             height: 220px;
             background:
-                linear-gradient(135deg, rgba(197,160,89,0.08), transparent 40%),
-                #0c0c0c;
+                radial-gradient(circle at center, rgba(238,227,202,0.08), transparent 58%),
+                #090a08;
         }
 
         .featured-image img {
@@ -337,15 +369,16 @@
             height: 100%;
             object-fit: contain;
             object-position: center;
-            opacity: 0.82;
-            filter: grayscale(55%) contrast(0.95);
+            opacity: 0.86;
+            filter: grayscale(100%) contrast(1.02);
             transform: none;
-            transition: opacity 0.35s ease, filter 0.35s ease;
+            transition: opacity 0.35s ease, filter 0.35s ease, transform 0.35s ease;
         }
 
         .featured-shell:hover .featured-image img {
-            opacity: 0.94;
-            filter: grayscale(25%) contrast(1);
+            opacity: 0.98;
+            filter: grayscale(72%) contrast(1.08);
+            transform: scale(1.015);
         }
 
         .featured-image::after {
@@ -353,15 +386,15 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(to right, rgba(10,10,10,0.2), transparent 45%, rgba(10,10,10,0.08)),
-                linear-gradient(to top, rgba(10,10,10,0.22), rgba(10,10,10,0));
+                linear-gradient(to right, rgba(8,9,7,0.1), transparent 45%, rgba(8,9,7,0.08)),
+                linear-gradient(to top, rgba(8,9,7,0.18), rgba(8,9,7,0));
             pointer-events: none;
         }
 
         .featured-badge {
             border: 1px solid rgba(255,255,255,0.14);
             color: #ffffff;
-            background: rgba(10,10,10,0.82);
+            background: rgba(8,9,7,0.84);
             backdrop-filter: blur(6px);
             letter-spacing: 0.22em;
             box-shadow: 0 10px 20px -16px rgba(0,0,0,0.45);
@@ -425,8 +458,8 @@
             height: 100%;
             width: 100%;
             background:
-                linear-gradient(135deg, rgba(197,160,89,0.05), transparent 44%),
-                #0d0d0d;
+                radial-gradient(circle at center, rgba(238,227,202,0.055), transparent 58%),
+                #090a08;
         }
 
         .card-image {
@@ -437,12 +470,12 @@
             opacity: 0.62;
             transform: none;
             transition: opacity 0.35s ease, filter 0.35s ease;
-            filter: grayscale(100%) contrast(0.95);
+            filter: grayscale(100%) contrast(1.02);
         }
 
         .chess-card:hover .card-image {
-            opacity: 0.82;
-            filter: grayscale(35%) contrast(1);
+            opacity: 0.88;
+            filter: grayscale(70%) contrast(1.08);
         }
 
         .image-vignette {
@@ -1077,6 +1110,16 @@
                 text-align: center;
             }
 
+            .brand-block {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+
+            .brand-mark {
+                width: 42px;
+                height: 42px;
+            }
+
             .header-actions {
                 justify-content: center;
             }
@@ -1139,8 +1182,11 @@
     <div class="max-w-6xl mx-auto site-layer">
         <header class="site-header">
             <div class="brand-block">
-                <h1 class="brand-title brand-font font-light parchment-text uppercase">The Chess Study Library</h1>
-                <p class="brand-subtitle brand-font font-semibold uppercase">Hosted by Study Creators & Friends</p>
+                <img src="assets/brand/csl-mark.svg" alt="" class="brand-mark" aria-hidden="true">
+                <div class="brand-copy">
+                    <h1 class="brand-title brand-font font-light parchment-text uppercase">The Chess Study Library</h1>
+                    <p class="brand-subtitle brand-font font-semibold uppercase">Hosted by Study Creators & Friends</p>
+                </div>
             </div>
             <div class="header-actions">
                 <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-2 border transition-all">

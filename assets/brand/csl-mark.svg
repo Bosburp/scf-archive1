@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Chess Study Library mark">
+  <rect width="96" height="96" rx="20" fill="#0b0c0a"/>
+  <rect x="15" y="15" width="66" height="66" rx="10" fill="#151611" stroke="#c4a05a" stroke-width="2"/>
+  <path d="M27 27h42v42H27z" fill="#eee3ca"/>
+  <path d="M27 27h10.5v10.5H27zm21 0h10.5v10.5H48zm10.5 10.5H69V48H58.5zM37.5 37.5H48V48H37.5zM27 48h10.5v10.5H27zm21 0h10.5v10.5H48zm10.5 10.5H69V69H58.5zM37.5 58.5H48V69H37.5z" fill="#6f7f61"/>
+  <path d="M31 74h34" stroke="#c4a05a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M38 19h20" stroke="#f5f0df" stroke-width="3" stroke-linecap="round"/>
+</svg>

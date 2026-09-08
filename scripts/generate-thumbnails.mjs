@@ -165,12 +165,12 @@ function renderBoardSvg({ fen, title, orientation = 'white' }) {
   if (rows.length !== 8) throw new Error(`Invalid FEN rows: ${fen}`);
 
   const size = 640;
-  const pad = 40;
-  const boardSize = 560;
+  const pad = 8;
+  const boardSize = size - pad * 2;
   const sq = boardSize / 8;
   const light = '#e8dcc4';
   const dark = '#8a7458';
-  const bg = '#101010';
+  const bg = '#090a08';
   const gold = '#c5a059';
   const normalizedOrientation = orientation === 'black' ? 'black' : 'white';
   const coords = normalizedOrientation === 'black'
@@ -214,8 +214,7 @@ function renderBoardSvg({ fen, title, orientation = 'white' }) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${label}">
   <defs>${pieceSymbolDefs}</defs>
   <rect width="${size}" height="${size}" fill="${bg}"/>
-  <rect x="20" y="20" width="600" height="600" rx="16" fill="#151515" stroke="#2b261c"/>
-  <rect x="${pad}" y="${pad}" width="${boardSize}" height="${boardSize}" rx="8" fill="#111" stroke="${gold}" stroke-opacity="0.38"/>
+  <rect x="${pad}" y="${pad}" width="${boardSize}" height="${boardSize}" rx="6" fill="#111" stroke="${gold}" stroke-opacity="0.28"/>
   ${squares}
   ${pieces}
 </svg>`;
