@@ -1,9 +1,9 @@
 :root {
-    --bg: #3e3d39;
+    --bg: #15130f;
     --surface: #eeede7;
     --surface-soft: #dedbd2;
-    --card: #eeeDE7;
-    --paper: #eeeDE7;
+    --card: #eeede7;
+    --paper: #eeede7;
     --paper-soft: #d6d0c2;
     --text: #11110f;
     --text-secondary: #4f4d47;
@@ -33,7 +33,7 @@
 }
 
 body.light-mode {
-    --bg: #3e3d39;
+    --bg: #15130f;
     --surface: #eeede7;
     --surface-soft: #dedbd2;
     --card: #eeede7;
@@ -67,7 +67,7 @@ html {
 }
 
 body {
-    background: var(--bg);
+    background-color: var(--bg);
     color: var(--text);
     font-family: 'Cormorant Garamond', Georgia, serif;
     overflow-x: hidden;
@@ -86,13 +86,10 @@ body::before {
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background:
-        linear-gradient(90deg, rgba(238,237,231,0.07) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(17,17,15,0.08) 1px, transparent 1px),
-        linear-gradient(114deg, transparent 0 55%, rgba(17,17,15,0.46) 55% 73%, transparent 73%),
-        linear-gradient(102deg, transparent 0 22%, rgba(183,154,85,0.42) 22% 23.5%, transparent 23.5%),
-        #3e3d39;
-    background-size: 52px 52px, 52px 52px, auto, auto, auto;
+    background-color: #15130f;
+    background-image: url("data:image/svg+xml,%3Csvg width='1800' height='1200' viewBox='0 0 1800 1200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='blur'%3E%3CfeGaussianBlur stdDeviation='90'/%3E%3C/filter%3E%3Crect width='1800' height='1200' fill='%2315130f'/%3E%3Cg filter='url(%23blur)' opacity='.72'%3E%3Cellipse cx='445' cy='165' rx='430' ry='190' fill='%23534a3b'/%3E%3Cellipse cx='1395' cy='850' rx='480' ry='230' fill='%2327231b'/%3E%3Cellipse cx='910' cy='720' rx='470' ry='280' fill='%23080706'/%3E%3Cellipse cx='1190' cy='120' rx='360' ry='160' fill='%232e2a22'/%3E%3C/g%3E%3Cg opacity='.34'%3E%3Crect x='190' y='0' width='8' height='1200' fill='%23d0b36e'/%3E%3Crect x='1118' y='0' width='3' height='1200' fill='%23eee7d7'/%3E%3C/g%3E%3Cg opacity='.16'%3E%3Cpath d='M0 1030c270-80 480-70 700 0s480 76 710-6 310-65 390-28v204H0z' fill='%23050404'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: center top;
     opacity: 1;
 }
 
@@ -102,9 +99,9 @@ body::after {
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    opacity: 0.2;
-    background-image: url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 .45'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.48'/%3E%3C/svg%3E");
-    mix-blend-mode: soft-light;
+    opacity: 0.36;
+    background-image: url("data:image/svg+xml,%3Csvg width='220' height='220' viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.05' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 .58'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.62'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
 }
 
 .brand-font { font-family: 'Inter', Arial, sans-serif; }
@@ -201,9 +198,11 @@ body.light-mode .site-header {
 .brand-title {
     margin: 0;
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: clamp(1.35rem, 2.6vw, 1.85rem);
-    letter-spacing: 0.06em;
-    line-height: 1.15;
+    font-size: clamp(1.6rem, 3.2vw, 2.35rem);
+    font-style: italic;
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    line-height: 1;
 }
 
 .brand-subtitle {
@@ -259,6 +258,16 @@ body.light-mode .site-header {
     background: var(--surface);
     padding: clamp(1rem, 3vw, 1.4rem);
     box-shadow: var(--shadow-card);
+}
+
+.filter-panel,
+.search-shell,
+.chess-card,
+.featured-shell,
+.author-profile-shell,
+.no-results,
+.archive-pagination .page-chip.active {
+    background-image: url("data:image/svg+xml,%3Csvg width='140' height='140' viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 .16'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23p)' opacity='.34'/%3E%3C/svg%3E");
 }
 
 .filter-panel::before {
@@ -758,8 +767,20 @@ body.light-mode .site-header {
     backdrop-filter: blur(12px);
     transition: opacity 0.25s ease;
     z-index: 2000;
-    background-color: rgba(251, 247, 237, 0.94);
+    background-color: rgba(17, 16, 13, 0.82);
     opacity: 1;
+}
+
+.modal-overlay .parchment-text {
+    color: var(--paper);
+}
+
+.modal-overlay .text-zinc-400 {
+    color: rgba(233, 223, 200, 0.78);
+}
+
+.modal-overlay .hover\:text-\[var\(--heading\)\]:hover {
+    color: var(--accent-strong);
 }
 
 .modal-overlay.hidden {
@@ -768,7 +789,7 @@ body.light-mode .site-header {
 }
 
 body.light-mode .modal-overlay {
-    background-color: rgba(251, 247, 237, 0.94);
+    background-color: rgba(17, 16, 13, 0.82);
 }
 
 .contribute-panel {
@@ -1103,6 +1124,7 @@ body.light-mode .modal-overlay {
     letter-spacing: 0.01em;
     text-transform: none;
     margin: 0;
+    font-style: italic;
 }
 
 .study-card-body {
@@ -1137,6 +1159,8 @@ body.light-mode .modal-overlay {
 .featured-copy-panel h2 {
     font-family: 'Cormorant Garamond', Georgia, serif;
     font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.015em;
 }
 
 .card-author {
@@ -1290,7 +1314,9 @@ body.light-mode .modal-overlay {
     margin: 0;
     color: var(--paper);
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 1.25rem;
+    font-size: 1.45rem;
+    font-style: italic;
+    font-weight: 600;
     line-height: 1.1;
 }
 
@@ -1328,7 +1354,7 @@ body.light-mode .modal-overlay {
 
 .footer-nav a:hover,
 .footer-nav button:hover {
-    color: var(--heading);
+    color: var(--accent-strong);
 }
 
 .footer-meta {
