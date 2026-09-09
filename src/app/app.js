@@ -1021,7 +1021,6 @@ function renderFeaturedStudy() {
                 </a>
 
                 <div class="featured-copy-panel flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l">
-                    <p class="gold-accent brand-font uppercase tracking-[0.18em] text-[10px] mb-3">Staff Pick</p>
                     <div class="featured-meta-row">
                         <div class="featured-badge brand-font px-3 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] rounded-sm">Featured Study</div>
                         <div class="forest-tag brand-font">${featured.side}</div>

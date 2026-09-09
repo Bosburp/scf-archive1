@@ -1774,6 +1774,11 @@ body.light-mode .site-header .parchment-text {
     gap: 1.65rem !important;
 }
 
+#archiveHeader,
+#authorProfileSection {
+    scroll-margin-top: 7rem;
+}
+
 .carousel-item {
     width: calc((100% - (var(--carousel-gap) * 2)) / 3);
 }
@@ -1806,7 +1811,6 @@ body.light-mode .site-header .parchment-text {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(0.45rem, 1.4vw, 0.85rem);
 }
 
 .card-image {
@@ -1822,7 +1826,7 @@ body.light-mode .site-header .parchment-text {
 
 .thumbnail-manual .card-image,
 .thumbnail-fallback .card-image {
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .chess-card:hover .card-image,
