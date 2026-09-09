@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Chessendium mark">
   <rect x="8" y="8" width="80" height="80" rx="20" fill="#0f1911"/>
-  <path fill="#2f6b4d" d="M17 17h31v31H17zm31 31h31v31H48z"/>
+  <path fill="#4d6816" d="M17 17h31v31H17zm31 31h31v31H48z"/>
   <path fill="#f7f4ed" d="M48 17h31v31H48zM17 48h31v31H17z"/>
   <path fill="none" stroke="#f7f4ed" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" d="M27 30c6.9-2.3 13.9-.6 21 5.2 7.1-5.8 14.1-7.5 21-5.2v33.5c-7.3-2.1-14.3-.2-21 5.6-6.7-5.8-13.7-7.7-21-5.6V30z"/>
   <path fill="none" stroke="#d6a94a" stroke-width="2.3" stroke-linecap="round" d="M48 35.6v33.1M31.5 36.4c4.2.1 8.3 1.6 12.5 4.4m20.5-4.4c-4.2.1-8.3 1.6-12.5 4.4"/>
