@@ -390,15 +390,27 @@ function toggleSubmit() {
 
 function toggleTheme() {
     const body = document.body;
-    const icon = document.getElementById('themeIcon');
     body.classList.toggle('light-mode');
     const isLight = body.classList.contains('light-mode');
 
-    icon.innerHTML = isLight
-        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />'
-        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+    syncThemeControls(isLight);
 
     try { localStorage.setItem('scf-theme', isLight ? 'light' : 'dark'); } catch (e) {}
+}
+
+function syncThemeControls(isLight) {
+    const iconMarkup = isLight
+        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />'
+        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+    ['themeIcon', 'themeIconInline'].forEach(id => {
+        const icon = document.getElementById(id);
+        if (icon) icon.innerHTML = iconMarkup;
+    });
+    const label = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+    ['themeToggle', 'themeToggleInline'].forEach(id => {
+        const button = document.getElementById(id);
+        if (button) button.setAttribute('aria-label', label);
+    });
 }
 
 function applyStoredTheme() {
@@ -406,10 +418,12 @@ function applyStoredTheme() {
     try { stored = localStorage.getItem('scf-theme'); } catch (e) {}
     if (stored === 'light') {
         document.body.classList.add('light-mode');
-        document.getElementById('themeIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />';
+        syncThemeControls(true);
     } else if (stored === 'dark') {
         document.body.classList.remove('light-mode');
-        document.getElementById('themeIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+        syncThemeControls(false);
+    } else {
+        syncThemeControls(document.body.classList.contains('light-mode'));
     }
 }
 

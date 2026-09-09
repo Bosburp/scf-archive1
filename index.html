@@ -7,15 +7,15 @@
     <meta name="description" content="Chessendium is a curated compendium of original, high-quality chess studies hosted by SCF. Browse by author, opening, category, side, and theme.">
     <meta name="robots" content="index,follow">
     <meta property="og:title" content="Chessendium">
-    <meta property="og:description" content="A calm, curated compendium of original chess studies hosted by SCF.">
-    <meta name="theme-color" content="#F1E9D6">
+    <meta property="og:description" content="A polished catalogue of original chess studies hosted by SCF.">
+    <meta name="theme-color" content="#f7f4ed">
     <link rel="icon" type="image/svg+xml" href="assets/brand/csl-mark.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://docs.google.com">
     <link rel="dns-prefetch" href="https://images.unsplash.com">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&family=Cormorant+SC:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 
     <script type="application/ld+json">
     {
@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="src/styles/main.css">
 
 </head>
-<body class="light-mode min-h-screen px-5 pt-0 pb-0 sm:px-8 md:px-12 md:pt-0 md:pb-0">
+<body class="light-mode min-h-screen px-0 pt-0 pb-0">
 
     <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
@@ -45,7 +45,7 @@
         </svg>
     </button>
 
-    <button id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+    <button id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode" aria-label="Switch to dark mode">
         <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
@@ -94,7 +94,7 @@
                 <img src="assets/brand/csl-mark.svg" alt="" class="brand-mark" aria-hidden="true">
                 <div class="brand-copy">
                     <h1 class="brand-title brand-font font-light parchment-text">Chessendium</h1>
-                    <p class="brand-subtitle brand-font font-semibold uppercase">Hosted by Study Creators &amp; Friends</p>
+                    <p class="brand-subtitle brand-font font-semibold uppercase">A compendium of chess studies</p>
                 </div>
             </div>
             <div class="header-actions">
@@ -114,6 +114,13 @@
 
                 <button onclick="toggleAbout()" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
                     <span class="relative z-10">About Us</span>
+                </button>
+
+                <button id="themeToggleInline" onclick="toggleTheme()" title="Toggle Light/Dark Mode" aria-label="Switch to dark mode" class="header-btn theme-header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
+                    <svg id="themeIconInline" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646A9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                    <span class="relative z-10">Theme</span>
                 </button>
             </div>
         </header>
