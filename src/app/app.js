@@ -1131,11 +1131,11 @@ function cardHtml(i, favorites = getFavorites()) {
 
             <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-title brand-font parchment-text hover:text-[var(--accent)] transition-colors" title="${escapeHTML(i.title)}">${i.title}</a>
 
-            <div class="card-author" title="By ${escapeHTML(authorDisplay(i))}">By ${authorLinksHtml(i)}</div>
+            <div class="card-author" title="Created by ${escapeHTML(authorDisplay(i))}">Created by ${authorLinksHtml(i)}</div>
 
             <p class="card-note text-zinc-500 text-[11px] italic leading-relaxed">${i.notes.replace(/STAR/gi, '')}</p>
 
-            <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-open-link brand-font">Open on Lichess &rarr;</a>
+            <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-open-link brand-font">Hosted on Lichess &middot; Open &rarr;</a>
         </div>
     </div>`;
 }

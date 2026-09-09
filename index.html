@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCF Community Library | Curated Chess Studies</title>
-    <meta name="description" content="The SCF Community Library is a free discovery layer for original chess studies created by the community and hosted on Lichess. Browse by author, opening, category, side, and theme.">
+    <title>Chess Study Library | SCF Curated Chess Studies</title>
+    <meta name="description" content="Chess Study Library is a free SCF-curated discovery layer for original chess studies created by the community and hosted on Lichess. Browse by author, opening, category, side, and theme.">
     <meta name="robots" content="index,follow">
-    <meta property="og:title" content="SCF Community Library">
+    <link rel="canonical" href="https://the-chess-study-library.vercel.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Chess Study Library">
     <meta property="og:description" content="A free catalogue of community-created chess studies hosted on Lichess and organized by SCF.">
+    <meta property="og:url" content="https://the-chess-study-library.vercel.app/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Chess Study Library">
+    <meta name="twitter:description" content="Discover high-quality chess studies created by the community, hosted on Lichess, and organized by SCF.">
     <meta name="theme-color" content="#f7f4ed">
     <link rel="icon" type="image/svg+xml" href="assets/brand/csl-mark.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,9 +27,9 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "SCF Community Library",
+      "name": "Chess Study Library",
       "url": "https://the-chess-study-library.vercel.app/",
-      "description": "A free discovery layer for community-created chess studies hosted on Lichess and organized by SCF.",
+      "description": "A free SCF-curated discovery layer for community-created chess studies hosted on Lichess.",
       "potentialAction": {
         "@type": "SearchAction",
         "target": "https://the-chess-study-library.vercel.app/?q={search_term_string}",
@@ -93,16 +99,13 @@
             <div class="brand-block">
                 <img src="assets/brand/csl-mark.svg" alt="" class="brand-mark" aria-hidden="true">
                 <div class="brand-copy">
-                    <h1 class="brand-title brand-font font-light parchment-text">Community Library</h1>
-                    <p class="brand-subtitle brand-font font-semibold uppercase">SCF chess study discovery</p>
+                    <h1 class="brand-title brand-font font-light parchment-text">Chess Study Library</h1>
+                    <p class="brand-subtitle brand-font font-semibold uppercase">Curated by Study Creators & Friends</p>
                 </div>
             </div>
             <div class="header-actions">
                 <button onclick="showCommunityLibrary()" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
                     <span class="relative z-10">Library</span>
-                </button>
-                <button onclick="showEndgameTrainer()" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
-                    <span class="relative z-10">Endgames</span>
                 </button>
                 <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-2 border transition-all">
                     <svg class="h-4 w-4 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
@@ -127,7 +130,7 @@
 
         <section id="communityLibraryNote" class="community-library-note">
             <div>
-                <p class="community-eyebrow brand-font">SCF Community Library</p>
+                <p class="community-eyebrow brand-font">SCF Community</p>
                 <h2>Community studies, easier to discover.</h2>
             </div>
             <p>Creators make the studies. Lichess hosts them. SCF curates and organizes excellent educational material so it is easier to find. Study ownership and attribution stay with the original creators on Lichess.</p>
@@ -275,13 +278,12 @@
                 <div class="footer-brand">
                     <img src="assets/brand/csl-mark.svg" alt="" class="footer-mark" aria-hidden="true">
                     <div>
-                        <p class="footer-title brand-font">SCF Community Library</p>
+                        <p class="footer-title brand-font">Chess Study Library</p>
                         <p class="footer-description">A free discovery layer for chess studies created by the community and hosted on Lichess. SCF organizes the catalogue so strong educational material is easier to find.</p>
                     </div>
                 </div>
                 <nav class="footer-nav brand-font" aria-label="Footer navigation">
                     <button type="button" onclick="showCommunityLibrary()">Community Library</button>
-                    <button type="button" onclick="showEndgameTrainer()">Endgame Trainer</button>
                     <button type="button" onclick="jumpToNewStudies()">Latest Studies</button>
                     <button type="button" onclick="toggleSubmit()">Submit Study</button>
                     <button type="button" onclick="toggleAbout()">About</button>
@@ -290,7 +292,7 @@
                 </nav>
                 <div class="footer-meta">
                     <p>Community studies open on Lichess and preserve creator attribution.</p>
-                    <p>&copy; 2026 SCF Community Library. Study content remains with its respective creators.</p>
+                    <p>&copy; 2026 Chess Study Library. Study content remains with its respective creators.</p>
                 </div>
             </div>
         </footer>

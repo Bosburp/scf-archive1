@@ -18,7 +18,7 @@
     };
 
     function trainerStorageKey(positionId) {
-        return `psychess-endgame:${positionId}`;
+        return `future-endgame-trainer:${positionId}`;
     }
 
     function getCatalog() {

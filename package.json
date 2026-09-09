@@ -1,6 +1,7 @@
 {
   "scripts": {
     "generate:thumbnails": "node scripts/generate-thumbnails.mjs",
+    "prepare:study": "node scripts/prepare-study-row.mjs",
     "check": "node scripts/check-inline-script.mjs"
   },
   "dependencies": {

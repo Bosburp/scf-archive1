@@ -1,26 +1,25 @@
-# Product Architecture
+# Chess Study Library Product Architecture
 
-## Current Surface: SCF Community Library
+## Current Product: Chess Study Library
 
-The existing study library is the free community discovery layer.
+This repository is the Chess Study Library: a free community discovery layer associated with SCF.
 
 - Community creators make the studies.
 - Lichess hosts the original studies.
 - SCF curates and organizes the catalogue so high-quality educational studies are easier to find.
 - Each study should preserve creator attribution and link directly to the original Lichess study.
-- The community library should not be placed behind a future premium subscription.
+- The library should remain free.
 
-## Future Platform Areas
+## Future Platform Boundary
 
-Future training products should remain conceptually separate from the community library.
+Future commercial training products should live in a separate product/project rather than turning this repository into a training platform.
 
-- Explore: Community Library, videos, creators.
-- Train: tactics, openings, endgames, courses, personal training, progress tracking, analysis.
-- Original platform content/tools can be monetized separately from community study discovery.
+- Chess Study Library: free SCF community discovery and curation.
+- Future training platform: endgames, tactics, openings, courses, spaced repetition, game analysis, and other original training tools.
 
-## Initial Training Product: Endgame Trainer
+## Preserved Prototype: Endgame Trainer
 
-The first training surface is a separate Endgame Trainer available through the application shell, not through the SCF Community Library data model.
+The Endgame Trainer foundation is preserved in this repository as future-project groundwork, but it is not part of the primary Chess Study Library navigation.
 
 - Route state: `?view=endgames`.
 - Catalogue data: `src/data/endgame-trainer.js`.
@@ -28,7 +27,7 @@ The first training surface is a separate Endgame Trainer available through the a
 - Current category: Fundamentals / King + Queen vs King.
 - Current progress storage: local browser storage keyed by stable position ids.
 
-This keeps the trainer independent from Lichess community studies while letting the broader platform grow around the same header, footer, theme system, and visual language.
+This keeps the trainer independent from Lichess community studies and makes it easier to extract into a future standalone training product.
 
 The first implementation validates legal king and queen moves directly in the browser and records only real local attempts, successes, mistakes, and best conversion length. A larger production catalogue should add a tablebase/engine-backed validation layer before expanding into complex theoretical endgames.
 
