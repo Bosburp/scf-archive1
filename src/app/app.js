@@ -784,6 +784,9 @@ async function loadData() {
             const authors = parseAuthors(rawAuthor);
             const link = normalizeStudyLink(c[5]);
             const generated = getGeneratedStudyData(link);
+            const manualImage = (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "";
+            const fallbackImage = "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80";
+            const hasResolvedScreenshotThumbnail = generated?.thumbnailSource === 'screenshot-fen-override' || generated?.thumbnailSource === 'screenshot-fen-reference';
             return enrichStudyRecord({
                 side: c[1]?.replace(/"/g, '') || "Universal",
                 category: c[2]?.replace(/"/g, '') || "General",
@@ -795,7 +798,8 @@ async function loadData() {
                 link,
                 notes: c[6]?.replace(/"/g, '') || "",
                 viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
-                image: generated?.thumbnailPath || ((c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80"),
+                image: hasResolvedScreenshotThumbnail ? generated.thumbnailPath : (manualImage || generated?.thumbnailPath || fallbackImage),
+                thumbnailSource: hasResolvedScreenshotThumbnail ? 'generated' : (manualImage ? 'manual' : (generated?.thumbnailPath ? 'generated' : 'fallback')),
                 generated,
                 difficulty: c[9]?.replace(/"/g, '').trim() || "",
                 createdAt: c[10]?.replace(/"/g, '').trim() || "",
@@ -1005,21 +1009,22 @@ function renderFeaturedStudy() {
 
     const cleanNotes = featured.notes.replace(/STAR/gi, '').trim();
     const spotlightText = featured.featuredDescription || featured.viewerNote || cleanNotes || "A carefully selected study from the archive.";
+    const thumbnailClass = `thumbnail-${featured.thumbnailSource || 'fallback'}`;
 
     container.innerHTML = `
         <div class="featured-shell">
             <div class="featured-layout grid md:grid-cols-[minmax(280px,390px)_minmax(0,1fr)]">
-                <a href="${featured.link}" onclick="return handleStudyLinkClick(event, '${featured.link.replace(/'/g, "\\'")}')" class="featured-image block relative">
+                <a href="${featured.link}" onclick="return handleStudyLinkClick(event, '${featured.link.replace(/'/g, "\\'")}')" class="featured-image ${thumbnailClass} block relative">
                     <img src="${featured.image}" alt="${featured.title}" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
-                    <div class="absolute top-4 left-4 flex flex-wrap items-center gap-2 z-10 max-w-[calc(100%-2rem)]">
-                        <div class="featured-badge brand-font px-3 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] rounded-sm">Featured Study</div>
-                        <div class="forest-tag brand-font">${featured.side}</div>
-                        ${featured.difficulty ? `<div class="skill-tag brand-font">${featured.difficulty}</div>` : ''}
-                    </div>
                 </a>
 
                 <div class="featured-copy-panel flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l">
                     <p class="gold-accent brand-font uppercase tracking-[0.18em] text-[10px] mb-3">Staff Pick</p>
+                    <div class="featured-meta-row">
+                        <div class="featured-badge brand-font px-3 py-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] rounded-sm">Featured Study</div>
+                        <div class="forest-tag brand-font">${featured.side}</div>
+                        ${featured.difficulty ? `<div class="skill-tag brand-font">${featured.difficulty}</div>` : ''}
+                    </div>
                     <h2 class="text-xl md:text-2xl brand-font parchment-text leading-snug mb-3">${featured.title}</h2>
                     <div class="featured-author-line brand-font text-xs mb-5">By ${authorLinksHtml(featured)}</div>
 
@@ -1099,6 +1104,7 @@ function cardHtml(i, favorites = getFavorites()) {
     const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
     const favActive = favorites.has(i.link) ? 'active' : '';
     const favTopClass = isStar ? 'top-11' : 'top-3';
+    const thumbnailClass = `thumbnail-${i.thumbnailSource || 'fallback'}`;
 
     return `
     <div class="chess-card flex flex-col group relative">
@@ -1108,8 +1114,8 @@ function cardHtml(i, favorites = getFavorites()) {
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
         </button>
 
-        <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-media w-full relative block">
-            <div class="card-image-wrap">
+        <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-media ${thumbnailClass} w-full relative block">
+            <div class="card-image-wrap ${thumbnailClass}">
                 <img src="${i.image}" class="card-image" alt="${i.title}" loading="lazy" decoding="async" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
                 <div class="image-vignette"></div>
                 <div class="absolute top-4 left-4 flex items-center gap-2 z-10">

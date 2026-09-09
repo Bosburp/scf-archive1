@@ -1,3 +1,6 @@
+import { Chess } from 'chess.js';
+import { fenHash, validateFen } from './thumbnail-renderer.mjs';
+
 const SHEET_COLUMNS = [
   'Status',
   'Side',
@@ -66,6 +69,48 @@ function splitPgnGames(pgn) {
   return starts.map((start, index) => pgn.slice(start, starts[index + 1] ?? pgn.length).trim()).filter(Boolean);
 }
 
+function chapterIdFromHeaders(headers) {
+  const site = headers.Site || '';
+  const parts = site.split('/').filter(Boolean);
+  const maybeChapter = parts[parts.length - 1];
+  return /^[A-Za-z0-9]{8}$/.test(maybeChapter) ? maybeChapter : '';
+}
+
+function stripVariationsAndComments(pgn) {
+  let out = '';
+  let commentDepth = 0;
+  let variationDepth = 0;
+  let nag = false;
+
+  for (let i = 0; i < pgn.length; i++) {
+    const ch = pgn[i];
+
+    if (commentDepth) {
+      if (ch === '}') commentDepth--;
+      continue;
+    }
+    if (variationDepth) {
+      if (ch === '(') variationDepth++;
+      else if (ch === ')') variationDepth--;
+      continue;
+    }
+    if (nag) {
+      if (!/\d/.test(ch)) {
+        nag = false;
+        out += ch;
+      }
+      continue;
+    }
+
+    if (ch === '{') commentDepth++;
+    else if (ch === '(') variationDepth++;
+    else if (ch === '$') nag = true;
+    else out += ch;
+  }
+
+  return out;
+}
+
 function cleanAuthor(value) {
   const text = (value || '').trim();
   const lichessMatch = text.match(/lichess\.org\/@\/([^/?#]+)/i);
@@ -112,8 +157,37 @@ async function main() {
   }
 
   const games = pgn ? splitPgnGames(pgn) : [];
-  const selectedGame = games.find(game => parts.explicitChapterId && game.includes(parts.explicitChapterId)) || games[0] || pgn;
-  const headers = selectedGame ? parseHeaders(selectedGame) : {};
+  const chapters = games.map((game, index) => {
+    const headers = parseHeaders(game);
+    return {
+      index,
+      chapterId: chapterIdFromHeaders(headers),
+      chapterName: headers.ChapterName || headers.Event || `Chapter ${index + 1}`,
+      orientation: (headers.Orientation || 'white').toLowerCase() === 'black' ? 'black' : 'white',
+      headers,
+      pgn: game,
+    };
+  });
+  const selectedChapter = parts.explicitChapterId
+    ? chapters.find(chapter => chapter.chapterId === parts.explicitChapterId) || chapters[0]
+    : chapters[0];
+  const selectedGame = selectedChapter?.pgn || pgn;
+  const headers = selectedChapter?.headers || (selectedGame ? parseHeaders(selectedGame) : {});
+
+  let startFen = '';
+  let thumbnailFen = '';
+  let thumbnailWarning = '';
+  if (selectedGame) {
+    try {
+      const chess = new Chess();
+      const mainlinePgn = stripVariationsAndComments(selectedGame);
+      chess.loadPgn(mainlinePgn, { strict: false });
+      startFen = headers.FEN || new Chess().fen();
+      thumbnailFen = chess.fen();
+    } catch (error) {
+      thumbnailWarning = `Could not derive final main-line FEN: ${error.message}`;
+    }
+  }
 
   const title = (args.title || headers.StudyName || headers.Event || '').trim();
   const author = cleanAuthor(args.author || headers.Annotator || headers.White || headers.Black || '');
@@ -122,6 +196,10 @@ async function main() {
   const description = args.description || args.notes || '';
   const tags = args.tags || '';
   const createdAt = new Date().toISOString().slice(0, 10);
+  const selectedChapterId = selectedChapter?.chapterId || parts.explicitChapterId || '';
+  const expectedThumbnailPath = thumbnailFen
+    ? `assets/thumbnails/${parts.studyId}-${selectedChapterId || 'chapter1'}-${fenHash(thumbnailFen)}.svg`
+    : '';
 
   const row = {
     Status: 'Ready for review',
@@ -143,11 +221,25 @@ async function main() {
     studyId: parts.studyId,
     explicitChapterId: parts.explicitChapterId,
     chapterCount: games.length,
-    selectedChapterTitle: headers.ChapterName || headers.Event || '',
+    selectedChapterId,
+    selectedChapterTitle: selectedChapter?.chapterName || headers.ChapterName || headers.Event || '',
+    chapterNames: chapters.map(chapter => chapter.chapterName),
+    chapterIds: chapters.map(chapter => chapter.chapterId).filter(Boolean),
     title,
     author,
     url: parts.canonicalUrl,
+    canonicalStudyUrl: `https://lichess.org/study/${parts.studyId}`,
+    orientation: selectedChapter?.orientation || String(side).toLowerCase(),
+    eco: headers.ECO || '',
+    opening: headers.Opening || '',
+    startFen,
+    thumbnailFen,
+    thumbnailFenValid: thumbnailFen ? validateFen(thumbnailFen) : false,
+    thumbnailSource: thumbnailFen ? 'generated-fen' : 'manual-or-fallback',
+    expectedThumbnailPath,
+    thumbnailRule: 'explicit URL chapter when present, otherwise first exported chapter; final main-line position',
     exportWarning,
+    thumbnailWarning,
   };
 
   console.log(JSON.stringify({ derived, row }, null, 2));

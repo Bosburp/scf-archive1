@@ -2,6 +2,9 @@
   "scripts": {
     "generate:thumbnails": "node scripts/generate-thumbnails.mjs",
     "prepare:study": "node scripts/prepare-study-row.mjs",
+    "audit:screenshot-thumbnails": "node scripts/audit-screenshot-thumbnails.mjs",
+    "test:thumbnails": "node scripts/test-thumbnails.mjs",
+    "qa:static": "node scripts/qa-static-production.mjs",
     "check": "node scripts/check-inline-script.mjs"
   },
   "dependencies": {

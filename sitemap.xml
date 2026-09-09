@@ -31,7 +31,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?staff=Yes</loc>
+    <loc>https://the-chess-study-library.vercel.app/?staff=1</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -54,5 +54,25 @@
     <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=King%27s%20Pawn%20Opening</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=King%27s%20Pawn%20Opening&amp;variation=Italian%20Game</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=King%27s%20Pawn%20Opening&amp;variation=Scotch%20Game</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=Sicilian%20Defense&amp;variation=Najdorf</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=Sicilian%20Defense&amp;variation=Dragon</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>

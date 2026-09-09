@@ -552,6 +552,14 @@ body.light-mode .site-header {
     min-height: 22px;
 }
 
+.featured-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.85rem;
+}
+
 .featured-btn {
     transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
     border: 1px solid var(--gold);
@@ -1788,6 +1796,10 @@ body.light-mode .site-header .parchment-text {
     aspect-ratio: 16 / 11;
 }
 
+.card-media.thumbnail-generated {
+    aspect-ratio: 1 / 1;
+}
+
 .card-image-wrap {
     background: var(--surface-soft);
 }
@@ -1795,6 +1807,15 @@ body.light-mode .site-header .parchment-text {
 .card-image {
     opacity: 0.95;
     filter: none;
+}
+
+.thumbnail-generated .card-image {
+    object-fit: cover;
+}
+
+.thumbnail-manual .card-image,
+.thumbnail-fallback .card-image {
+    object-fit: cover;
 }
 
 .chess-card:hover .card-image,

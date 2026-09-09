@@ -1,12 +1,31 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import crypto from 'node:crypto';
 import { Chess } from 'chess.js';
+import { fenHash, renderBoardSvg, THUMBNAIL_RENDERER_ID, validateFen } from './thumbnail-renderer.mjs';
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHRh0KZ6s0XfeHMyIFdR-WjWI_t7QOfR8gknJOLZpJlAKkDEWtoDw-RpqHj27TAv17t7xvcfNGqn13/pub?output=csv';
 const OUT_FILE = 'generated/lichess-study-data.json';
+const THUMBNAIL_OVERRIDES_FILE = 'generated/thumbnail-overrides.json';
 const THUMB_DIR = 'assets/thumbnails';
 const DEFAULT_CONCURRENCY_DELAY_MS = 350;
+
+const SCREENSHOT_FEN_REFERENCES = {
+  'https://i.postimg.cc/h4NHxq4h/6Wy-GX2R-1.png': {
+    thumbnailFen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2',
+    orientation: 'white',
+    note: 'Screenshot shows the position after 1.e4 e5.',
+  },
+  'https://i.ibb.co/dJfdLCbZ/image.png': {
+    thumbnailFen: 'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2',
+    orientation: 'white',
+    note: 'Screenshot shows the position after 1.e4 c5.',
+  },
+  'https://i.postimg.cc/ZRZGWPJp/85s-GXGw-1.png': {
+    thumbnailFen: 'rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 1',
+    orientation: 'white',
+    note: 'Screenshot shows the position after 1.d4.',
+  },
+};
 
 const args = new Map(process.argv.slice(2).map(arg => {
   const [key, value = 'true'] = arg.replace(/^--/, '').split('=');
@@ -136,22 +155,6 @@ function stripVariationsAndComments(pgn) {
   return out;
 }
 
-function fenBoardOnly(fen) {
-  return fen.split(' ')[0];
-}
-
-function fenHash(fen) {
-  return crypto.createHash('sha1').update(fen).digest('hex').slice(0, 10);
-}
-
-function escapeXml(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
 async function loadPieceSymbolDefs() {
   const source = await fs.readFile('src/app/app.js', 'utf8');
   const match = source.match(/const PIECE_SYMBOL_DEFS = `([\s\S]*?)`;/);
@@ -159,70 +162,20 @@ async function loadPieceSymbolDefs() {
   return match[1].trim();
 }
 
-function renderBoardSvg({ fen, title, orientation = 'white' }) {
-  const board = fenBoardOnly(fen);
-  const rows = board.split('/');
-  if (rows.length !== 8) throw new Error(`Invalid FEN rows: ${fen}`);
-
-  const size = 640;
-  const pad = 0;
-  const boardSize = size - pad * 2;
-  const sq = boardSize / 8;
-  const light = '#e8dcc4';
-  const dark = '#8a7458';
-  const bg = '#fbf7ed';
-  const normalizedOrientation = orientation === 'black' ? 'black' : 'white';
-  const coords = normalizedOrientation === 'black'
-    ? { row: r => 7 - r, col: c => 7 - c }
-    : { row: r => r, col: c => c };
-
-  const grid = rows.map(row => {
-    const squares = [];
-    for (const ch of row) {
-      if (/\d/.test(ch)) {
-        for (let i = 0; i < Number(ch); i++) squares.push('');
-      } else {
-        squares.push(ch);
-      }
-    }
-    if (squares.length !== 8) throw new Error(`Invalid FEN row: ${row}`);
-    return squares;
-  });
-
-  let squares = '';
-  let pieces = '';
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const boardRow = coords.row(r);
-      const boardCol = coords.col(c);
-      const x = pad + c * sq;
-      const y = pad + r * sq;
-      squares += `<rect x="${x}" y="${y}" width="${sq}" height="${sq}" fill="${(boardRow + boardCol) % 2 === 0 ? light : dark}"/>`;
-      const piece = grid[boardRow][boardCol];
-      if (piece) {
-        const isWhite = piece === piece.toUpperCase();
-        const colorPrefix = isWhite ? 'w' : 'b';
-        const piecePad = sq * 0.035;
-        pieces += `<use href="#piece-${colorPrefix}${piece.toLowerCase()}" x="${x + piecePad}" y="${y + piecePad}" width="${sq - piecePad * 2}" height="${sq - piecePad * 2}"/>`;
-      }
-    }
-  }
-
-  const label = escapeXml(title).slice(0, 72);
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="${label}">
-  <defs>${pieceSymbolDefs}</defs>
-  <rect width="${size}" height="${size}" fill="${bg}"/>
-  ${squares}
-  ${pieces}
-</svg>`;
-}
-
 async function readExistingGenerated() {
   try {
     return JSON.parse(await fs.readFile(OUT_FILE, 'utf8'));
   } catch {
     return { generatedAt: null, source: 'lichess-study-export', studies: {} };
+  }
+}
+
+async function readThumbnailOverrides() {
+  try {
+    const parsed = JSON.parse(await fs.readFile(THUMBNAIL_OVERRIDES_FILE, 'utf8'));
+    return parsed.studies || {};
+  } catch {
+    return {};
   }
 }
 
@@ -261,8 +214,8 @@ async function main() {
       await fs.writeFile(study.thumbnailPath, renderBoardSvg({
         fen: study.thumbnailFen,
         title: study.title || study.studyId,
-        side: study.side || 'Universal',
         orientation: study.orientation,
+        pieceSymbolDefs,
       }), 'utf8');
       rerendered++;
       console.log(`rerendered ${study.studyId} ${study.thumbnailPath}`);
@@ -283,11 +236,13 @@ async function main() {
     link: c[5]?.replace(/"/g, '') || '#',
     notes: c[6]?.replace(/"/g, '') || '',
     viewerNote: c[7]?.replace(/"/g, '')?.trim() || '',
+    manualImage: c[8]?.replace(/"/g, '').trim() || '',
     difficulty: c[9]?.replace(/"/g, '').trim() || '',
     keyword: c[11]?.replace(/"/g, '').trim() || '',
   })).filter(study => study.title && study.link);
 
   const generated = await readExistingGenerated();
+  const thumbnailOverrides = await readThumbnailOverrides();
   generated.source = 'lichess-study-export';
   generated.thumbnailRule = 'first explicit URL chapter, otherwise first exported chapter; final mainline position';
   generated.studies ||= {};
@@ -302,7 +257,60 @@ async function main() {
     if (processed >= limit) break;
 
     const previous = generated.studies[parts.studyId];
+    const screenshotReference = SCREENSHOT_FEN_REFERENCES[study.manualImage];
+    const override = thumbnailOverrides[parts.studyId] || screenshotReference;
     try {
+      if (override?.thumbnailFen) {
+        if (!validateFen(override.thumbnailFen)) {
+          throw new Error(`Invalid thumbnail override FEN for ${parts.studyId}`);
+        }
+        const overrideChapterId = override.chapterId || parts.explicitChapterId || 'screenshot';
+        const hash = fenHash(override.thumbnailFen);
+        const thumbnailPath = `${THUMB_DIR}/${parts.studyId}-${overrideChapterId}-${hash}.svg`.replace(/\\/g, '/');
+        await fs.writeFile(thumbnailPath, renderBoardSvg({
+          fen: override.thumbnailFen,
+          title: study.title,
+          orientation: override.orientation || study.side,
+          pieceSymbolDefs,
+        }), 'utf8');
+
+        generated.studies[parts.studyId] = {
+          ...(previous || {}),
+          studyId: parts.studyId,
+          sourceUrl: study.link,
+          rowNumber: study.rowNumber,
+          title: study.title,
+          author: study.author,
+          selectedChapterId: override.chapterId || parts.explicitChapterId || '',
+          selectedChapterName: override.chapterName || previous?.selectedChapterName || '',
+          startFen: override.startFen || previous?.startFen || '',
+          thumbnailFen: override.thumbnailFen,
+          orientation: override.orientation || previous?.orientation || 'white',
+          searchText: previous?.searchText || [
+            study.title,
+            study.author,
+            study.category,
+            study.side,
+            study.difficulty,
+            study.notes,
+            study.viewerNote,
+          ].filter(Boolean).join(' '),
+          thumbnailPath,
+          thumbnailSource: thumbnailOverrides[parts.studyId] ? 'screenshot-fen-override' : 'screenshot-fen-reference',
+          screenshotReferenceUrl: override.screenshotReferenceUrl || study.manualImage || '',
+          screenshotResolutionNote: override.note || '',
+          renderer: THUMBNAIL_RENDERER_ID,
+          pgnFetched: previous?.pgnFetched || false,
+          error: previous?.error || '',
+          updatedAt: new Date().toISOString(),
+        };
+
+        processedStudyIds.add(parts.studyId);
+        processed++;
+        console.log(`override ${parts.studyId} ${overrideChapterId} ${override.thumbnailFen}`);
+        continue;
+      }
+
       await sleep(DEFAULT_CONCURRENCY_DELAY_MS);
       const { pgn, lastModified } = await fetchStudyPgn(parts.studyId);
       const chapters = splitPgnGames(pgn);
@@ -335,8 +343,8 @@ async function main() {
       await fs.writeFile(thumbnailPath, renderBoardSvg({
         fen: thumbnailFen,
         title: study.title,
-        side: study.side,
         orientation: selected.orientation,
+        pieceSymbolDefs,
       }), 'utf8');
 
       generated.studies[parts.studyId] = {
@@ -366,7 +374,8 @@ async function main() {
           chapterEntries.map(chapter => chapter.chapterName).join(' '),
         ].filter(Boolean).join(' '),
         thumbnailPath,
-        renderer: 'site-piece-symbols-v2',
+        thumbnailSource: 'lichess-final-mainline',
+        renderer: THUMBNAIL_RENDERER_ID,
         pgnFetched: true,
         pgnLength: pgn.length,
         error: '',

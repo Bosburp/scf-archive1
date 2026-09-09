@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T11:42:17.236Z",
+  "generatedAt": "2026-09-09T20:17:12.587Z",
   "source": "lichess-study-export",
   "studies": {
     "8kzMpYoH": {
@@ -10,7 +10,7 @@
       "author": "Peng_Dehuai1898-1974",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:35.312Z"
+      "updatedAt": "2026-09-09T20:17:06.796Z"
     },
     "spty8Dc9": {
       "studyId": "spty8Dc9",
@@ -20,7 +20,7 @@
       "author": "Peng_Dehuai1898-1974",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:35.779Z"
+      "updatedAt": "2026-09-09T20:17:07.244Z"
     },
     "KvhZf1BF": {
       "studyId": "KvhZf1BF",
@@ -30,7 +30,18 @@
       "author": "Peng_Dehuai1898-1974",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:36.246Z"
+      "updatedAt": "2026-09-09T20:17:07.249Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
+      "orientation": "white",
+      "searchText": "Burn the Najdorf! Peng_Dehuai1898-1974 Sicilian Defense White",
+      "thumbnailPath": "assets/thumbnails/KvhZf1BF-screenshot-219551a8b3.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.ibb.co/dJfdLCbZ/image.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 c5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "Wwz6xMZk": {
       "studyId": "Wwz6xMZk",
@@ -57,16 +68,20 @@
         "Outro"
       ],
       "startFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-      "thumbnailFen": "rnbqkbnr/pp1p1ppp/4p3/8/3NP3/8/PPP2PPP/RNBQKB1R b KQkq - 0 4",
+      "thumbnailFen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
       "orientation": "white",
       "intro": "",
       "searchText": "Burn the Kan & Taimanov Peng_Dehuai1898-1974 Sicilian Defense White Introduction Introduction Kan 5...Bc5 - 6...Be7 Kan 5...Bc5 - 6...Ba7 Kan 5...Nf6/5...Qc7 Mainline Kan 5...Nf6 sidelines Kan 5...Qc7 sidelines Kan 5th move sidelines Taimanov 5...Qc7 - 8...Be7 Taimanov 5...Qc7 - 8...Nxd4 Taimanov 5...Qc7 - 8th move sidelines Taimanov 5...a6 & other 5th move sidelines Outro",
-      "thumbnailPath": "assets/thumbnails/Wwz6xMZk-chapter1-e5e4cdb0f3.svg",
+      "thumbnailPath": "assets/thumbnails/Wwz6xMZk-screenshot-219551a8b3.svg",
       "pgnFetched": true,
       "pgnLength": 6750,
       "error": "",
       "lichessLastModified": "Sun, 15 Mar 2026 12:32:28 GMT",
-      "updatedAt": "2026-09-08T11:34:37.802Z"
+      "updatedAt": "2026-09-09T20:17:07.267Z",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.ibb.co/dJfdLCbZ/image.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 c5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "8DbKppgw": {
       "studyId": "8DbKppgw",
@@ -76,7 +91,7 @@
       "author": "CaretParrot",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:38.235Z"
+      "updatedAt": "2026-09-09T20:17:07.713Z"
     },
     "eVEnm3i4": {
       "studyId": "eVEnm3i4",
@@ -86,7 +101,18 @@
       "author": "Peng_Dehuai1898-1974",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:38.698Z"
+      "updatedAt": "2026-09-09T20:17:07.714Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
+      "orientation": "white",
+      "searchText": "Burn the Sveshnikov, Four Knights, and Scheveningen! Peng_Dehuai1898-1974 Sicilian Defense White",
+      "thumbnailPath": "assets/thumbnails/eVEnm3i4-screenshot-219551a8b3.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.ibb.co/dJfdLCbZ/image.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 c5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "ALHvPHIT": {
       "studyId": "ALHvPHIT",
@@ -96,7 +122,18 @@
       "author": "ilovechess16, CaretParrot",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:39.145Z"
+      "updatedAt": "2026-09-09T20:17:07.716Z",
+      "selectedChapterId": "8Yba60kD",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 1",
+      "orientation": "white",
+      "searchText": "Fantasy Attack vs Dutch ilovechess16, CaretParrot 1.d4 Openings White",
+      "thumbnailPath": "assets/thumbnails/ALHvPHIT-8Yba60kD-42e63234e5.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/ZRZGWPJp/85s-GXGw-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.d4.",
+      "renderer": "site-piece-symbols-v3"
     },
     "3VYZAzSb": {
       "studyId": "3VYZAzSb",
@@ -106,7 +143,18 @@
       "author": "Peng_Dehuai1898-1974",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:39.594Z"
+      "updatedAt": "2026-09-09T20:17:07.717Z",
+      "selectedChapterId": "21k7cd0j",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
+      "orientation": "white",
+      "searchText": "Burn the Dragon, Kalashnikov, and Pin Sicilians! Peng_Dehuai1898-1974 Sicilian Defense White",
+      "thumbnailPath": "assets/thumbnails/3VYZAzSb-21k7cd0j-219551a8b3.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.ibb.co/dJfdLCbZ/image.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 c5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "0uRBskUV": {
       "studyId": "0uRBskUV",
@@ -161,16 +209,20 @@
         "♛ Outro ♛"
       ],
       "startFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-      "thumbnailFen": "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 2",
+      "thumbnailFen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 1",
       "orientation": "white",
       "intro": "",
       "searchText": "Queen's Gambit | Full Repertoire Bosburp 1.d4 Openings White star ♕ Introduction ♕ ♕ Introduction ♕ ✦ Section 1: Queen's Gambit Accepted ✦ QGA: Rosenthal Defense 3...e6 QGA: Classical Defense 3...Nf6-4...e6-5...c5 QGA: Smyslov Variation 3...Nf6 with 4...g6 QGA: Janowski-Larsen Variation 3...Nf6 with 4...Bg4 QGA: Gunsberg Defense 3...c5 QGA: Alekhine Defense 3...a6 QGA: Slav Gambit 3...b5 QGA: 4...c5 QGA: 3...c6 QGA: 3...Bg4?! QGA: 3...Nc6 ✦ Section 2: Queen's Gambit Declined ✦ QGD: Exchange Variation 3...Nf6 4. cxd5 QGD: Charousek Variation 3...Be7 QGD: Tarrasch Defense 3...c5 QGD: Janowski Variation 3...a6 QGD: 3...dxc4 ✦ Section 3: Slav/Semi-Slav Defense ✦ Slav: Czech Variation 4...dxc4 with 5...Bf5 Slav: Steiner Variation 4...dxc4 with 5...Bg4 Slav: Soultanbeieff Variation 4...dxc4 with 5...e6 Slav: Smyslov Variation 4...dxc4 with 5...Na6 Slav: 3...Bf5 Slav: 4...Bf5 Semi-Slav: Botvinnik Variation 5...dxc4 6. e4 Semi-Slav: 5...Be7 Semi-Slav: 5...Nbd7 Semi-Slav: Anti-Moscow Gambit 5...h6 Semi-Slav: 4...f5 Stonewall-ish Semi-Slav: Anti-Noteboom Gambit 4...dxc4 5. g3 ✦ Section 4: move 2 sidelines ✦ Albin Countergambit 2...e5 Chigorin Defense 2...Nc6 Austrian Defense 2...c5 Marshall Defense 2...Nf6 Baltic Defense 2...Bf5 Zibermints Gambit 2...b5? ♛ Outro ♛",
-      "thumbnailPath": "assets/thumbnails/0uRBskUV-chapter1-19b1b33f57.svg",
+      "thumbnailPath": "assets/thumbnails/0uRBskUV-screenshot-42e63234e5.svg",
       "pgnFetched": true,
       "pgnLength": 23791,
       "error": "",
       "lichessLastModified": "Thu, 09 Jul 2026 10:40:56 GMT",
-      "updatedAt": "2026-09-08T11:34:43.920Z"
+      "updatedAt": "2026-09-09T20:17:07.718Z",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/ZRZGWPJp/85s-GXGw-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.d4.",
+      "renderer": "site-piece-symbols-v3"
     },
     "ACmyH8gC": {
       "studyId": "ACmyH8gC",
@@ -225,16 +277,20 @@
         "♔ Outro ♔"
       ],
       "startFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-      "thumbnailFen": "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq - 0 2",
+      "thumbnailFen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
       "orientation": "white",
       "intro": "",
       "searchText": "King’s Gambit | Full Repertoire Bosburp 1.e4 e5 Openings White ♔ Introduction ♔ ♔ Introduction ♔ ✦ Section 1: King's Gambit Accepted ✦ KGA: Fischer Defense 3...d6 KGA: MacLeod Defense 3...Nc6?! KGA: Modern Defense 3...d5 with 4...Qxd5?! KGA: Abbazia Defense 3...d5 with 4...Nf6! KGA: Schallopp Defense 3...Nf6 KGA: Cunningham Defense 3...Be7 KGA: Becker Defense 3...h6 KGA: Bonsch-Osmolovsky Variation 3...Ne7 KGA: 3...Bc5? KGA: Wagenbach Defense 3...h5 KGA: Classical Variation with 4...d5 KGA: Punish 4...f6?? KGA: Kieseritzky Gambit 5. Ne5 Nf6 KGA: Kieseritzky Gambit 5. Ne5 h5 ✦ Section 1.5: KGA, hyper-aggressive style after 4...g4 ✦ KGA: Single Muzio Gambit KGA: Double Muzio Gambit KGA: Triple Muzio Gambit KGA: Traditional Variation 4...Bg7 KGA: 4...d6 A Stunning Double Muzio Game at 2500 level! ✦ Section 2: King's Gambit Declined ✦ KGD: Falkbeer Countergambit 2...d5 with 3...exf4 KGD: Falkbeer Countergambit 2...d5 with 3...e4 KGD: Falkbeer Countergambit 2...d5 with 3...c6 KGD: 2...d6 KGD: Queen's Knight Defense 2...Nc6 KGD: Petrov's Defense 2...Nf6 KGD: Classical Variation 2...Bc5 KGD: Norwalde Variation 2...Qf6? KGD: Naroditsky Defense 2...c6 KGD: Punish the stupid 2...f6? KGD: 2...Bd6? KGD: Panteldakis Countergambit 2...f5?! KGD: Keene's Defense 2...Qh4+?! ♔ Outro ♔",
-      "thumbnailPath": "assets/thumbnails/ACmyH8gC-chapter1-6ec7ac8cd4.svg",
+      "thumbnailPath": "assets/thumbnails/ACmyH8gC-screenshot-f2e63e14a9.svg",
       "pgnFetched": true,
       "pgnLength": 23381,
       "error": "",
       "lichessLastModified": "Thu, 19 Feb 2026 22:17:57 GMT",
-      "updatedAt": "2026-09-08T11:34:48.081Z"
+      "updatedAt": "2026-09-09T20:17:07.719Z",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/h4NHxq4h/6Wy-GX2R-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 e5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "Jzs9qzQg": {
       "studyId": "Jzs9qzQg",
@@ -244,7 +300,18 @@
       "author": "Peng_Dehuai1898-1974",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:48.501Z"
+      "updatedAt": "2026-09-09T20:17:07.721Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
+      "orientation": "white",
+      "searchText": "Ukrainian Sicilian Peng_Dehuai1898-1974 Sicilian Defense White",
+      "thumbnailPath": "assets/thumbnails/Jzs9qzQg-screenshot-219551a8b3.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.ibb.co/dJfdLCbZ/image.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 c5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "jTcC0b7Q": {
       "studyId": "jTcC0b7Q",
@@ -285,11 +352,13 @@
       "intro": "",
       "searchText": "Bird Opening Bosburp 1.f4 White 🚀 Introduction 🚀 Introduction 🧐 The Usual Setup 📌 Section 1: Dutch Variation 1...d5 🔍 Dutch Variation: 2...c5 Massive Attack! 🔍Dutch Variation: 2...g6 black does a kingside fianchetto 🔍Dutch Variation: 2...Bg4 📌 Section 2: Playing against e6, d6, Nf6, Nc6, c6... 📌 Section 3: From's Gambit 1...e5 🔍From's Gambit: Bad (but kinda cool) trap from black 🔍From's Gambit: 2...d6 hyper-aggressive lines 🔍From's Gambit: 2...d6 less aggresive lines 🔍From's Gambit: Schlechter Gambit, 1x pawn sacrifice 🔍From's Gambit: Schlechter Gambit, 2x pawn sacrifice 📌 Section 4: Swiss Gambit 1...f5 2. e4! 🔍Swiss Gambit: Punishing beginner mistakes 🔍Swiss Gambit: 4...Nf6 🔍Swiss Gambit: 3...Nf6 📌 Section 5: Rare first moves 🔍Hobbs Gambit 1. g5!? 🔍Horsefly Defense 1...Nh6! 🎉 Outro",
       "thumbnailPath": "assets/thumbnails/jTcC0b7Q-chapter1-d33f271ee8.svg",
+      "thumbnailSource": "lichess-final-mainline",
+      "renderer": "site-piece-symbols-v3",
       "pgnFetched": true,
       "pgnLength": 11693,
       "error": "",
       "lichessLastModified": "Sat, 15 Nov 2025 17:34:13 GMT",
-      "updatedAt": "2026-09-08T11:34:50.969Z"
+      "updatedAt": "2026-09-09T20:17:10.217Z"
     },
     "Ef9Aqgbn": {
       "studyId": "Ef9Aqgbn",
@@ -328,11 +397,13 @@
       "intro": "",
       "searchText": "SURPRISE Black with 1.b4 (Polish Opening) Chess16723, Peng_Dehuai1898-1974 1.b4 White star ⭐ Introduction ⭐ Introduction 📖 Setup 💎 Section 1: 1... e5 💎 ♟️ 2... Nc6? A very common trap ♟️ 2... d6 Black plays passively ♟️ 2... f6 Black weakens the kingside ♟️ 2... Bxb4! The main move 💎 Section 2: 1... d5, 1... e6, and 1... Nf6 💎 ♟️ 1... e6 Hitting b4 ♟️ 1... d5 Controlling the center ♟️ 1... Nf6 Blunting the Bishop 💎 Section 3: 1... c6!? 💎 ♟️ 2... Qb6?! Too aggressive ♟️ 2... a5! The best way to attack 💎 Section 4: 1... c5 and 1... a5 💎 ♟️ 1... c5 Birmingham Gambit ♟️ 1... a5 💎 Section 5: Other moves 💎 👋 Conclusion",
       "thumbnailPath": "assets/thumbnails/Ef9Aqgbn-chapter1-6ec8a460e0.svg",
+      "thumbnailSource": "lichess-final-mainline",
+      "renderer": "site-piece-symbols-v3",
       "pgnFetched": true,
       "pgnLength": 10051,
       "error": "",
       "lichessLastModified": "Tue, 19 Nov 2024 10:31:57 GMT",
-      "updatedAt": "2026-09-08T11:34:53.231Z"
+      "updatedAt": "2026-09-09T20:17:12.486Z"
     },
     "FZdjKfJD": {
       "studyId": "FZdjKfJD",
@@ -362,16 +433,20 @@
         "Outro"
       ],
       "startFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-      "thumbnailFen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/P7/1PPP1PPP/RNBQKBNR b KQkq - 0 2",
+      "thumbnailFen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
       "orientation": "white",
       "intro": "",
       "searchText": "Mengarini’s Opening Jisu101 1.e4 e5 Openings White Introduction Introduction Black plays like he's white (2... Nf6, 3... Bc5) 4... Bb6 (a whole diversity of lines!) 4... Bd4 (an almost forced line!) 3... d5 \"Scotch\" complex 3... Nc6 \"Four Knights\" complex 3rd move sidelines (3... c6, d6, a6, g6) Your opponent premoves (2... Nc6) Is he trying to provoke us? (2... Bc5) Avoiding b4? I (2... d6) Avoiding b4? II (2... g6) Striking the center (2...d5) Black might be a copycat (2... a6) What about the eighteenth century? (2... f5) Outro",
-      "thumbnailPath": "assets/thumbnails/FZdjKfJD-chapter1-9aafe643a4.svg",
+      "thumbnailPath": "assets/thumbnails/FZdjKfJD-screenshot-f2e63e14a9.svg",
       "pgnFetched": true,
       "pgnLength": 8890,
       "error": "",
       "lichessLastModified": "Sat, 09 Nov 2024 10:45:24 GMT",
-      "updatedAt": "2026-09-08T11:34:55.097Z"
+      "updatedAt": "2026-09-09T20:17:12.496Z",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/h4NHxq4h/6Wy-GX2R-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 e5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "Tz7M99hy": {
       "studyId": "Tz7M99hy",
@@ -381,7 +456,18 @@
       "author": "Peng_Dehuai1898-1974",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:55.525Z"
+      "updatedAt": "2026-09-09T20:17:12.509Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 1",
+      "orientation": "white",
+      "searchText": "London System | Full Repertoire Peng_Dehuai1898-1974 1.d4 Openings White star",
+      "thumbnailPath": "assets/thumbnails/Tz7M99hy-screenshot-42e63234e5.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/ZRZGWPJp/85s-GXGw-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.d4.",
+      "renderer": "site-piece-symbols-v3"
     },
     "mWRJ41Si": {
       "studyId": "mWRJ41Si",
@@ -391,7 +477,18 @@
       "author": "TheUltimateTheorist",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:55.964Z"
+      "updatedAt": "2026-09-09T20:17:12.519Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 1",
+      "orientation": "white",
+      "searchText": "The Trompowsky Attack TheUltimateTheorist 1.d4 Openings White",
+      "thumbnailPath": "assets/thumbnails/mWRJ41Si-screenshot-42e63234e5.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/ZRZGWPJp/85s-GXGw-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.d4.",
+      "renderer": "site-piece-symbols-v3"
     },
     "MsJ1UEjj": {
       "studyId": "MsJ1UEjj",
@@ -401,7 +498,18 @@
       "author": "RadioactiveToys",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:56.396Z"
+      "updatedAt": "2026-09-09T20:17:12.525Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 1",
+      "orientation": "white",
+      "searchText": "Punish the Bishop! vs. Baltic & Slav Defenses RadioactiveToys 1.d4 Openings White",
+      "thumbnailPath": "assets/thumbnails/MsJ1UEjj-screenshot-42e63234e5.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/ZRZGWPJp/85s-GXGw-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.d4.",
+      "renderer": "site-piece-symbols-v3"
     },
     "N2NsYP5O": {
       "studyId": "N2NsYP5O",
@@ -434,16 +542,20 @@
         "👋Bye!"
       ],
       "startFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-      "thumbnailFen": "rnbqkbnr/pp1ppppp/8/2p5/3P1B2/8/PPP1PPPP/RN1QKBNR b KQkq - 1 2",
+      "thumbnailFen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 1",
       "orientation": "white",
       "intro": "",
       "searchText": "Pickle Muffin Gambit | vs 1...c5 Phil224, The_Inverse_Tangent 1.d4 Openings White What is the Pickle Muffin? What is the Pickle Muffin? 📕Pickle Muffin Gambit Accepted: Vorr Gambit, Main line 📕Pickle Muffin Gambit Accepted: Vorr Gambit, Xon attack 📕Pickle Muffin Gambit Accepted: Vorr Gambit, The Knights Gamble 📕Pickle Muffin Gambit Accepted: Vorr Gambit, 6...d6 📕Pickle Muffin Gambit Accepted: Vorr Gambit, 6...d5 📒Vorr Gambit Study Sheet 📗Pickle Muffin Gambit Accepted: Brağgs Defense, Main line 📗Pickle Muffin Gambit Accepted: Brağgs Defense, Grant's Trap 📗Pickle Muffin Gambit Accepted: Brağgs Defense, Rübīni Variation 📒Brağgs Defense Study Sheet 📘Pickle Muffin Gambit Accepted: Lopen Variation 📘Pickle Muffin Gambit Accepted: Srira Attack 📓Pickle Muffin Gambit Accepted: Yurą Double Gamblt 📒Yurą Double Gamblt Study Sheet 📙Pickle Muffin Gambit Declined: Franco-London Variation 📙Pickle Muffin Gambit Declined: Mácrras Gambit 👋Bye!",
-      "thumbnailPath": "assets/thumbnails/N2NsYP5O-chapter1-7ae3c03d24.svg",
+      "thumbnailPath": "assets/thumbnails/N2NsYP5O-screenshot-42e63234e5.svg",
       "pgnFetched": true,
       "pgnLength": 11206,
       "error": "",
       "lichessLastModified": "Sat, 30 Aug 2025 02:58:59 GMT",
-      "updatedAt": "2026-09-08T11:34:58.576Z"
+      "updatedAt": "2026-09-09T20:17:12.532Z",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/ZRZGWPJp/85s-GXGw-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.d4.",
+      "renderer": "site-piece-symbols-v3"
     },
     "laip5zHW": {
       "studyId": "laip5zHW",
@@ -453,7 +565,18 @@
       "author": "ChesswithChesse",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:59.003Z"
+      "updatedAt": "2026-09-09T20:17:12.544Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
+      "orientation": "white",
+      "searchText": "1.d4: Aggressive Colle-Zukertort ChesswithChesse 1.d4 Openings White",
+      "thumbnailPath": "assets/thumbnails/laip5zHW-screenshot-f2e63e14a9.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/h4NHxq4h/6Wy-GX2R-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 e5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "U18rYo9D": {
       "studyId": "U18rYo9D",
@@ -463,7 +586,18 @@
       "author": "Phil224, The_Inverse_Tangent",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:34:59.757Z"
+      "updatedAt": "2026-09-09T20:17:12.559Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
+      "orientation": "white",
+      "searchText": "Vienna Gambit Phil224, The_Inverse_Tangent 1.e4 e5 Openings White",
+      "thumbnailPath": "assets/thumbnails/U18rYo9D-screenshot-f2e63e14a9.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/h4NHxq4h/6Wy-GX2R-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 e5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "AAlSBKj8": {
       "studyId": "AAlSBKj8",
@@ -473,7 +607,18 @@
       "author": "Phil224, The_Inverse_Tangent",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:35:00.192Z"
+      "updatedAt": "2026-09-09T20:17:12.568Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
+      "orientation": "white",
+      "searchText": "Ponziani Gambit Phil224, The_Inverse_Tangent 1.e4 e5 Openings White",
+      "thumbnailPath": "assets/thumbnails/AAlSBKj8-screenshot-f2e63e14a9.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/h4NHxq4h/6Wy-GX2R-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 e5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "iZEZHyYf": {
       "studyId": "iZEZHyYf",
@@ -483,7 +628,18 @@
       "author": "Phil224, The_Inverse_Tangent",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:35:00.631Z"
+      "updatedAt": "2026-09-09T20:17:12.577Z",
+      "selectedChapterId": "",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
+      "orientation": "white",
+      "searchText": "Quarz Gambit Phil224, The_Inverse_Tangent 1.e4 e5 Openings White",
+      "thumbnailPath": "assets/thumbnails/iZEZHyYf-screenshot-f2e63e14a9.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/h4NHxq4h/6Wy-GX2R-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 e5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "2YLhmeeg": {
       "studyId": "2YLhmeeg",
@@ -493,7 +649,18 @@
       "author": "Phil224, The_Inverse_Tangent",
       "pgnFetched": false,
       "error": "403 Forbidden",
-      "updatedAt": "2026-09-08T11:35:01.036Z"
+      "updatedAt": "2026-09-09T20:17:12.586Z",
+      "selectedChapterId": "yDzuBWOM",
+      "selectedChapterName": "",
+      "startFen": "",
+      "thumbnailFen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
+      "orientation": "white",
+      "searchText": "Lewis Gambit Phil224, The_Inverse_Tangent 1.e4 e5 Openings White",
+      "thumbnailPath": "assets/thumbnails/2YLhmeeg-yDzuBWOM-f2e63e14a9.svg",
+      "thumbnailSource": "screenshot-fen-reference",
+      "screenshotReferenceUrl": "https://i.postimg.cc/h4NHxq4h/6Wy-GX2R-1.png",
+      "screenshotResolutionNote": "Screenshot shows the position after 1.e4 e5.",
+      "renderer": "site-piece-symbols-v3"
     },
     "ExY0Et3s": {
       "studyId": "ExY0Et3s",
@@ -8115,9 +8282,9 @@
   },
   "thumbnailRule": "first explicit URL chapter, otherwise first exported chapter; final mainline position",
   "summary": {
-    "processed": 132,
-    "failures": 135,
-    "successfulThumbnails": 132,
+    "processed": 20,
+    "failures": 3,
+    "successfulThumbnails": 145,
     "totalGeneratedStudies": 267
   },
   "renderer": "site-piece-symbols-v2",
