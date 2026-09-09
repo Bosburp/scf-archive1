@@ -787,6 +787,8 @@ async function loadData() {
             const manualImage = (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "";
             const fallbackImage = "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80";
             const hasResolvedScreenshotThumbnail = generated?.thumbnailSource === 'screenshot-fen-override' || generated?.thumbnailSource === 'screenshot-fen-reference';
+            const hasStudyFenThumbnail = Boolean(generated?.thumbnailPath && generated?.thumbnailFen && (generated?.pgnFetched || generated?.thumbnailSource === 'lichess-final-mainline'));
+            const shouldUseGeneratedThumbnail = hasStudyFenThumbnail || hasResolvedScreenshotThumbnail;
             return enrichStudyRecord({
                 side: c[1]?.replace(/"/g, '') || "Universal",
                 category: c[2]?.replace(/"/g, '') || "General",
@@ -798,8 +800,8 @@ async function loadData() {
                 link,
                 notes: c[6]?.replace(/"/g, '') || "",
                 viewerNote: c[7]?.replace(/"/g, '')?.trim() || "",
-                image: hasResolvedScreenshotThumbnail ? generated.thumbnailPath : (manualImage || generated?.thumbnailPath || fallbackImage),
-                thumbnailSource: hasResolvedScreenshotThumbnail ? 'generated' : (manualImage ? 'manual' : (generated?.thumbnailPath ? 'generated' : 'fallback')),
+                image: shouldUseGeneratedThumbnail ? generated.thumbnailPath : (manualImage || fallbackImage),
+                thumbnailSource: shouldUseGeneratedThumbnail ? (hasResolvedScreenshotThumbnail ? 'screenshot-generated' : 'study-generated') : (manualImage ? 'manual' : 'fallback'),
                 generated,
                 difficulty: c[9]?.replace(/"/g, '').trim() || "",
                 createdAt: c[10]?.replace(/"/g, '').trim() || "",
@@ -1400,10 +1402,19 @@ function renderPagination(totalPages) {
             if (!Number.isFinite(page) || page < 1 || page > totalPages) return;
             currentPage = page;
             renderArchive();
-            const anchor = document.getElementById('archiveHeader');
-            if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            scrollToStudyResults();
         });
     });
+}
+
+function scrollToStudyResults() {
+    const anchor = document.getElementById('archiveHeader') || document.getElementById('resultsGrid');
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function scrollToAuthorResults() {
+    const anchor = document.getElementById('authorProfileSection');
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderArchive() {
@@ -1588,6 +1599,7 @@ function filterByAuthor(author) {
     document.getElementById('searchInput').value = '';
     pendingUrlPush = true;
     renderArchive();
+    scrollToAuthorResults();
 }
 
 function backToArchive() {

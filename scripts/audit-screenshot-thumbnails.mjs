@@ -92,26 +92,41 @@ async function main() {
     };
   }).filter(study => /^https?:\/\//i.test(study.image));
 
-  const verifiedExact = studies.filter(study => {
+  const isScreenshotDerived = study => {
     const source = generated.studies?.[study.studyId]?.thumbnailSource || '';
     return source === 'screenshot-fen-reference' || source === 'screenshot-fen-override';
-  });
-  const unresolved = studies.filter(study => !verifiedExact.includes(study));
-  const unresolvedNoCandidate = unresolved.filter(study => !study.generatedThumbnailFen);
-  const unresolvedCandidateOnly = unresolved.filter(study => study.generatedThumbnailFen);
+  };
+  const hasStudyFenThumbnail = study => {
+    const record = generated.studies?.[study.studyId];
+    return Boolean(record?.thumbnailPath && record?.thumbnailFen && (record?.pgnFetched || record?.thumbnailSource === 'lichess-final-mainline'));
+  };
+
+  const screenshotDerived = studies.filter(isScreenshotDerived);
+  const generatedFromStudyFen = studies.filter(study => hasStudyFenThumbnail(study) && !isScreenshotDerived(study));
+  const screenshotFallbacks = studies.filter(study => !isScreenshotDerived(study) && !hasStudyFenThumbnail(study));
+  const totalGeneratedSelected = generatedFromStudyFen.length + screenshotDerived.length;
   const summary = {
     screenshotRows: studies.length,
-    verifiedExactGeneratedFenThumbnails: verifiedExact.length,
-    screenshotRowsStillUnresolved: unresolved.length,
-    screenshotRowsLeftUntouched: unresolved.length,
-    couldNotEstablishPositionConfidently: unresolved.length,
-    unresolvedWithLichessGeneratedCandidateOnly: unresolvedCandidateOnly.length,
-    unresolvedWithNoFenCandidate: unresolvedNoCandidate.length,
+    generatedFromStudyFenThumbnails: generatedFromStudyFen.length,
+    screenshotDerivedGeneratedThumbnails: screenshotDerived.length,
+    totalGeneratedThumbnailsSelected: totalGeneratedSelected,
+    screenshotFallbacks: screenshotFallbacks.length,
+    screenshotRowsWithUnverifiedScreenshotPositionLeftUntouched: screenshotFallbacks.length,
+    couldNotEstablishScreenshotPositionConfidently: screenshotFallbacks.length,
   };
 
   console.log(JSON.stringify({
     summary,
-    verifiedExact: verifiedExact.map(study => ({
+    generatedFromStudyFen: generatedFromStudyFen.map(study => ({
+      rowNumber: study.rowNumber,
+      title: study.title,
+      studyId: study.studyId,
+      image: study.image,
+      thumbnailFen: study.generatedThumbnailFen,
+      thumbnailPath: study.generatedThumbnailPath,
+      source: generated.studies?.[study.studyId]?.thumbnailSource || 'legacy-pgn-fetched',
+    })),
+    screenshotDerived: screenshotDerived.map(study => ({
       rowNumber: study.rowNumber,
       title: study.title,
       studyId: study.studyId,
@@ -120,16 +135,14 @@ async function main() {
       thumbnailPath: study.generatedThumbnailPath,
       source: generated.studies?.[study.studyId]?.thumbnailSource,
     })),
-    unresolved: unresolved.map(study => ({
+    screenshotFallbacks: screenshotFallbacks.map(study => ({
       rowNumber: study.rowNumber,
       title: study.title,
       studyId: study.studyId,
       image: study.image,
       generatedPgnFetched: study.generatedPgnFetched,
       generatedError: study.generatedError,
-      note: study.generatedThumbnailFen
-        ? 'Has a Lichess-derived generated FEN, but screenshot position has not been verified as identical.'
-        : 'No reliable FEN established for the screenshot position.',
+      note: 'No reliable generated FEN or verified screenshot-derived FEN is available. Existing screenshot remains untouched.',
     })),
   }, null, 2));
 }

@@ -40,6 +40,8 @@ assert(sitemap.includes('variation=Najdorf'), 'Sitemap missing supported Najdorf
 
 assert(app.includes('thumbnailSource'), 'App should distinguish thumbnail sources');
 assert(app.includes('screenshot-fen-reference'), 'App should use verified screenshot-FEN references');
+assert(app.includes('study-generated'), 'App should prioritize reliable study-FEN thumbnails');
+assert(app.includes('screenshot-generated'), 'App should label screenshot-derived generated thumbnails');
 assert(app.includes('handleStudyLinkClick'), 'Study link click handler missing');
 assert(!app.includes('scrollBy('), 'Unexpected scrollBy hack');
 assert(app.includes('currentOpeningFilter'), 'Opening filters missing');
@@ -52,7 +54,9 @@ assert(endgame.includes('Back to Community Library'), 'Endgame Trainer back acti
 
 const studies = Object.values(generated.studies || {});
 const screenshotRefs = studies.filter(study => study.thumbnailSource === 'screenshot-fen-reference');
+const studyFenThumbnails = studies.filter(study => study.thumbnailPath && study.thumbnailFen && study.thumbnailSource !== 'screenshot-fen-reference' && study.thumbnailSource !== 'screenshot-fen-override');
 assert(screenshotRefs.length === 18, `Expected 18 verified screenshot-FEN references, found ${screenshotRefs.length}`);
 assert(screenshotRefs.every(study => study.thumbnailFen && study.thumbnailPath), 'Verified screenshot references must include FEN and path');
+assert(studyFenThumbnails.length >= 120, `Expected restored study-FEN thumbnails, found ${studyFenThumbnails.length}`);
 
 console.log('Static production QA OK');
