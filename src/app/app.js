@@ -1008,7 +1008,7 @@ function renderFeaturedStudy() {
 
     container.innerHTML = `
         <div class="featured-shell">
-            <div class="featured-layout grid md:grid-cols-[0.95fr_1.05fr]">
+            <div class="featured-layout grid md:grid-cols-[minmax(280px,390px)_minmax(0,1fr)]">
                 <a href="${featured.link}" onclick="return handleStudyLinkClick(event, '${featured.link.replace(/'/g, "\\'")}')" class="featured-image block relative">
                     <img src="${featured.image}" alt="${featured.title}" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
                     <div class="absolute top-4 left-4 flex flex-wrap items-center gap-2 z-10 max-w-[calc(100%-2rem)]">
@@ -1018,7 +1018,7 @@ function renderFeaturedStudy() {
                     </div>
                 </a>
 
-                <div class="featured-copy-panel p-6 md:p-8 flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l">
+                <div class="featured-copy-panel flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l">
                     <p class="gold-accent brand-font uppercase tracking-[0.18em] text-[10px] mb-3">Staff Pick</p>
                     <h2 class="text-xl md:text-2xl brand-font parchment-text leading-snug mb-3">${featured.title}</h2>
                     <div class="featured-author-line brand-font text-xs mb-5">By ${authorLinksHtml(featured)}</div>
@@ -1051,6 +1051,7 @@ function renderRecentlyViewed() {
     const links = getRecentViews();
     const container = document.getElementById('recentlyViewedGrid');
     const section = document.getElementById('recentlyViewedSection');
+    if (!container || !section) return;
 
     const items = links
         .map(link => window.chessData.find(s => s.link === link))
@@ -1448,7 +1449,7 @@ function renderArchive() {
 
     if (currentAuthor) {
         latestSec.style.display = 'none';
-        recentSec.classList.add('hidden');
+        recentSec?.classList.add('hidden');
         featuredSec.style.display = 'none';
         authorSec.classList.remove('hidden');
         libraryControls.classList.add('hidden');
@@ -1473,10 +1474,10 @@ function renderArchive() {
 
     if (isSearchingOrFiltering) {
         latestSec.style.display = 'none';
-        recentSec.classList.add('hidden');
+        recentSec?.classList.add('hidden');
     } else {
         latestSec.style.display = 'block';
-        recentSec.classList.toggle('hidden', !window.hasRecentViews);
+        recentSec?.classList.toggle('hidden', !window.hasRecentViews);
     }
 
     if (term.length > 0 && featuredMatchesSearch) {

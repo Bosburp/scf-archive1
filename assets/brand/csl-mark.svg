@@ -1,8 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Community Library mark">
-  <rect x="8" y="8" width="80" height="80" rx="20" fill="#0f1911"/>
-  <path fill="#4d6816" d="M17 17h31v31H17zm31 31h31v31H48z"/>
-  <path fill="#f7f4ed" d="M48 17h31v31H48zM17 48h31v31H17z"/>
-  <path fill="none" stroke="#f7f4ed" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" d="M27 30c6.9-2.3 13.9-.6 21 5.2 7.1-5.8 14.1-7.5 21-5.2v33.5c-7.3-2.1-14.3-.2-21 5.6-6.7-5.8-13.7-7.7-21-5.6V30z"/>
-  <path fill="none" stroke="#d6a94a" stroke-width="2.3" stroke-linecap="round" d="M48 35.6v33.1M31.5 36.4c4.2.1 8.3 1.6 12.5 4.4m20.5-4.4c-4.2.1-8.3 1.6-12.5 4.4"/>
-  <path fill="#d6a94a" d="M46.8 18.5h2.4l4.2 8.1h-3l-.6-1.4h-4.1l-.6 1.4h-2.8l4.5-8.1zm.9 2.4-1 2.3h2l-1-2.3z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Chess Study Library mark">
+  <rect x="8" y="8" width="80" height="80" rx="18" fill="#0f1911"/>
+  <path d="M26 27c7.1-2.7 14.4-.9 22 5.4 7.6-6.3 14.9-8.1 22-5.4v37.8c-7.8-2.3-15.1-.3-22 6-6.9-6.3-14.2-8.3-22-6V27z" fill="#f7f4ed"/>
+  <path d="M48 32.4v38.4" fill="none" stroke="#0f1911" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M31.5 34.9c4.3.1 8.6 1.4 12.9 4m20.1-4c-4.3.1-8.6 1.4-12.9 4M31.5 46.5c4.3.1 8.6 1.4 12.9 4m20.1-4c-4.3.1-8.6 1.4-12.9 4M31.5 58.1c4.3.1 8.6 1.4 12.9 4m20.1-4c-4.3.1-8.6 1.4-12.9 4" fill="none" stroke="#4d6816" stroke-width="2" stroke-linecap="round"/>
+  <path d="M40 43h16v16H40z" fill="#0f1911"/>
+  <path d="M40 43h8v8h-8zm8 8h8v8h-8z" fill="#d6a94a"/>
+  <path d="M48 22l3.2 6.4 7.1 1-5.1 5 1.2 7-6.4-3.3-6.4 3.3 1.2-7-5.1-5 7.1-1L48 22z" fill="#d6a94a"/>
 </svg>
