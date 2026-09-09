@@ -1400,6 +1400,7 @@ function renderPagination(totalPages) {
 }
 
 function renderArchive() {
+    if (document.body.classList.contains('training-view')) return;
     document.getElementById('archiveHeader').style.display = '';
     if (!isOpeningCategoryGroup(currentFilter)) {
         currentOpeningFilter = 'All Openings';
@@ -1836,6 +1837,14 @@ document.getElementById('themeSelect').addEventListener('change', (e) => {
 });
 
 window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'endgames') {
+        if (typeof showEndgameTrainer === 'function') showEndgameTrainer(false);
+        return;
+    }
+    document.body.classList.remove('training-view');
+    document.getElementById('endgameTrainerSection')?.classList.add('hidden');
+    ['communityLibraryNote', 'libraryControls'].forEach(id => document.getElementById(id)?.classList.remove('hidden'));
     currentFilter = 'All';
     currentOpeningFilter = 'All Openings';
     currentVariationFilter = 'All Variations';
@@ -1875,3 +1884,4 @@ window.addEventListener('resize', () => {
 
 applyStoredTheme();
 loadData();
+if (typeof initEndgameRoute === 'function') initEndgameRoute();

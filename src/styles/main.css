@@ -2071,3 +2071,289 @@ body.light-mode .modal-overlay {
         border-radius: 16px;
     }
 }
+
+.endgame-trainer-section {
+    margin-bottom: 4rem;
+}
+
+.trainer-hero,
+.trainer-sidebar,
+.trainer-board-panel,
+.trainer-task-card,
+.trainer-progress-card {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+}
+
+.trainer-hero {
+    margin-bottom: 1.5rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.trainer-hero h2 {
+    margin: 0.35rem 0 0.75rem;
+    color: var(--heading);
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 1;
+}
+
+.trainer-hero p:last-child {
+    max-width: 760px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+}
+
+.trainer-layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 1.25rem;
+}
+
+.trainer-sidebar {
+    padding: 1rem;
+    align-self: start;
+}
+
+.trainer-category {
+    display: grid;
+    gap: 0.18rem;
+    width: 100%;
+    margin-top: 0.7rem;
+    padding: 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface-soft);
+    color: var(--heading);
+    text-align: left;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.trainer-category:hover,
+.trainer-category.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    transform: translateY(-1px);
+}
+
+.trainer-category span {
+    font-weight: 800;
+}
+
+.trainer-category small,
+.trainer-progress-card small {
+    color: var(--text-muted);
+}
+
+.trainer-progress-card {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--surface-soft);
+}
+
+.trainer-progress-card strong {
+    display: block;
+    color: var(--accent);
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.trainer-progress-card span {
+    display: block;
+    margin: 0.25rem 0;
+    color: var(--heading);
+    font-weight: 800;
+}
+
+.trainer-board-panel {
+    padding: clamp(1rem, 2.4vw, 1.4rem);
+}
+
+.trainer-board-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 260px);
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1rem;
+}
+
+.trainer-board-header h3 {
+    margin: 0.3rem 0 0.35rem;
+    color: var(--heading);
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(1.45rem, 3vw, 2.1rem);
+}
+
+.trainer-board-header p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.trainer-practice {
+    display: grid;
+    grid-template-columns: minmax(320px, 520px) minmax(240px, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.trainer-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: min(100%, 520px);
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 1px solid var(--border-dark);
+    border-radius: 14px;
+    background: var(--ink);
+}
+
+.trainer-square {
+    position: relative;
+    display: grid;
+    place-items: center;
+    border: 0;
+    color: var(--ink);
+    cursor: pointer;
+    transition: box-shadow 0.16s ease, filter 0.16s ease;
+}
+
+.trainer-square.is-light {
+    background: #d8c6a3;
+}
+
+.trainer-square.is-dark {
+    background: #7e694d;
+}
+
+.trainer-square:hover,
+.trainer-square.selected {
+    box-shadow: inset 0 0 0 4px var(--accent);
+    filter: brightness(1.06);
+}
+
+.trainer-piece {
+    color: #111827;
+    font-size: clamp(2rem, 6vw, 3.7rem);
+    line-height: 1;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.45);
+}
+
+.trainer-coord {
+    position: absolute;
+    right: 5px;
+    bottom: 4px;
+    color: rgba(17, 24, 39, 0.52);
+    font-size: 0.58rem;
+    font-weight: 800;
+}
+
+.trainer-task-card {
+    padding: 1.1rem;
+    background: var(--surface-soft);
+}
+
+.trainer-task-card h4 {
+    margin: 0.35rem 0 0.6rem;
+    color: var(--heading);
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.trainer-task-card p {
+    color: var(--text-secondary);
+    line-height: 1.55;
+}
+
+.trainer-task-card dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 1rem 0;
+}
+
+.trainer-task-card dt {
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.trainer-task-card dd {
+    margin: 0.15rem 0 0;
+    color: var(--heading);
+    font-weight: 800;
+}
+
+.trainer-status {
+    margin: 1rem 0;
+    padding: 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.trainer-status.complete {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--heading);
+}
+
+.trainer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.trainer-fen {
+    margin-top: 1rem !important;
+    color: var(--text-muted) !important;
+    font-size: 0.72rem;
+    overflow-wrap: anywhere;
+}
+
+body.training-view .site-footer {
+    margin-top: auto;
+}
+
+@media (max-width: 980px) {
+    .trainer-layout,
+    .trainer-practice,
+    .trainer-board-header {
+        grid-template-columns: 1fr;
+    }
+
+    .trainer-sidebar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+
+    .trainer-sidebar .section-kicker,
+    .trainer-progress-card {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 620px) {
+    .trainer-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .trainer-practice {
+        gap: 1rem;
+    }
+
+    .trainer-board {
+        width: 100%;
+    }
+
+    .trainer-task-card dl {
+        grid-template-columns: 1fr;
+    }
+}
