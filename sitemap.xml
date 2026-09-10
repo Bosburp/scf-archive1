@@ -1,77 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://the-chess-study-library.vercel.app/</loc>
+    <loc>https://chessstudylibrary.vercel.app/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Openings</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Openings</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Strategy</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Strategy</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Endgames</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Endgames</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Puzzles</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Puzzles</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Games</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Games</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?staff=1</loc>
+    <loc>https://chessstudylibrary.vercel.app/?staff=1</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=Sicilian%20Defense</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Openings&amp;opening=Sicilian%20Defense</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=Caro-Kann%20Defense</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Openings&amp;opening=Caro-Kann%20Defense</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=Queen%27s%20Gambit</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Openings&amp;opening=Queen%27s%20Gambit</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=King%27s%20Pawn%20Opening</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Openings&amp;opening=King%27s%20Pawn%20Opening</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=King%27s%20Pawn%20Opening&amp;variation=Italian%20Game</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Openings&amp;opening=King%27s%20Pawn%20Opening&amp;variation=Italian%20Game</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=King%27s%20Pawn%20Opening&amp;variation=Scotch%20Game</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Openings&amp;opening=King%27s%20Pawn%20Opening&amp;variation=Scotch%20Game</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=Sicilian%20Defense&amp;variation=Najdorf</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Openings&amp;opening=Sicilian%20Defense&amp;variation=Najdorf</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://the-chess-study-library.vercel.app/?category=Openings&amp;opening=Sicilian%20Defense&amp;variation=Dragon</loc>
+    <loc>https://chessstudylibrary.vercel.app/?category=Openings&amp;opening=Sicilian%20Defense&amp;variation=Dragon</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>

@@ -14,7 +14,7 @@ const generated = JSON.parse(await fs.readFile('generated/lichess-study-data.jso
 assert(index.includes('<html lang="en">'), 'Missing lang=en');
 assert(index.includes('<meta name="robots" content="index,follow">'), 'Missing indexable robots meta');
 assert(!/noindex|nofollow/i.test(index.replace('<meta name="robots" content="index,follow">', '')), 'Unexpected noindex/nofollow');
-assert(index.includes('<link rel="canonical" href="https://the-chess-study-library.vercel.app/">'), 'Missing canonical URL');
+assert(index.includes('<link rel="canonical" href="https://chessstudylibrary.vercel.app/">'), 'Missing canonical URL');
 assert(index.includes('property="og:title"'), 'Missing Open Graph title');
 assert(index.includes('name="twitter:title"'), 'Missing Twitter metadata');
 assert(index.includes('application/ld+json'), 'Missing structured data');
@@ -30,7 +30,7 @@ assert(index.includes('endgameTrainerSection'), 'Missing Endgame Trainer shell')
 assert(!index.includes('Continue Browsing'), 'Continue Browsing section should remain removed');
 
 assert(robots.includes('Allow: /'), 'robots.txt should allow crawling');
-assert(robots.includes('Sitemap: https://the-chess-study-library.vercel.app/sitemap.xml'), 'robots.txt missing sitemap');
+assert(robots.includes('Sitemap: https://chessstudylibrary.vercel.app/sitemap.xml'), 'robots.txt missing sitemap');
 assert(!/Disallow:\s*\//i.test(robots), 'robots.txt blocks site');
 assert(sitemap.includes('<urlset'), 'Invalid sitemap');
 assert(sitemap.includes('?staff=1'), 'Sitemap staff-pick URL should use staff=1');
