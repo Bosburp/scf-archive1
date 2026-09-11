@@ -2586,3 +2586,33 @@ body.light-mode .site-header .parchment-text {
 body.light-mode .card-image-wrap {
     background: #11120e;
 }
+
+/* Small typography polish: modern-classy spacing and softer title forms. */
+.brand-title {
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: clamp(0.22em, 0.8vw, 0.58em);
+    line-height: 1.05;
+}
+
+.brand-subtitle,
+.section-kicker,
+.featured-copy-panel .gold-accent,
+.card-category {
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+}
+
+.card-title,
+.featured-copy-panel h2,
+.author-profile-name {
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+.card-title {
+    line-height: 1.2;
+}
