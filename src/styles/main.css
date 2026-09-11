@@ -2569,14 +2569,15 @@ body.light-mode .site-header .parchment-text {
 }
 
 .card-image {
-    filter: grayscale(1) saturate(0) contrast(1.08) brightness(0.82);
+    opacity: 1;
+    filter: grayscale(1) saturate(0) contrast(1.04);
     transition: filter 0.28s ease, opacity 0.28s ease, transform 0.28s ease;
 }
 
 .chess-card:hover .card-image,
 .chess-card:focus-within .card-image,
 .featured-shell:hover .featured-image img {
-    filter: grayscale(0) saturate(0.95) contrast(1.04) brightness(0.98);
+    filter: grayscale(0) saturate(1) contrast(1.02);
 }
 
 .card-image-wrap {
@@ -2590,7 +2591,7 @@ body.light-mode .card-image-wrap {
 /* Small typography polish: modern-classy spacing and softer title forms. */
 .brand-title {
     font-family: 'Inter', Arial, sans-serif;
-    font-weight: 300;
+    font-weight: 200;
     text-transform: uppercase;
     letter-spacing: clamp(0.22em, 0.8vw, 0.58em);
     line-height: 1.05;
@@ -2601,7 +2602,7 @@ body.light-mode .card-image-wrap {
 .featured-copy-panel .gold-accent,
 .card-category {
     font-family: 'Inter', Arial, sans-serif;
-    font-weight: 800;
+    font-weight: 650;
     letter-spacing: 0.2em;
 }
 
@@ -2609,7 +2610,7 @@ body.light-mode .card-image-wrap {
 .featured-copy-panel h2,
 .author-profile-name {
     font-family: 'Inter', Arial, sans-serif;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 0.01em;
 }
 
