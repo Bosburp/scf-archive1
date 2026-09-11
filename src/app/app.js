@@ -785,7 +785,7 @@ async function loadData() {
             const link = normalizeStudyLink(c[5]);
             const generated = getGeneratedStudyData(link);
             const manualImage = (c[8] && c[8].includes('http')) ? c[8].replace(/"/g, '').trim() : "";
-            const fallbackImage = "https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80";
+            const fallbackImage = "assets/thumbnails/5SfDslVB-chapter1-200de70c3b.svg";
             const hasResolvedScreenshotThumbnail = generated?.thumbnailSource === 'screenshot-fen-override' || generated?.thumbnailSource === 'screenshot-fen-reference';
             const hasStudyFenThumbnail = Boolean(generated?.thumbnailPath && generated?.thumbnailFen && (generated?.pgnFetched || generated?.thumbnailSource === 'lichess-final-mainline'));
             const shouldUseGeneratedThumbnail = hasStudyFenThumbnail || hasResolvedScreenshotThumbnail;
@@ -1117,7 +1117,7 @@ function cardHtml(i, favorites = getFavorites()) {
 
         <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-media ${thumbnailClass} w-full relative block">
             <div class="card-image-wrap ${thumbnailClass}">
-                <img src="${i.image}" class="card-image" alt="${i.title}" loading="lazy" decoding="async" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
+                <img src="${i.image}" class="card-image" alt="${i.title}" loading="lazy" decoding="async" onerror="this.src='assets/thumbnails/5SfDslVB-chapter1-200de70c3b.svg'">
                 <div class="image-vignette"></div>
                 <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
                     ${i.isNew ? `<div class="new-tag brand-font">New</div>` : ''}

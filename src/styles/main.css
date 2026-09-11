@@ -2591,9 +2591,9 @@ body.light-mode .card-image-wrap {
 /* Small typography polish: modern-classy spacing and softer title forms. */
 .brand-title {
     font-family: 'Inter', Arial, sans-serif;
-    font-weight: 200;
+    font-weight: 220;
     text-transform: uppercase;
-    letter-spacing: clamp(0.22em, 0.8vw, 0.58em);
+    letter-spacing: clamp(0.18em, 0.64vw, 0.46em);
     line-height: 1.05;
 }
 
@@ -2602,18 +2602,46 @@ body.light-mode .card-image-wrap {
 .featured-copy-panel .gold-accent,
 .card-category {
     font-family: 'Inter', Arial, sans-serif;
-    font-weight: 650;
-    letter-spacing: 0.2em;
+    font-weight: 620;
+    letter-spacing: 0.18em;
 }
 
 .card-title,
 .featured-copy-panel h2,
 .author-profile-name {
     font-family: 'Inter', Arial, sans-serif;
-    font-weight: 400;
+    font-weight: 360;
     letter-spacing: 0.01em;
 }
 
 .card-title {
+    font-size: clamp(1.05rem, 1.28vw, 1.26rem);
+    font-weight: 360;
     line-height: 1.2;
+}
+
+.card-author {
+    color: color-mix(in srgb, var(--gold) 78%, var(--text-muted)) !important;
+    font-size: 0.78rem;
+}
+
+.card-author-link {
+    color: color-mix(in srgb, var(--gold) 82%, var(--text-muted)) !important;
+}
+
+.card-author-separator {
+    color: color-mix(in srgb, var(--gold) 55%, var(--text-muted));
+}
+
+.card-open-link {
+    color: color-mix(in srgb, var(--text-muted) 86%, var(--gold)) !important;
+    font-size: 0.66rem;
+    font-weight: 560;
+    letter-spacing: 0.1em;
+    opacity: 0.76;
+}
+
+.card-open-link:hover {
+    color: var(--gold) !important;
+    opacity: 0.95;
 }
