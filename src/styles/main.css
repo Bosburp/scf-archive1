@@ -2661,3 +2661,30 @@ body.light-mode .card-image-wrap {
     font-weight: 500;
     letter-spacing: 0.16em;
 }
+
+/* Small label and featured-board tone refinement. */
+.section-kicker:last-child,
+#featuredSection .section-kicker:last-child,
+#liveCounter {
+    color: var(--gold) !important;
+}
+
+.filter-label,
+.library-select,
+#liveCounter,
+.section-kicker {
+    font-weight: 520;
+}
+
+.featured-image {
+    background: #070806;
+    border-right: 1px solid var(--border);
+}
+
+body.light-mode .featured-image {
+    background: #11120e;
+}
+
+.featured-shell:hover {
+    border-color: var(--border-dark);
+}
