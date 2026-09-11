@@ -2393,3 +2393,196 @@ body.training-view .site-footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Final visual tone pass: black library, green controls, gold accents. */
+:root {
+    --bg: #070806;
+    --surface: #0d0f0b;
+    --surface-soft: #12150f;
+    --card: #0d0e0c;
+    --text: #f2efe5;
+    --text-secondary: #c8bea4;
+    --text-muted: #7f7a70;
+    --border: #20231d;
+    --border-dark: #303529;
+    --heading: #fff9e8;
+    --gold: #d5aa44;
+    --forest: #0f5d39;
+    --forest-dark: #0a432b;
+    --ink: #fff9e8;
+    --accent: #0f5d39;
+    --accent-strong: #157346;
+    --accent-mid: #0f5d39;
+    --accent-soft: rgba(15, 93, 57, 0.24);
+    --accent-quiet: rgba(15, 93, 57, 0.13);
+    --surface-lift: #151710;
+    --shadow-card: 0 18px 42px rgba(0, 0, 0, 0.34);
+    --shadow-gold: 0 14px 30px rgba(213, 170, 68, 0.13);
+}
+
+body.light-mode {
+    --bg: #f4f0e6;
+    --surface: #fffaf0;
+    --surface-soft: #ebe5d6;
+    --card: #fffdf5;
+    --text: #171713;
+    --text-secondary: #514937;
+    --text-muted: #817762;
+    --border: #d7cdb8;
+    --border-dark: #b9aa8d;
+    --heading: #080907;
+    --gold: #a9791d;
+    --forest: #0f5d39;
+    --forest-dark: #0a432b;
+    --ink: #080907;
+    --accent: #0f5d39;
+    --accent-strong: #157346;
+    --accent-mid: #0f5d39;
+    --accent-soft: rgba(15, 93, 57, 0.14);
+    --accent-quiet: rgba(15, 93, 57, 0.08);
+    --surface-lift: #ffffff;
+    --shadow-card: 0 18px 42px rgba(25, 23, 17, 0.12);
+    --shadow-gold: 0 14px 30px rgba(169, 121, 29, 0.12);
+}
+
+body,
+body:not(.light-mode) {
+    background:
+        radial-gradient(circle at 50% -12%, rgba(213, 170, 68, 0.055), transparent 28rem),
+        #070806;
+    color: var(--text);
+}
+
+body.light-mode {
+    background:
+        radial-gradient(circle at 50% -12%, rgba(15, 93, 57, 0.07), transparent 30rem),
+        #f4f0e6;
+}
+
+.brand-title,
+.card-title,
+.featured-copy-panel h2,
+.author-profile-name,
+.footer-title {
+    font-family: 'Fraunces', Georgia, serif;
+    color: var(--heading);
+}
+
+.brand-subtitle,
+.section-kicker,
+.community-eyebrow,
+.filter-label,
+.card-category,
+.featured-badge,
+.forest-tag,
+.skill-tag,
+.staff-pick-ribbon,
+.header-btn,
+.primary-action,
+.filter-chip,
+.library-select {
+    font-family: 'Inter', Arial, sans-serif;
+    letter-spacing: 0.13em;
+}
+
+.site-header,
+body.light-mode .site-header {
+    background: #11120e;
+    border-bottom-color: color-mix(in srgb, var(--gold) 24%, transparent);
+    box-shadow: 0 14px 42px rgba(0, 0, 0, 0.36);
+}
+
+body.light-mode .site-header {
+    background: #fffaf0;
+    border-bottom-color: color-mix(in srgb, var(--gold) 30%, var(--border));
+    box-shadow: 0 12px 34px rgba(32, 27, 17, 0.12);
+}
+
+.site-header .parchment-text,
+body.light-mode .site-header .parchment-text {
+    color: var(--heading);
+}
+
+.community-library-note,
+.library-control-panel,
+.search-container input,
+.featured-shell,
+.chess-card,
+.site-footer,
+.modal-card,
+.author-profile-shell,
+.author-profile-card,
+.trainer-shell {
+    background: var(--card);
+    border-color: var(--border);
+}
+
+.search-container input,
+.library-select {
+    color: var(--heading);
+}
+
+.search-container input::placeholder {
+    color: color-mix(in srgb, var(--text-muted) 78%, transparent);
+}
+
+.header-btn,
+.filter-chip,
+.featured-btn {
+    border-color: color-mix(in srgb, var(--gold) 28%, var(--border));
+    color: var(--text-secondary);
+}
+
+.header-btn:hover,
+.filter-chip:hover,
+.featured-btn:hover {
+    border-color: var(--accent);
+    color: var(--heading);
+    background: var(--accent-soft);
+}
+
+.primary-action,
+.forest-tag,
+.active-filter-chip {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff9e8;
+}
+
+.primary-action:hover {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+}
+
+.gold-accent,
+.card-author,
+.card-author-link,
+.open-link,
+.footer-nav a:hover,
+.section-kicker:last-child {
+    color: var(--gold) !important;
+}
+
+.staff-pick-ribbon {
+    background: var(--gold);
+    color: #17130a;
+}
+
+.card-image {
+    filter: grayscale(1) saturate(0) contrast(1.08) brightness(0.82);
+    transition: filter 0.28s ease, opacity 0.28s ease, transform 0.28s ease;
+}
+
+.chess-card:hover .card-image,
+.chess-card:focus-within .card-image,
+.featured-shell:hover .featured-image img {
+    filter: grayscale(0) saturate(0.95) contrast(1.04) brightness(0.98);
+}
+
+.card-image-wrap {
+    background: #070806;
+}
+
+body.light-mode .card-image-wrap {
+    background: #11120e;
+}
