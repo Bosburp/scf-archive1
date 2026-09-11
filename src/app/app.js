@@ -1017,7 +1017,7 @@ function renderFeaturedStudy() {
         <div class="featured-shell">
             <div class="featured-layout grid md:grid-cols-[minmax(280px,390px)_minmax(0,1fr)]">
                 <a href="${featured.link}" onclick="return handleStudyLinkClick(event, '${featured.link.replace(/'/g, "\\'")}')" class="featured-image ${thumbnailClass} block relative">
-                    <img src="${featured.image}" alt="${featured.title}" onerror="this.src='https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=800&q=80'">
+                    <img src="${featured.image}" alt="${featured.title}" onerror="this.src='assets/thumbnails/5SfDslVB-chapter1-200de70c3b.svg'">
                 </a>
 
                 <div class="featured-copy-panel flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l">
