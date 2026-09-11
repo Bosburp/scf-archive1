@@ -2665,6 +2665,7 @@ body.light-mode .card-image-wrap {
 /* Small label and featured-board tone refinement. */
 .section-kicker:last-child,
 #featuredSection .section-kicker:last-child,
+#featuredSection .section-heading .section-meta,
 #liveCounter {
     color: var(--gold) !important;
 }
@@ -2672,7 +2673,8 @@ body.light-mode .card-image-wrap {
 .filter-label,
 .library-select,
 #liveCounter,
-.section-kicker {
+.section-kicker,
+#featuredSection .section-heading .section-meta {
     font-weight: 520;
 }
 
