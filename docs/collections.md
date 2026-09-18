@@ -40,3 +40,16 @@ exact FEN. No new position, artwork model, or external imagery is used.
 Run `npm run generate:rook-cover` (requires Chrome), then `npm run build:collections`
 after changing this cover. Its position is checked against the renderer before PNG
 export. It is also used as the rook collection's Open Graph and Twitter share image.
+
+## Bosburp collection cover
+
+`assets/collections/bosburp-opening-repertoire.png` is a landscape cover composed
+with the built-in image-generation tool from two images supplied by Bosburp:
+the reading character on a stump and his painted Discord profile portrait.
+These supplied images are not study-position data or board thumbnails.
+
+Prompt: Compose a restrained 16:9 dark-charcoal editorial cover using both supplied
+images, keeping the portrait and character recognizable. Put the portrait on the
+right and the smaller character at lower left. Use cream modern sans-serif text
+"Bosburp's Opening Recommendations" and muted-gold "WHITE REPERTOIRE". No invented
+chessboards, extra figures, logos or ornate frames. Keep generous safe margins.

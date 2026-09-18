@@ -19,6 +19,8 @@ const STUDY_COLLECTIONS = [
     },
     {
         slug: 'bosburp-opening-repertoire',
+        cover: 'assets/collections/bosburp-opening-repertoire.png',
+        coverAlt: "Bosburp's Opening Recommendations, with his Discord portrait and reading character",
         title: "Bosburp's Opening Repertoire Recommendations",
         curator: 'Bosburp',
         description: 'Bosburp\'s White repertoire recommendations: opening studies grouped by your first move and Black\'s defence, with practical style and level guidance.',

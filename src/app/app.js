@@ -435,14 +435,12 @@ function syncThemeControls(isLight) {
 function applyStoredTheme() {
     let stored = null;
     try { stored = localStorage.getItem('scf-theme'); } catch (e) {}
-    if (stored === 'light') {
+    if (stored !== 'dark') {
         document.body.classList.add('light-mode');
         syncThemeControls(true);
-    } else if (stored === 'dark') {
+    } else {
         document.body.classList.remove('light-mode');
         syncThemeControls(false);
-    } else {
-        syncThemeControls(document.body.classList.contains('light-mode'));
     }
 }
 

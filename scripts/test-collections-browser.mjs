@@ -32,7 +32,11 @@ try {
     assert.equal(await page.locator('#libraryControls').isVisible(), false);
     assert.equal(await page.locator('h1:visible').count(), 1);
     assert.equal(await page.locator('.collection-entry .card-author').count(), 3);
+    assert(await page.locator('body').evaluate(el => el.classList.contains('light-mode')), 'New visitors start in light mode');
     await page.locator('#themeToggle').click();
+    await page.reload();
+    await page.waitForFunction(() => window.chessData?.length > 250);
+    assert(await page.locator('body').evaluate(el => !el.classList.contains('light-mode')), 'Saved dark preference survives reload');
     await page.screenshot({ path: output + '/rook-dark.png', fullPage: true });
     await page.locator('#themeToggle').click();
     await page.screenshot({ path: output + '/rook-light.png', fullPage: true });
