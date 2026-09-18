@@ -33,6 +33,10 @@ for (const collection of [null, ...collections]) {
         .replace('<a href="/collections/">Collections</a>', '<a href="/collections/" aria-current="page">Collections</a>')
         .replace('<button type="button" onclick="showCommunityLibrary()">Community Library</button>', '<a href="/">Community Library</a>')
         .replace('<button type="button" onclick="jumpToNewStudies()">Latest Studies</button>', '<a href="/#latestSection">Latest Studies</a>');
+    if (collection?.cover) {
+        html = html.replace(/(<meta (?:property="og:image"|name="twitter:image") content=")[^"]*/g, `$1${origin}/${collection.cover}`)
+            .replace('name="twitter:card" content="summary"', 'name="twitter:card" content="summary_large_image"');
+    }
     const structured = {
         '@context': 'https://schema.org', '@type': 'CollectionPage', name: title,
         url: origin + route, description,

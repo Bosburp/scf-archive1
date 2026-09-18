@@ -2,6 +2,8 @@
 const STUDY_COLLECTIONS = [
     {
         slug: 'rook-endgames',
+        cover: 'assets/collections/rook-endgames.png',
+        coverAlt: 'Rook Endgames: Essential Positions, with a complete rook-ending diagram',
         title: 'Rook Endgames: Essential Positions',
         curator: 'Bosburp',
         description: 'Three selected Lichess studies for learning rook endings, practising key positions, and exploring rook and bishop versus rook.',

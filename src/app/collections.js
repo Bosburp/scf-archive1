@@ -34,8 +34,9 @@ function collectionPageHtml(collection, studies) {
             <div class="collection-overview">${STUDY_COLLECTIONS.map(item => {
                 const first = item.groups[0].entries[0];
                 const study = studies.find(s => collectionStudyId(s.link) === collectionStudyId(first.link));
+                const cover = item.cover || study?.image;
                 return `<a class="collection-summary" href="/collections/${item.slug}/">
-                    ${study ? `<img src="${escapeHTML(study.image)}" alt="" loading="lazy">` : ''}
+                    ${cover ? `<img src="${escapeHTML(cover)}" alt="${escapeHTML(item.coverAlt || '')}" width="1280" height="720" loading="lazy">` : ''}
                     <div><p class="collection-level">${collectionEntryCount(item)} studies &middot; Curated by ${escapeHTML(item.curator)}</p>
                     <h2>${escapeHTML(item.title)}</h2><p>${escapeHTML(item.description)}</p><span class="gold-accent">Explore collection &rarr;</span></div></a>`;
             }).join('')}</div>`;

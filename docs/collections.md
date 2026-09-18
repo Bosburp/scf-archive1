@@ -27,3 +27,16 @@ author view; study links preserve the curator's exact chapter and open in a new 
 
 The initial collections contain three rook-ending studies and 30 White repertoire
 recommendations supplied by Bosburp. No Black repertoire has been invented.
+
+## Rook collection cover
+
+`assets/collections/rook-endgames.png` is a 1280 x 720 (16:9) collection cover.
+The accompanying SVG is its editable source. The full square board uses the saved
+`bnboDhFM` thumbnail FEN and orientation from `generated/lichess-study-data.json`,
+rendered with the existing site piece set. Source study: *Rook Endgames You Must Know!*
+by NoseKnowsAll, https://lichess.org/study/bnboDhFM. The SVG description records the
+exact FEN. No new position, artwork model, or external imagery is used.
+
+Run `npm run generate:rook-cover` (requires Chrome), then `npm run build:collections`
+after changing this cover. Its position is checked against the renderer before PNG
+export. It is also used as the rook collection's Open Graph and Twitter share image.

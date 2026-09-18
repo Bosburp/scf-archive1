@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "generate:rook-cover": "node scripts/generate-rook-cover.mjs",
     "build:collections": "node scripts/build-collections.mjs",
     "test:collections": "node scripts/test-collections.mjs",
     "test:collections:browser": "node scripts/test-collections-browser.mjs",
