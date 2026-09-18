@@ -26,6 +26,7 @@ assert(index.includes('id="surpriseBtn"'), 'Missing random study button');
 assert(index.includes('discord.gg/sD7sCvyHMa'), 'Missing Discord link');
 assert(index.includes('lichess.org/team/study-creators--friends'), 'Missing Lichess team link');
 assert(index.includes('site-footer'), 'Missing footer');
+assert(index.includes('href="https://bosburp.com" target="_blank" rel="noopener noreferrer"'), 'Missing safe Bosburp footer link');
 assert(index.includes('endgameTrainerSection'), 'Missing Endgame Trainer shell');
 assert(!index.includes('Continue Browsing'), 'Continue Browsing section should remain removed');
 
