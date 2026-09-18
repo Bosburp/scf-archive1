@@ -1016,7 +1016,7 @@ function renderFeaturedStudy() {
     container.innerHTML = `
         <div class="featured-shell">
             <div class="featured-layout grid md:grid-cols-[minmax(280px,390px)_minmax(0,1fr)]">
-                <a href="${featured.link}" onclick="return handleStudyLinkClick(event, '${featured.link.replace(/'/g, "\\'")}')" class="featured-image ${thumbnailClass} block relative">
+                <a href="${featured.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${featured.link.replace(/'/g, "\\'")}')" class="featured-image ${thumbnailClass} block relative">
                     <img src="${featured.image}" alt="${featured.title}" onerror="this.src='assets/thumbnails/5SfDslVB-chapter1-200de70c3b.svg'">
                 </a>
 
@@ -1039,7 +1039,7 @@ function renderFeaturedStudy() {
                     </div>
 
                     <div class="flex flex-wrap gap-3">
-                        <a href="${featured.link}" target="_blank" onclick="recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-btn primary-action px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] transition-all">
+                        <a href="${featured.link}" target="_blank" rel="noopener noreferrer" onclick="recordView('${featured.link.replace(/'/g, "\\'")}')" class="featured-btn primary-action px-5 py-2.5 rounded-sm text-[9px] brand-font font-bold uppercase tracking-[0.25em] transition-all">
                             Open Study
                         </a>
 
@@ -1115,7 +1115,7 @@ function cardHtml(i, favorites = getFavorites()) {
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
         </button>
 
-        <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-media ${thumbnailClass} w-full relative block">
+        <a href="${i.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-media ${thumbnailClass} w-full relative block">
             <div class="card-image-wrap ${thumbnailClass}">
                 <img src="${i.image}" class="card-image" alt="${i.title}" loading="lazy" decoding="async" onerror="this.src='assets/thumbnails/5SfDslVB-chapter1-200de70c3b.svg'">
                 <div class="image-vignette"></div>
@@ -1137,13 +1137,13 @@ function cardHtml(i, favorites = getFavorites()) {
                 </button>
             </div>
 
-            <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-title brand-font parchment-text hover:text-[var(--accent)] transition-colors" title="${escapeHTML(i.title)}">${i.title}</a>
+            <a href="${i.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-title brand-font parchment-text hover:text-[var(--accent)] transition-colors" title="${escapeHTML(i.title)}">${i.title}</a>
 
             <div class="card-author" title="By ${escapeHTML(authorDisplay(i))}">By ${authorLinksHtml(i)}</div>
 
             <p class="card-note text-zinc-500 text-[11px] italic leading-relaxed">${i.notes.replace(/STAR/gi, '')}</p>
 
-            <a href="${i.link}" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-open-link brand-font">Hosted on Lichess &middot; Open &rarr;</a>
+            <a href="${i.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-open-link brand-font">Hosted on Lichess &middot; Open &rarr;</a>
         </div>
     </div>`;
 }
