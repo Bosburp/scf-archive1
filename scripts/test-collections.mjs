@@ -17,7 +17,10 @@ assert.equal(taxonomy('Rook + Bishop vs Rook', 'Endgame', { generated: { selecte
 assert.equal(taxonomy('Strategy in the Sicilian', 'Strategy').opening, '');
 
 const collections = vm.runInContext('STUDY_COLLECTIONS', context);
-assert.deepEqual(Array.from(collections, c => context.collectionEntryCount(c)), [3, 30]);
+assert.deepEqual(Array.from(collections, c => context.collectionEntryCount(c)), [3, 30, 26]);
+const black = collections.find(c => c.slug === 'bosburp-black-repertoire');
+const suppliedBlackLinks = ['spty8Dc9', 'Fmk4fYJp', 'oWZx54ef', '8isfzJc8', 'dJQzdsfb', 'bZOUIzL2', 'artxS9bL', 'd8vKHXnC', 'lmE5iSRC', 'WV5BQOvt', '8mtnMdsO', 'NutHq1Cx/6Eq6oANy', 'sJVldGJL/E9Q9PBpz', '9XAhbaE7', 'hEPV1nVh', 'gxTkmYQU', 'PV67RqMx', 'bsLwjNBX', 'HwcpcnXo/3BIeAqfg', '0hjkNe91', '8l7u1jBt', 'HlS091Xs', 'V7l41WdC/IF4omPHp', 'm2ovNEWF/w4XIK8sf', 'qpTWyTks', 'P7O9jus3/JJMzE5Jl'];
+assert.deepEqual(Array.from(black.groups.flatMap(g => g.entries), e => e.link), suppliedBlackLinks.map(id => 'https://lichess.org/study/' + id));
 const sitemap = await fs.readFile('sitemap.xml', 'utf8');
 for (const collection of [null, ...collections]) {
     const route = `/collections/${collection ? collection.slug + '/' : ''}`;
@@ -40,4 +43,4 @@ for (const collection of [null, ...collections]) {
     }
     assert.equal((html.match(/class="collection-entry"/g) || []).length, context.collectionEntryCount(collection));
 }
-console.log('Collections: all 33 selections, chapter links, static content, assets, SEO and taxonomy regression checks passed.');
+console.log('Collections: all 59 selections, chapter links, static content, assets, SEO and taxonomy regression checks passed.');

@@ -7,14 +7,14 @@ Creators, study titles and thumbnail choices still come from the existing librar
 After editing selections, run:
 
 ```
-npm run build:collections
+npm run build:site
 npm run test:collections
 npm run check
 npm run qa:static
 ```
 
 The build reads the published Google Sheet without writing to it. It uses the same
-parser, taxonomy and card renderer as the library, then writes three indexable HTML
+parser, taxonomy and card renderer as the library, then writes four indexable HTML
 pages under `collections/` and updates their sitemap entries. It fails if a selected
 study is missing from the Sheet. Rebuild these pages when selected study metadata
 changes; normal browser visits also refresh their cards from the Sheet.
@@ -25,8 +25,12 @@ They reuse the site shell and themes. The hidden library shell keeps existing mo
 and shared application controls available. Author links return to the library's
 author view; study links preserve the curator's exact chapter and open in a new tab.
 
-The initial collections contain three rook-ending studies and 30 White repertoire
-recommendations supplied by Bosburp. No Black repertoire has been invented.
+The collections contain three rook-ending studies, 30 White repertoire selections,
+and 26 Black repertoire selections supplied by Bosburp. The Black collection lives
+at `/collections/bosburp-black-repertoire/`; both repertoire pages link to each other.
+Its level/style guidance is editorial opinion, not a rating or engine assessment.
+The Black overview currently uses the first study's existing board preview rather
+than reusing the White-labelled cover. No new study rows or thumbnails were needed.
 
 ## Rook collection cover
 

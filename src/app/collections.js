@@ -53,6 +53,7 @@ function collectionPageHtml(collection, studies) {
         <h1>${escapeHTML(collection.title)}</h1>
         <p class="collection-level">${collectionEntryCount(collection)} studies &middot; Curated by <a href="/?author=${encodeURIComponent(collection.curator)}">${escapeHTML(collection.curator)}</a></p>
         <p>${escapeHTML(collection.introduction)}</p><p class="collection-guidance">${escapeHTML(collection.guidance)}</p>
+        ${collection.slug.startsWith('bosburp-') ? `<nav class="collection-jump-links" aria-label="Repertoire colours"><a href="/collections/bosburp-opening-repertoire/">White repertoire</a><a href="/collections/bosburp-black-repertoire/">Black repertoire</a></nav>` : ''}
         <p class="collection-guidance">Original studies belong to their credited creators and open on Lichess.</p>
         ${collection.groups.length > 1 ? `<nav class="collection-jump-links" aria-label="Collection sections">${collection.groups.map((group, index) => `<a href="/collections/${collection.slug}/#collection-group-${index + 1}">${escapeHTML(group.title)}</a>`).join('')}</nav>` : ''}
         </header>${collectionEntriesHtml(collection, studies)}`;

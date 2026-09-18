@@ -19,7 +19,7 @@ for (const collection of [null, ...collections]) {
     const slug = collection?.slug || '';
     const route = `/collections/${slug ? slug + '/' : ''}`;
     const title = collection?.title || 'Study Collections';
-    const description = collection?.description || 'Explore curated chess study collections, including rook endgames and Bosburp\'s White opening repertoire recommendations. Free community studies on Lichess.';
+    const description = collection?.description || 'Explore curated chess study collections, including rook endgames and Bosburp\'s White and Black opening repertoire recommendations. Free community studies on Lichess.';
     let html = template.replace('<head>', '<head>\n    <base href="/">')
         .replace('<body class="', '<body class="collections-view ')
         .replace(/<title>[^<]*<\/title>/, `<title>${escape(title)} | Chess Study Library</title>`)

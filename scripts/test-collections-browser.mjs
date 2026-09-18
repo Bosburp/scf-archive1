@@ -94,12 +94,12 @@ try {
     }
     for (const width of [1440, 768, 390]) {
         await page.setViewportSize({ width, height: 900 });
-        for (const route of ['/collections/', '/collections/bosburp-opening-repertoire/']) {
+        for (const route of ['/collections/', '/collections/bosburp-opening-repertoire/', '/collections/bosburp-black-repertoire/']) {
             await page.goto(base + route);
             await page.waitForFunction(() => window.chessData?.length > 250);
             assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `Overflow at ${width} ${route}`);
-            if (route.includes('bosburp')) assert.equal(await page.locator('.collection-entry').count(), 30);
-            await page.screenshot({ path: `${output}/${route.includes('bosburp') ? 'openings' : 'index'}-${width}.png`, fullPage: false });
+            if (route.includes('bosburp')) assert.equal(await page.locator('.collection-entry').count(), route.includes('black') ? 26 : 30);
+            await page.screenshot({ path: `${output}/${route.includes('black') ? 'black' : route.includes('bosburp') ? 'openings' : 'index'}-${width}.png`, fullPage: false });
         }
     }
     assert.deepEqual(errors, []);
@@ -116,7 +116,7 @@ try {
         assert(await staticPage.locator('#communityContent').innerText().then(text => text.length > 300));
     }
     await noJs.close();
-    console.log('Browser QA passed: desktop/tablet/mobile, themes, 33 cards, new-tab chapter links, favorites, authors, search/filter, trainer, no-JS content, no page errors.');
+    console.log('Browser QA passed: desktop/tablet/mobile, themes, 59 cards, new-tab chapter links, favorites, authors, search/filter, trainer, no-JS content, no page errors.');
     console.log('Screenshots: ' + output);
 } finally {
     await browser.close();
