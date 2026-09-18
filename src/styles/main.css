@@ -2572,7 +2572,7 @@ body.light-mode .site-header .parchment-text {
 .featured-image img {
     opacity: 1;
     filter: grayscale(1) saturate(0) contrast(1.04);
-    transition: filter 0.28s ease, opacity 0.28s ease, transform 0.28s ease;
+    transition: filter 0.8s ease-in-out, opacity 0.28s ease, transform 0.28s ease;
 }
 
 .chess-card:hover .card-image,
@@ -2724,8 +2724,14 @@ body.light-mode .featured-image {
 .collection-entry .chess-card { height: auto; opacity: 1; transform: none; }
 .collection-overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
 .collection-summary { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--card); }
-.collection-summary > img { aspect-ratio: 16 / 9; height: auto; width: 100%; object-fit: contain; background: var(--surface-soft); filter: grayscale(1); }
+.collection-summary > img { aspect-ratio: 16 / 9; height: auto; width: 100%; object-fit: contain; background: var(--surface-soft); filter: grayscale(1); transition: filter 0.8s ease-in-out; }
 .collection-summary:hover > img, .collection-summary:focus-visible > img { filter: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .card-image,
+    .featured-image img,
+    .collection-summary > img { transition: none; }
+}
 .collection-summary > div { padding: 1.5rem; }
 .collection-summary h2 { font-size: 1.4rem; line-height: 1.35; font-weight: 400; margin: 0.75rem 0; }
 .collection-summary p { line-height: 1.65; margin-bottom: 1rem; }
