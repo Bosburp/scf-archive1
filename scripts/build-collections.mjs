@@ -50,7 +50,7 @@ for (const collection of [null, ...collections]) {
         + `<main id="collectionsContent" data-collection="${slug}">${context.collectionPageHtml(collection, studies)}</main>\n`
         + '<div hidden>\n' + html.slice(start, end) + '</div>\n' + html.slice(end);
     await fs.mkdir('collections/' + slug, { recursive: true });
-    await fs.writeFile(`collections/${slug ? slug + '/' : ''}index.html`, html);
+    await fs.writeFile(`collections/${slug ? slug + '/' : ''}index.html`, html.replace(/[\t ]+\r?$/gm, ''));
     console.log(`${route}: ${collection ? context.collectionEntryCount(collection) + ' studies' : collections.length + ' collections'}`);
 }
 
