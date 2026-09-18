@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W91N1GV2XS"></script>
     <script>
@@ -12,19 +13,19 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Study Library | Free Curated Lichess Chess Studies</title>
-    <meta name="description" content="Browse a free SCF-curated chess study library of community-created Lichess studies for openings, strategy, tactics, endgames, puzzles, and annotated games.">
+    <title>Study Collections | Chess Study Library</title>
+    <meta name="description" content="Explore curated chess study collections, including rook endgames and Bosburp&#39;s White opening repertoire recommendations. Free community studies on Lichess.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://chessstudylibrary.vercel.app/">
+    <link rel="canonical" href="https://chessstudylibrary.vercel.app/collections/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Chess Study Library">
-    <meta property="og:title" content="Chess Study Library | Free Curated Lichess Studies">
-    <meta property="og:description" content="Discover community-created chess studies hosted on Lichess and organized by SCF across openings, endgames, tactics, strategy, puzzles, and games.">
-    <meta property="og:url" content="https://chessstudylibrary.vercel.app/">
+    <meta property="og:title" content="Study Collections | Chess Study Library">
+    <meta property="og:description" content="Explore curated chess study collections, including rook endgames and Bosburp&#39;s White opening repertoire recommendations. Free community studies on Lichess.">
+    <meta property="og:url" content="https://chessstudylibrary.vercel.app/collections/">
     <meta property="og:image" content="https://chessstudylibrary.vercel.app/assets/brand/csl-mark.svg">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Chess Study Library | Free Curated Lichess Studies">
-    <meta name="twitter:description" content="Find chess studies for openings, endgames, tactics, strategy, puzzles, and annotated games. Created by the community, hosted on Lichess, organized by SCF.">
+    <meta name="twitter:title" content="Study Collections | Chess Study Library">
+    <meta name="twitter:description" content="Explore curated chess study collections, including rook endgames and Bosburp&#39;s White opening repertoire recommendations. Free community studies on Lichess.">
     <meta name="twitter:image" content="https://chessstudylibrary.vercel.app/assets/brand/csl-mark.svg">
     <meta name="theme-color" content="#f7f4ed">
     <link rel="icon" type="image/svg+xml" href="assets/brand/csl-mark.svg">
@@ -34,38 +35,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Chess Study Library",
-      "url": "https://chessstudylibrary.vercel.app/",
-      "description": "A free SCF-curated discovery layer for community-created chess studies hosted on Lichess.",
-      "inLanguage": "en",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Study Creators & Friends",
-        "url": "https://lichess.org/team/study-creators--friends"
-      },
-      "about": [
-        "chess studies",
-        "chess openings",
-        "chess endgames",
-        "chess tactics",
-        "chess strategy"
-      ],
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://chessstudylibrary.vercel.app/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Study Collections","url":"https://chessstudylibrary.vercel.app/collections/","description":"Explore curated chess study collections, including rook endgames and Bosburp's White opening repertoire recommendations. Free community studies on Lichess.","isPartOf":{"@type":"WebSite","name":"Chess Study Library","url":"https://chessstudylibrary.vercel.app/"},"mainEntity":{"@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"name":"Rook Endgames: Essential Positions","url":"https://chessstudylibrary.vercel.app/collections/rook-endgames/"},{"@type":"ListItem","position":2,"name":"Bosburp's Opening Repertoire Recommendations","url":"https://chessstudylibrary.vercel.app/collections/bosburp-opening-repertoire/"}]}}</script>
 
     <link rel="stylesheet" href="src/styles/main.css">
 
 </head>
-<body class="light-mode min-h-screen px-0 pt-0 pb-0">
+<body class="collections-view light-mode min-h-screen px-0 pt-0 pb-0">
 
     <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
@@ -123,7 +98,7 @@
             <div class="brand-block">
                 <img src="assets/brand/csl-mark.svg" alt="" class="brand-mark" aria-hidden="true">
                 <div class="brand-copy">
-                    <h1 class="brand-title brand-font font-light parchment-text">Chess Study Library</h1>
+                    <p class="brand-title brand-font font-light parchment-text">Chess Study Library</p>
                     <p class="brand-subtitle brand-font font-semibold uppercase">Hosted by Study Creators & Friends</p>
                 </div>
             </div>
@@ -150,10 +125,20 @@
         </header>
 
         <nav class="library-tabs" aria-label="Library navigation">
-            <a href="/" aria-current="page">Library</a>
-            <a href="/collections/">Collections</a>
+            <a href="/">Library</a>
+            <a href="/collections/" aria-current="page">Collections</a>
         </nav>
 
+<main id="collectionsContent" data-collection=""><header class="collection-intro"><h1>Study Collections</h1>
+            <p>Selected studies, a clear starting point, and guidance from the curator. Explore a topic or build a repertoire with community-created studies hosted on Lichess.</p></header>
+            <div class="collection-overview"><a class="collection-summary" href="/collections/rook-endgames/">
+                    <img src="assets/thumbnails/bnboDhFM-chapter1-369515027d.svg" alt="" loading="lazy">
+                    <div><p class="collection-level">3 studies &middot; Curated by Bosburp</p>
+                    <h2>Rook Endgames: Essential Positions</h2><p>Three selected Lichess studies for learning rook endings, practising key positions, and exploring rook and bishop versus rook.</p><span class="gold-accent">Explore collection &rarr;</span></div></a><a class="collection-summary" href="/collections/bosburp-opening-repertoire/">
+                    <img src="https://i.postimg.cc/h4NHxq4h/6Wy-GX2R-1.png" alt="" loading="lazy">
+                    <div><p class="collection-level">30 studies &middot; Curated by Bosburp</p>
+                    <h2>Bosburp&#39;s Opening Repertoire Recommendations</h2><p>Bosburp&#39;s White repertoire recommendations: opening studies grouped by your first move and Black&#39;s defence, with practical style and level guidance.</p><span class="gold-accent">Explore collection &rarr;</span></div></a></div></main>
+<div hidden>
         <section id="communityLibraryNote" class="community-library-note">
             <div>
                 <p class="community-eyebrow brand-font">SCF Community</p>
@@ -289,6 +274,7 @@
 
         <section id="endgameTrainerSection" class="endgame-trainer-section hidden"></section>
 
+</div>
         <footer class="site-footer">
             <div class="footer-inner">
                 <div class="footer-brand">
@@ -300,8 +286,8 @@
                 </div>
                 <nav class="footer-nav brand-font" aria-label="Footer navigation">
                     <a href="/collections/">Collections</a>
-                    <button type="button" onclick="showCommunityLibrary()">Community Library</button>
-                    <button type="button" onclick="jumpToNewStudies()">Latest Studies</button>
+                    <a href="/">Community Library</a>
+                    <a href="/#latestSection">Latest Studies</a>
                     <button type="button" onclick="toggleSubmit()">Submit Study</button>
                     <button type="button" onclick="toggleAbout()">About</button>
                     <a href="https://lichess.org/team/study-creators--friends" target="_blank" rel="noopener">Lichess Team</a>

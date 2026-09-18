@@ -2692,3 +2692,51 @@ body.light-mode .featured-image {
 .featured-shell:hover {
     border-color: var(--border-dark);
 }
+
+/* Curated collections share the library's cards and theme tokens. */
+.library-tabs {
+    display: flex;
+    gap: 1.5rem;
+    margin: 1.5rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+}
+.library-tabs a {
+    padding: 0.7rem 0;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+}
+.library-tabs a[aria-current="page"],
+.library-tabs a:hover { color: var(--gold); border-bottom-color: var(--gold); }
+.collection-intro { max-width: 850px; margin: 0 0 2.5rem; }
+.collection-intro h1 { font-size: 2rem; font-weight: 400; line-height: 1.2; margin: 1rem 0; }
+.collection-intro p { line-height: 1.7; margin: 0.8rem 0; color: var(--text-secondary); }
+.collection-intro .collection-guidance { font-size: 0.9rem; }
+.collection-level { color: var(--gold); font-size: 0.85rem; line-height: 1.5; }
+.collection-jump-links { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; margin-top: 1.4rem; }
+.collection-jump-links a { text-decoration: underline; text-underline-offset: 4px; font-size: 0.9rem; }
+.collection-group { margin: 0 0 3rem; scroll-margin-top: 150px; }
+.collection-group > h2 { font-size: 1.35rem; font-weight: 400; padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+.collection-study-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 1.5rem; }
+.collection-entry { min-width: 0; display: grid; grid-template-rows: subgrid; grid-row: span 2; row-gap: 1rem; }
+.collection-curator-note { line-height: 1.65; font-size: 0.95rem; color: var(--text-secondary); }
+.collection-curator-note h3 { color: var(--heading); font-size: 1.1rem; font-weight: 500; margin-bottom: 0.4rem; }
+.collection-curator-note .collection-level { margin-bottom: 0.4rem; }
+.collection-entry .chess-card { height: auto; opacity: 1; transform: none; }
+.collection-overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+.collection-summary { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--card); }
+.collection-summary > img { height: 220px; width: 100%; object-fit: contain; background: var(--surface-soft); filter: grayscale(1); }
+.collection-summary:hover > img, .collection-summary:focus-visible > img { filter: none; }
+.collection-summary > div { padding: 1.5rem; }
+.collection-summary h2 { font-size: 1.4rem; line-height: 1.35; font-weight: 400; margin: 0.75rem 0; }
+.collection-summary p { line-height: 1.65; margin-bottom: 1rem; }
+.collection-missing { padding: 1.5rem; border: 1px solid var(--border); }
+.collections-view .collection-entry a:focus-visible,
+.library-tabs a:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+@media (max-width: 1000px) {
+    .collection-study-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+    .collection-study-grid, .collection-overview { grid-template-columns: minmax(0, 1fr); }
+    .collection-intro h1 { font-size: 1.6rem; overflow-wrap: anywhere; }
+    .collection-group { scroll-margin-top: 220px; }
+}

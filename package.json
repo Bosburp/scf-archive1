@@ -1,5 +1,8 @@
 {
   "scripts": {
+    "build:collections": "node scripts/build-collections.mjs",
+    "test:collections": "node scripts/test-collections.mjs",
+    "test:collections:browser": "node scripts/test-collections-browser.mjs",
     "generate:thumbnails": "node scripts/generate-thumbnails.mjs",
     "prepare:study": "node scripts/prepare-study-row.mjs",
     "audit:screenshot-thumbnails": "node scripts/audit-screenshot-thumbnails.mjs",
@@ -10,5 +13,7 @@
   "dependencies": {
     "chess.js": "^1.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
 }

@@ -38,7 +38,7 @@ const OPENING_TAXONOMY = [
     { opening: 'Sicilian Defense', specificOpening: 'Kalashnikov', pattern: /\bkalashnikov\b/i },
     { opening: 'Sicilian Defense', specificOpening: 'Maroczy Bind', pattern: /\bmaroczy\b/i },
     { opening: 'Sicilian Defense', specificOpening: '', pattern: /\bsicilian\b/i },
-    { opening: 'King\'s Pawn Opening', specificOpening: 'Italian Game', pattern: /\bitalian\b|\bgiuoco piano\b|\btwo knights\b|\bfried liver\b|\bevans gambit\b|\bdubov italian\b|\brousseau gambit\b|\brosentreter\b/i },
+    { opening: 'King\'s Pawn Opening', specificOpening: 'Italian Game', pattern: /\bitalian\b|\bgiuoco piano\b|\btwo knights defen[cs]e\b|\bfried liver\b|\bevans gambit\b|\bdubov italian\b|\brousseau gambit\b|\brosentreter\b/i },
     { opening: 'King\'s Pawn Opening', specificOpening: 'Scotch Game', pattern: /\bscotch\b|\bhaggis[-\s]?grodzize\b/i },
     { opening: 'King\'s Pawn Opening', specificOpening: 'Ruy Lopez', pattern: /\bruy lopez\b|\bspanish (game|opening)\b/i },
     { opening: 'King\'s Pawn Opening', specificOpening: 'King\'s Gambit', pattern: /\bking['’]?s gambit\b/i },
@@ -178,6 +178,10 @@ function isOpeningCategoryGroup(category) {
 }
 
 function deriveOpeningTaxonomy(study) {
+    const categoryGroup = normalizeCategoryGroup(study.category);
+    if (['Endgames', 'Strategy', 'Tactics', 'Puzzles', 'Games'].includes(categoryGroup)) {
+        return { categoryGroup, opening: '', specificOpening: '', specificOpenings: [] };
+    }
     const primaryHaystack = [
         study.category,
         study.title,
@@ -192,6 +196,21 @@ function deriveOpeningTaxonomy(study) {
         study.generated?.searchText,
         ...(study.generated?.chapterNames || [])
     ].filter(Boolean).join(' ');
+
+    // An explicit family outranks shared names such as "Two Knights".
+    const title = [study.title, study.generated?.title].filter(Boolean).join(' ');
+    const namedFamily = [
+        ['Caro-Kann Defense', /\bcaro[-\s]?kann\b/i],
+        ['French Defense', /\bfrench\b/i],
+        ['Sicilian Defense', /\bsicilian\b/i]
+    ].filter(([, pattern]) => pattern.test(title));
+    const categoryFamily = deriveOpeningFamilyFromCategory(study.category);
+    const family = namedFamily.length === 1 ? namedFamily[0][0] : categoryFamily;
+    if (family && !['Unorthodox Openings', 'Flank Openings', 'Indian Defenses', "Queen's Pawn Opening"].includes(family)) {
+        const specificOpenings = getSpecificOpeningsForFamily(family, fullHaystack);
+        return { categoryGroup: 'Openings', opening: family,
+            specificOpening: specificOpenings[0] || '', specificOpenings };
+    }
 
     for (const entry of OPENING_TAXONOMY) {
         if (!entry.pattern.test(primaryHaystack)) continue;
@@ -767,19 +786,10 @@ function getGeneratedStudyData(link) {
     return id && window.generatedStudyData?.studies ? window.generatedStudyData.studies[id] : null;
 }
 
-async function loadData() {
-    document.getElementById('noResults').style.display = 'none';
-    showLoadingState();
-
-    try {
-        await loadAuthorData();
-        await loadStudyPreviewData();
-        await loadGeneratedStudyData();
-
-        const csv = await fetchCsvCached(sheetUrl, 'scf-studies-csv');
+function parseStudyRows(csv) {
         const rows = parseCSV(csv);
 
-        window.chessData = rows.slice(1).map((c, index) => {
+        return rows.slice(1).map((c, index) => {
             const rawAuthor = c[4]?.replace(/"/g, '') || "Anonymous";
             const authors = parseAuthors(rawAuthor);
             const link = normalizeStudyLink(c[5]);
@@ -810,6 +820,19 @@ async function loadData() {
                 featuredDescription: c[12]?.replace(/"/g, '').trim() || ""
             });
         }).filter(i => i.title !== "").reverse();
+}
+
+async function loadData() {
+    document.getElementById('noResults').style.display = 'none';
+    showLoadingState();
+
+    try {
+        await loadAuthorData();
+        await loadStudyPreviewData();
+        await loadGeneratedStudyData();
+
+        const csv = await fetchCsvCached(sheetUrl, 'scf-studies-csv');
+        window.chessData = parseStudyRows(csv);
 
         markNewStudies(window.chessData);
 
@@ -1103,7 +1126,8 @@ function moveCarousel(dir) {
 function cardHtml(i, favorites = getFavorites()) {
     const isStar = i.notes.toUpperCase().includes("STAR");
     const noteOverlay = i.viewerNote ? `<div class="note-overlay brand-font font-bold uppercase tracking-wider"><span class="block text-[8px] mb-1 opacity-60">Viewer Notes:</span>${i.viewerNote}</div>` : '';
-    const favActive = favorites.has(i.link) ? 'active' : '';
+    const favoriteLink = i.favoriteLink || i.link;
+    const favActive = favorites.has(favoriteLink) ? 'active' : '';
     const favTopClass = isStar ? 'top-11' : 'top-3';
     const thumbnailClass = `thumbnail-${i.thumbnailSource || 'fallback'}`;
 
@@ -1111,7 +1135,7 @@ function cardHtml(i, favorites = getFavorites()) {
     <div class="chess-card flex flex-col group relative">
         ${isStar ? `<div class="absolute top-0 right-0 z-40 staff-pick-ribbon px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">&#9733; Staff Pick</div>` : ''}
         ${noteOverlay}
-        <button onclick="toggleFavorite('${i.link.replace(/'/g, "\\'")}', this)" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/80 hover:text-[var(--accent)]" title="Save to favorites">
+        <button onclick="toggleFavorite('${favoriteLink.replace(/'/g, "\\'")}', this)" data-favorite-link="${escapeHTML(favoriteLink)}" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/80 hover:text-[var(--accent)]" title="Save to favorites">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
         </button>
 
@@ -1417,6 +1441,10 @@ function scrollToAuthorResults() {
 }
 
 function renderArchive() {
+    if (document.body.classList.contains('collections-view')) {
+        renderStudyCollections();
+        return;
+    }
     if (document.body.classList.contains('training-view')) return;
     document.getElementById('archiveHeader').style.display = '';
     if (!isOpeningCategoryGroup(currentFilter)) {
@@ -1593,6 +1621,10 @@ function syncUrlParams(term) {
 }
 
 function filterByAuthor(author) {
+    if (document.body.classList.contains('collections-view')) {
+        window.location.href = '/?author=' + encodeURIComponent(cleanAuthorName(author));
+        return;
+    }
     currentAuthor = cleanAuthorName(author);
     currentPage = 1;
     document.getElementById('searchInput').value = '';
