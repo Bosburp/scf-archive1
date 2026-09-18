@@ -60,7 +60,7 @@ chessboards, extra figures, logos or ornate frames. Keep generous safe margins.
 
 ## Black repertoire cover
 
-`assets/collections/bosburp-black-repertoire.png` was composed with the built-in
+`assets/collections/bosburp-black-repertoire-v2.png` was composed with the built-in
 image-generation tool using the orchard painting supplied by the user in chat.
 It is an AI-composed adaptation, not an unaltered archival reproduction. No
 external artwork was downloaded or independently attributed. This is collection
@@ -80,3 +80,8 @@ Bosburp reading-character/tree-stump logo beneath the subtitle in the empty
 lower-left area. Preserve the green book and recognizable white/black logo;
 remove its rectangular background and show the cover through stump cutouts.
 Keep the existing painting, wording, typography and landscape composition.
+
+Sharpness correction (built-in image-generation edit): use the sharp original
+pre-logo cover as the base, retain the small logo, restore painting detail and
+contrast, and remove cloudy texture, haze and logo glow. Keep lettering and
+composition. Versioned filename prevents reuse of the earlier softened asset.

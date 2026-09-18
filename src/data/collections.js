@@ -73,7 +73,7 @@ const STUDY_COLLECTIONS = [
     },
     {
         slug: 'bosburp-black-repertoire',
-        cover: 'assets/collections/bosburp-black-repertoire.png',
+        cover: 'assets/collections/bosburp-black-repertoire-v2.png',
         coverAlt: "Bosburp's Opening Recommendations: Black Repertoire, with an orchard painting and his reading-character logo",
         title: "Bosburp's Black Repertoire Recommendations",
         curator: 'Bosburp',
