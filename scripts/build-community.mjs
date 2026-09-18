@@ -29,7 +29,7 @@ const pages = [
             <tbody>${schedule.map(([time, name, control, rounds]) => `<tr><th scope="row">${time}</th><td>${name}</td><td>${control}</td><td>${rounds}</td></tr>`).join('')}</tbody></table>
             <p>Time controls show minutes per player plus the increment in seconds per move. For example, 3+2 means three minutes plus two seconds after each move.</p>
             <h2>Find and join a tournament</h2><p>Our automated system creates tournaments 48 hours before their scheduled start. Check the team page for the actual event links and current availability; this page shows the regular schedule, not live event status.</p>
-            <p>${external(team, 'View the SCF Lichess team')}</p><p>Join the team, choose an upcoming Swiss, and register on Lichess. Questions about an event? ${external(discord, 'Ask in Discord')}</p>
+            <p>${external(team + '/tournaments', 'View SCF tournaments on Lichess')}</p><p>Join the team, choose an upcoming Swiss, and register on Lichess. Questions about an event? ${external(discord, 'Ask in Discord')}</p>
             <h2>Between rounds</h2><p>Browse the <a class="gold-accent" href="/">Study Library</a> or work through a <a class="gold-accent" href="/collections/">curated collection</a> before your next game.</p></section>`
     },
     {
