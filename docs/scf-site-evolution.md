@@ -1,6 +1,7 @@
 # SCF Site Evolution: Phase 1 Audit
 
-Status: planning only. No application, route, data or deployment changes.
+Status: original Phase 1 audit. For the implemented pages and remaining external
+scheduler dependency, see `docs/scf-community-pages.md`.
 
 ## Existing implementation
 

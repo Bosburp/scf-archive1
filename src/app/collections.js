@@ -2,6 +2,13 @@ function collectionStudyId(link) {
     return link.match(/lichess\.org\/study\/([a-zA-Z0-9]{8})/)?.[1];
 }
 
+function studyDetailsLink(link) {
+    const id = collectionStudyId(link);
+    const selected = STUDY_COLLECTIONS.find(item => item.slug === 'rook-endgames');
+    return selected?.groups.some(group => group.entries.some(entry => collectionStudyId(entry.link) === id))
+        ? `<a class="study-details-link" href="/studies/${id}/">Study details</a>` : '';
+}
+
 function collectionEntryCount(collection) {
     return collection.groups.reduce((count, group) => count + group.entries.length, 0);
 }
@@ -52,10 +59,12 @@ function collectionPageHtml(collection, studies) {
 }
 
 function renderStudyCollections() {
-    const root = document.getElementById('collectionsContent');
+    const root = document.getElementById('collectionsContent') || document.getElementById('communityContent');
     if (!root || !window.chessData?.length) return;
-    const collection = STUDY_COLLECTIONS.find(item => item.slug === root.dataset.collection);
-    root.innerHTML = collectionPageHtml(collection, window.chessData);
+    if (root.id === 'collectionsContent') {
+        const collection = STUDY_COLLECTIONS.find(item => item.slug === root.dataset.collection);
+        root.innerHTML = collectionPageHtml(collection, window.chessData);
+    }
     const favorites = getFavorites();
     root.querySelectorAll('.fav-btn').forEach(button => {
         const link = button.dataset.favoriteLink;

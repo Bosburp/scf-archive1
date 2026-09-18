@@ -2696,11 +2696,13 @@ body.light-mode .featured-image {
 /* Curated collections share the library's cards and theme tokens. */
 .library-tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 1.5rem;
     margin: 1.5rem 0 2rem;
     border-bottom: 1px solid var(--border);
 }
 .library-tabs a {
+    white-space: nowrap;
     padding: 0.7rem 0;
     color: var(--text-secondary);
     border-bottom: 2px solid transparent;
@@ -2736,6 +2738,28 @@ body.light-mode .featured-image {
 .collection-summary h2 { font-size: 1.4rem; line-height: 1.35; font-weight: 400; margin: 0.75rem 0; }
 .collection-summary p { line-height: 1.65; margin-bottom: 1rem; }
 .collection-missing { padding: 1.5rem; border: 1px solid var(--border); }
+.scf-discovery-links { display: flex; flex-wrap: wrap; gap: 0.6rem 1.3rem; margin-top: 1rem; font-size: 0.85rem; }
+.scf-discovery-links a, .study-details-link { color: var(--gold); text-decoration: underline; text-underline-offset: 4px; }
+.study-details-link { display: inline-block; margin-top: 0.8rem; font-size: 0.8rem; }
+.scf-page { padding-bottom: 3rem; }
+.scf-page h2 { font-size: 1.35rem; font-weight: 500; margin: 2rem 0 0.8rem; }
+.scf-page p, .scf-page li { line-height: 1.75; color: var(--text-secondary); }
+.scf-page p { margin-bottom: 1rem; }
+.scf-page ul, .scf-page ol { padding-left: 1.4rem; list-style: revert; }
+.scf-page a:not(.card-media):not(.card-title):not(.fav-btn) { text-underline-offset: 4px; }
+.scf-page > section { max-width: 850px; margin-bottom: 2rem; }
+.scf-schedule { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+.scf-schedule th, .scf-schedule td { text-align: left; padding: 1rem 0.75rem; border-bottom: 1px solid var(--border); }
+.scf-schedule th { font-weight: 500; color: var(--gold); }
+.scf-schedule caption { text-align: left; margin-bottom: 1rem; color: var(--text-secondary); }
+.scf-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; align-items: start; }
+.scf-detail-layout .chess-card { opacity: 1; transform: none; }
+.scf-page a:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+@media (max-width: 640px) {
+    .scf-detail-layout { grid-template-columns: minmax(0, 1fr); }
+    .library-tabs { gap: 0.5rem 1rem; font-size: 0.9rem; }
+    .scf-schedule th, .scf-schedule td { padding: 0.8rem 0.35rem; font-size: 0.85rem; }
+}
 .collections-view .collection-entry a:focus-visible,
 .library-tabs a:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
 @media (max-width: 1000px) {

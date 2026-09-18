@@ -1166,6 +1166,7 @@ function cardHtml(i, favorites = getFavorites()) {
             <p class="card-note text-zinc-500 text-[11px] italic leading-relaxed">${i.notes.replace(/STAR/gi, '')}</p>
 
             <a href="${i.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-open-link brand-font">Hosted on Lichess &middot; Open &rarr;</a>
+            ${typeof studyDetailsLink === 'function' ? studyDetailsLink(i.link) : ''}
         </div>
     </div>`;
 }

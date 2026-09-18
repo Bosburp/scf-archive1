@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "build:site": "npm run build:collections && node scripts/build-community.mjs",
     "generate:rook-cover": "node scripts/generate-rook-cover.mjs",
     "build:collections": "node scripts/build-collections.mjs",
     "test:collections": "node scripts/test-collections.mjs",

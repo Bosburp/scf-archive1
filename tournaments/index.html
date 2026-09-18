@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W91N1GV2XS"></script>
     <script>
@@ -12,19 +13,19 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Study Library | Free Curated Lichess Chess Studies</title>
-    <meta name="description" content="Browse a free SCF-curated chess study library of community-created Lichess studies for openings, strategy, tactics, endgames, puzzles, and annotated games.">
+    <title>SCF Daily Swiss Tournaments | Chess Study Library</title>
+    <meta name="description" content="The Study Creators &amp; Friends daily Swiss schedule: five rated standard chess tournaments, UTC start times, time controls and rounds. Join through the SCF Lichess team.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://chessstudylibrary.vercel.app/">
+    <link rel="canonical" href="https://chessstudylibrary.vercel.app/tournaments/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Chess Study Library">
-    <meta property="og:title" content="Chess Study Library | Free Curated Lichess Studies">
-    <meta property="og:description" content="Discover community-created chess studies hosted on Lichess and organized by SCF across openings, endgames, tactics, strategy, puzzles, and games.">
-    <meta property="og:url" content="https://chessstudylibrary.vercel.app/">
+    <meta property="og:title" content="SCF Daily Swiss Tournaments | Chess Study Library">
+    <meta property="og:description" content="The Study Creators &amp; Friends daily Swiss schedule: five rated standard chess tournaments, UTC start times, time controls and rounds. Join through the SCF Lichess team.">
+    <meta property="og:url" content="https://chessstudylibrary.vercel.app/tournaments/">
     <meta property="og:image" content="https://chessstudylibrary.vercel.app/assets/brand/csl-mark.svg">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Chess Study Library | Free Curated Lichess Studies">
-    <meta name="twitter:description" content="Find chess studies for openings, endgames, tactics, strategy, puzzles, and annotated games. Created by the community, hosted on Lichess, organized by SCF.">
+    <meta name="twitter:title" content="SCF Daily Swiss Tournaments | Chess Study Library">
+    <meta name="twitter:description" content="The Study Creators &amp; Friends daily Swiss schedule: five rated standard chess tournaments, UTC start times, time controls and rounds. Join through the SCF Lichess team.">
     <meta name="twitter:image" content="https://chessstudylibrary.vercel.app/assets/brand/csl-mark.svg">
     <meta name="theme-color" content="#f7f4ed">
     <link rel="icon" type="image/svg+xml" href="assets/brand/csl-mark.svg">
@@ -34,38 +35,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Chess Study Library",
-      "url": "https://chessstudylibrary.vercel.app/",
-      "description": "A free SCF-curated discovery layer for community-created chess studies hosted on Lichess.",
-      "inLanguage": "en",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Study Creators & Friends",
-        "url": "https://lichess.org/team/study-creators--friends"
-      },
-      "about": [
-        "chess studies",
-        "chess openings",
-        "chess endgames",
-        "chess tactics",
-        "chess strategy"
-      ],
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://chessstudylibrary.vercel.app/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"SCF Daily Swiss Tournaments","description":"The Study Creators & Friends daily Swiss schedule: five rated standard chess tournaments, UTC start times, time controls and rounds. Join through the SCF Lichess team.","url":"https://chessstudylibrary.vercel.app/tournaments/","isPartOf":{"@type":"WebSite","name":"Chess Study Library","url":"https://chessstudylibrary.vercel.app/"}}</script>
 
     <link rel="stylesheet" href="src/styles/main.css">
 
 </head>
-<body class="light-mode min-h-screen px-0 pt-0 pb-0">
+<body class="collections-view light-mode min-h-screen px-0 pt-0 pb-0">
 
     <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
@@ -123,7 +98,7 @@
             <div class="brand-block">
                 <img src="assets/brand/csl-mark.svg" alt="" class="brand-mark" aria-hidden="true">
                 <div class="brand-copy">
-                    <h1 class="brand-title brand-font font-light parchment-text">Chess Study Library</h1>
+                    <p class="brand-title brand-font font-light parchment-text">Chess Study Library</p>
                     <p class="brand-subtitle brand-font font-semibold uppercase">Hosted by Study Creators & Friends</p>
                 </div>
             </div>
@@ -150,12 +125,20 @@
         </header>
 
         <nav class="library-tabs" aria-label="Library navigation">
-            <a href="/" aria-current="page">Library</a>
+            <a href="/">Library</a>
             <a href="/collections/">Collections</a>
-            <a href="/tournaments/">Tournaments</a>
+            <a href="/tournaments/" aria-current="page">Tournaments</a>
             <a href="/about/">About SCF</a>
         </nav>
 
+<main id="communityContent" class="scf-page"><header class="collection-intro"><h1>SCF Daily Swiss Tournaments</h1></header><section><h2>Five opportunities to play each day</h2><p>Put your study into practice with the SCF community. Our regular Swiss tournaments are rated standard chess and are restricted to Study Creators &amp; Friends team members.</p>
+            <table class="scf-schedule"><caption>Regular daily schedule. All start times are UTC.</caption><thead><tr><th scope="col">UTC</th><th scope="col">Tournament</th><th scope="col">Time control</th><th scope="col">Rounds</th></tr></thead>
+            <tbody><tr><th scope="row">00:00</th><td>SCF Americas Swiss</td><td>5+0</td><td>7</td></tr><tr><th scope="row">04:00</th><td>SCF Asia-Pacific Swiss</td><td>3+2</td><td>7</td></tr><tr><th scope="row">09:00</th><td>SCF Global Morning Swiss</td><td>5+0</td><td>7</td></tr><tr><th scope="row">14:00</th><td>SCF Global Rapid Swiss</td><td>10+0</td><td>5</td></tr><tr><th scope="row">19:00</th><td>SCF Prime Swiss</td><td>3+2</td><td>9</td></tr></tbody></table>
+            <p>Time controls show minutes per player plus the increment in seconds per move. For example, 3+2 means three minutes plus two seconds after each move.</p>
+            <h2>Find and join a tournament</h2><p>Our automated system creates tournaments 48 hours before their scheduled start. Check the team page for the actual event links and current availability; this page shows the regular schedule, not live event status.</p>
+            <p><a class="gold-accent" href="https://lichess.org/team/study-creators--friends" target="_blank" rel="noopener noreferrer">View the SCF Lichess team &rarr;</a></p><p>Join the team, choose an upcoming Swiss, and register on Lichess. Questions about an event? <a class="gold-accent" href="https://discord.gg/sD7sCvyHMa" target="_blank" rel="noopener noreferrer">Ask in Discord &rarr;</a></p>
+            <h2>Between rounds</h2><p>Browse the <a class="gold-accent" href="/">Study Library</a> or work through a <a class="gold-accent" href="/collections/">curated collection</a> before your next game.</p></section></main>
+<div hidden>
         <section id="communityLibraryNote" class="community-library-note">
             <div>
                 <p class="community-eyebrow brand-font">SCF Community</p>
@@ -292,6 +275,7 @@
 
         <section id="endgameTrainerSection" class="endgame-trainer-section hidden"></section>
 
+</div>
         <footer class="site-footer">
             <div class="footer-inner">
                 <div class="footer-brand">
@@ -303,8 +287,8 @@
                 </div>
                 <nav class="footer-nav brand-font" aria-label="Footer navigation">
                     <a href="/collections/">Collections</a>
-                    <button type="button" onclick="showCommunityLibrary()">Community Library</button>
-                    <button type="button" onclick="jumpToNewStudies()">Latest Studies</button>
+                    <a href="/">Community Library</a>
+                    <a href="/#latestSection">Latest Studies</a>
                     <button type="button" onclick="toggleSubmit()">Submit Study</button>
                     <a href="/about/">About SCF</a>
                     <a href="/tournaments/">Tournaments</a>

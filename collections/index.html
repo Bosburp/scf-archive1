@@ -117,9 +117,9 @@
                     <span class="relative z-10">Lichess</span>
                 </a>
 
-                <button onclick="toggleAbout()" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
+                <a href="/about/" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
                     <span class="relative z-10">About Us</span>
-                </button>
+                </a>
 
             </div>
         </header>
@@ -127,6 +127,8 @@
         <nav class="library-tabs" aria-label="Library navigation">
             <a href="/">Library</a>
             <a href="/collections/" aria-current="page">Collections</a>
+            <a href="/tournaments/">Tournaments</a>
+            <a href="/about/">About SCF</a>
         </nav>
 
 <main id="collectionsContent" data-collection=""><header class="collection-intro"><h1>Study Collections</h1>
@@ -144,7 +146,8 @@
                 <p class="community-eyebrow brand-font">SCF Community</p>
                 <h2>Community studies, easier to discover.</h2>
             </div>
-            <p>Creators make the studies. Lichess hosts them. SCF curates and organizes excellent educational material so it is easier to find. Study ownership and attribution stay with the original creators on Lichess.</p>
+            <div><p>Creators make the studies. Lichess hosts them. SCF curates and organizes excellent educational material so it is easier to find. Study ownership and attribution stay with the original creators on Lichess.</p>
+            <nav class="scf-discovery-links" aria-label="Explore SCF"><a href="/collections/rook-endgames/">Rook endgames</a><a href="/collections/bosburp-opening-repertoire/">Bosburp's repertoire</a><a href="/tournaments/">Daily Swiss schedule</a></nav></div>
         </section>
 
         <div id="libraryControls" class="max-w-5xl mx-auto mb-16 md:mb-20 text-center">
@@ -289,7 +292,8 @@
                     <a href="/">Community Library</a>
                     <a href="/#latestSection">Latest Studies</a>
                     <button type="button" onclick="toggleSubmit()">Submit Study</button>
-                    <button type="button" onclick="toggleAbout()">About</button>
+                    <a href="/about/">About SCF</a>
+                    <a href="/tournaments/">Tournaments</a>
                     <a href="https://lichess.org/team/study-creators--friends" target="_blank" rel="noopener">Lichess Team</a>
                     <a href="https://discord.gg/sD7sCvyHMa" target="_blank" rel="noopener">Discord</a>
                 </nav>

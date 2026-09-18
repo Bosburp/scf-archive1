@@ -68,6 +68,32 @@ try {
     await page.locator('#endgameTrainerSection').waitFor({ state: 'visible' });
     for (const width of [1440, 768, 390]) {
         await page.setViewportSize({ width, height: 900 });
+        for (const route of ['/tournaments/', '/about/', '/studies/bnboDhFM/', '/studies/7UUxD0rK/', '/studies/wyDD6Zrb/']) {
+            await page.goto(base + route);
+            await page.waitForFunction(() => window.chessData?.length > 250);
+            assert.equal(await page.locator('h1:visible').count(), 1);
+            assert.equal(await page.locator('#libraryControls').isVisible(), false);
+            assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://chessstudylibrary.vercel.app' + route);
+            assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `Overflow: ${width} ${route}`);
+            if (route === '/tournaments/') {
+                assert.equal(await page.locator('.scf-schedule tbody tr').count(), 5);
+                assert(await page.locator('.scf-schedule').innerText().then(text => text.includes('19:00')));
+            }
+            if (route.includes('/studies/')) {
+                const img = page.locator('#communityContent .card-image');
+                await img.scrollIntoViewIfNeeded();
+                await img.evaluate(el => el.decode());
+                assert(await img.evaluate(el => el.naturalWidth > 0));
+                if (route.includes('7UUxD0rK')) assert.equal(await page.locator('#communityContent .card-title').getAttribute('href'), expected);
+            }
+            for (const mode of ['light', 'dark']) {
+                await page.evaluate(light => { document.body.classList.toggle('light-mode', light); }, mode === 'light');
+                await page.screenshot({ path: `${output}/scf-${route.split('/').filter(Boolean).join('-')}-${width}-${mode}.png`, fullPage: true });
+            }
+        }
+    }
+    for (const width of [1440, 768, 390]) {
+        await page.setViewportSize({ width, height: 900 });
         for (const route of ['/collections/', '/collections/bosburp-opening-repertoire/']) {
             await page.goto(base + route);
             await page.waitForFunction(() => window.chessData?.length > 250);
@@ -84,6 +110,11 @@ try {
     assert.equal(await staticPage.locator('.collection-entry').count(), 3);
     assert(await staticPage.locator('h1').isVisible());
     assert.equal(await staticPage.locator('.collection-entry .card-title').nth(1).getAttribute('href'), expected);
+    for (const route of ['/tournaments/', '/about/', '/studies/7UUxD0rK/']) {
+        await staticPage.goto(base + route);
+        assert(await staticPage.locator('#communityContent h1').isVisible());
+        assert(await staticPage.locator('#communityContent').innerText().then(text => text.length > 300));
+    }
     await noJs.close();
     console.log('Browser QA passed: desktop/tablet/mobile, themes, 33 cards, new-tab chapter links, favorites, authors, search/filter, trainer, no-JS content, no page errors.');
     console.log('Screenshots: ' + output);

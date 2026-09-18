@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W91N1GV2XS"></script>
     <script>
@@ -12,19 +13,19 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Study Library | Free Curated Lichess Chess Studies</title>
-    <meta name="description" content="Browse a free SCF-curated chess study library of community-created Lichess studies for openings, strategy, tactics, endgames, puzzles, and annotated games.">
+    <title>Study Creators &amp; Friends | Chess Study Library</title>
+    <meta name="description" content="Meet Study Creators &amp; Friends: a chess community sharing free educational studies, personal recommendations and daily Swiss tournaments on Lichess.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://chessstudylibrary.vercel.app/">
+    <link rel="canonical" href="https://chessstudylibrary.vercel.app/about/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Chess Study Library">
-    <meta property="og:title" content="Chess Study Library | Free Curated Lichess Studies">
-    <meta property="og:description" content="Discover community-created chess studies hosted on Lichess and organized by SCF across openings, endgames, tactics, strategy, puzzles, and games.">
-    <meta property="og:url" content="https://chessstudylibrary.vercel.app/">
+    <meta property="og:title" content="Study Creators &amp; Friends | Chess Study Library">
+    <meta property="og:description" content="Meet Study Creators &amp; Friends: a chess community sharing free educational studies, personal recommendations and daily Swiss tournaments on Lichess.">
+    <meta property="og:url" content="https://chessstudylibrary.vercel.app/about/">
     <meta property="og:image" content="https://chessstudylibrary.vercel.app/assets/brand/csl-mark.svg">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Chess Study Library | Free Curated Lichess Studies">
-    <meta name="twitter:description" content="Find chess studies for openings, endgames, tactics, strategy, puzzles, and annotated games. Created by the community, hosted on Lichess, organized by SCF.">
+    <meta name="twitter:title" content="Study Creators &amp; Friends | Chess Study Library">
+    <meta name="twitter:description" content="Meet Study Creators &amp; Friends: a chess community sharing free educational studies, personal recommendations and daily Swiss tournaments on Lichess.">
     <meta name="twitter:image" content="https://chessstudylibrary.vercel.app/assets/brand/csl-mark.svg">
     <meta name="theme-color" content="#f7f4ed">
     <link rel="icon" type="image/svg+xml" href="assets/brand/csl-mark.svg">
@@ -34,38 +35,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Chess Study Library",
-      "url": "https://chessstudylibrary.vercel.app/",
-      "description": "A free SCF-curated discovery layer for community-created chess studies hosted on Lichess.",
-      "inLanguage": "en",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Study Creators & Friends",
-        "url": "https://lichess.org/team/study-creators--friends"
-      },
-      "about": [
-        "chess studies",
-        "chess openings",
-        "chess endgames",
-        "chess tactics",
-        "chess strategy"
-      ],
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://chessstudylibrary.vercel.app/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"AboutPage","name":"Study Creators & Friends","description":"Meet Study Creators & Friends: a chess community sharing free educational studies, personal recommendations and daily Swiss tournaments on Lichess.","url":"https://chessstudylibrary.vercel.app/about/","isPartOf":{"@type":"WebSite","name":"Chess Study Library","url":"https://chessstudylibrary.vercel.app/"}}</script>
 
     <link rel="stylesheet" href="src/styles/main.css">
 
 </head>
-<body class="light-mode min-h-screen px-0 pt-0 pb-0">
+<body class="collections-view light-mode min-h-screen px-0 pt-0 pb-0">
 
     <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
@@ -123,7 +98,7 @@
             <div class="brand-block">
                 <img src="assets/brand/csl-mark.svg" alt="" class="brand-mark" aria-hidden="true">
                 <div class="brand-copy">
-                    <h1 class="brand-title brand-font font-light parchment-text">Chess Study Library</h1>
+                    <p class="brand-title brand-font font-light parchment-text">Chess Study Library</p>
                     <p class="brand-subtitle brand-font font-semibold uppercase">Hosted by Study Creators & Friends</p>
                 </div>
             </div>
@@ -150,12 +125,19 @@
         </header>
 
         <nav class="library-tabs" aria-label="Library navigation">
-            <a href="/" aria-current="page">Library</a>
+            <a href="/">Library</a>
             <a href="/collections/">Collections</a>
             <a href="/tournaments/">Tournaments</a>
-            <a href="/about/">About SCF</a>
+            <a href="/about/" aria-current="page">About SCF</a>
         </nav>
 
+<main id="communityContent" class="scf-page"><header class="collection-intro"><h1>Study Creators &amp; Friends</h1></header><section><h2>A community for learning, creating and sharing</h2><p>We bring together people who make chess studies and people who enjoy learning from them. Good explanations and thoughtful analysis deserve to be easier to find.</p>
+            <h2>Why a study library?</h2><p>There is a great deal of educational material on Lichess, but finding a useful study can take time. SCF organizes community studies by topic and credits the people who created them. Our collections add a personal starting point: what to try, how the selections fit together, and why a curator recommends them.</p>
+            <p>Creators make the studies. Lichess hosts them. SCF helps you discover them. The library is free, and the original work remains with its creators on Lichess. SCF is a community using Lichess, not the operator of Lichess.</p>
+            <h2>Take part</h2><ul><li>Find something to learn in the <a class="gold-accent" href="/">Study Library</a>.</li><li>Explore <a class="gold-accent" href="/collections/">curator-selected collections</a>.</li><li>Play with the community in our <a class="gold-accent" href="/tournaments/">daily Swiss tournaments</a>.</li><li>Share a study for review through the study-submissions channel in Discord.</li></ul>
+            <nav class="scf-discovery-links" aria-label="Join SCF"><a class="gold-accent" href="https://lichess.org/team/study-creators--friends" target="_blank" rel="noopener noreferrer">Join on Lichess &rarr;</a><a class="gold-accent" href="https://discord.gg/sD7sCvyHMa" target="_blank" rel="noopener noreferrer">Join Discord &rarr;</a></nav>
+            <h2>Respect for creators</h2><p>Study cards identify the original authors and open their work directly on Lichess. Curation is not a claim of ownership. If you have a question about a listing or attribution, contact us through Discord.</p></section></main>
+<div hidden>
         <section id="communityLibraryNote" class="community-library-note">
             <div>
                 <p class="community-eyebrow brand-font">SCF Community</p>
@@ -292,6 +274,7 @@
 
         <section id="endgameTrainerSection" class="endgame-trainer-section hidden"></section>
 
+</div>
         <footer class="site-footer">
             <div class="footer-inner">
                 <div class="footer-brand">
@@ -303,8 +286,8 @@
                 </div>
                 <nav class="footer-nav brand-font" aria-label="Footer navigation">
                     <a href="/collections/">Collections</a>
-                    <button type="button" onclick="showCommunityLibrary()">Community Library</button>
-                    <button type="button" onclick="jumpToNewStudies()">Latest Studies</button>
+                    <a href="/">Community Library</a>
+                    <a href="/#latestSection">Latest Studies</a>
                     <button type="button" onclick="toggleSubmit()">Submit Study</button>
                     <a href="/about/">About SCF</a>
                     <a href="/tournaments/">Tournaments</a>

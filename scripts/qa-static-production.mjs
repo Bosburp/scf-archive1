@@ -33,10 +33,10 @@ assert(robots.includes('Allow: /'), 'robots.txt should allow crawling');
 assert(robots.includes('Sitemap: https://chessstudylibrary.vercel.app/sitemap.xml'), 'robots.txt missing sitemap');
 assert(!/Disallow:\s*\//i.test(robots), 'robots.txt blocks site');
 assert(sitemap.includes('<urlset'), 'Invalid sitemap');
-assert(sitemap.includes('?staff=1'), 'Sitemap staff-pick URL should use staff=1');
-assert(!sitemap.includes('?staff=Yes'), 'Sitemap contains stale staff=Yes URL');
-assert(sitemap.includes('variation=Italian%20Game'), 'Sitemap missing supported Italian Game variation URL');
-assert(sitemap.includes('variation=Najdorf'), 'Sitemap missing supported Najdorf variation URL');
+assert(!/<loc>[^<]*\?/.test(sitemap), 'Sitemap should list canonical pages, not filter states');
+for (const route of ['/about/', '/tournaments/', '/studies/bnboDhFM/']) {
+  assert(sitemap.includes(`https://chessstudylibrary.vercel.app${route}`), `Missing sitemap page ${route}`);
+}
 
 assert(app.includes('thumbnailSource'), 'App should distinguish thumbnail sources');
 assert(app.includes('screenshot-fen-reference'), 'App should use verified screenshot-FEN references');
@@ -60,3 +60,15 @@ assert(screenshotRefs.every(study => study.thumbnailFen && study.thumbnailPath),
 assert(studyFenThumbnails.length >= 120, `Expected restored study-FEN thumbnails, found ${studyFenThumbnails.length}`);
 
 console.log('Static production QA OK');
+
+for (const route of ['/tournaments/', '/about/', '/studies/bnboDhFM/', '/studies/7UUxD0rK/', '/studies/wyDD6Zrb/']) {
+  const html = await fs.readFile('.' + route + 'index.html', 'utf8');
+  assert(html.includes(`<link rel="canonical" href="https://chessstudylibrary.vercel.app${route}">`), `Wrong canonical ${route}`);
+  assert((html.match(/<h1\b/g) || []).length === 1, `Heading hierarchy ${route}`);
+  assert(html.includes('id="communityContent"'), `Missing static content ${route}`);
+  assert(!html.includes('id="collectionsContent"'), `Unexpected collection renderer target ${route}`);
+  assert((html.match(/gtag\/js\?id=/g) || []).length === 1, `GA tag count ${route}`);
+  const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  assert(schema.url === 'https://chessstudylibrary.vercel.app' + route, `Wrong schema URL ${route}`);
+}
+console.log('SCF pages: unique canonicals, structured data, static content, headings and analytics OK');
