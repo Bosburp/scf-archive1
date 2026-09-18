@@ -73,6 +73,8 @@ const STUDY_COLLECTIONS = [
     },
     {
         slug: 'bosburp-black-repertoire',
+        cover: 'assets/collections/bosburp-black-repertoire.png',
+        coverAlt: "Bosburp's Opening Recommendations: Black Repertoire, with an orchard painting and his reading-character logo",
         title: "Bosburp's Black Repertoire Recommendations",
         curator: 'Bosburp',
         description: 'My Black repertoire recommendations against 1.e4, 1.d4 and flank openings, with personal style advice and study suggestions from beginner-friendly choices to advanced theory.',

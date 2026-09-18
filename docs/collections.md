@@ -29,8 +29,8 @@ The collections contain three rook-ending studies, 30 White repertoire selection
 and 26 Black repertoire selections supplied by Bosburp. The Black collection lives
 at `/collections/bosburp-black-repertoire/`; both repertoire pages link to each other.
 Its level/style guidance is editorial opinion, not a rating or engine assessment.
-The Black overview currently uses the first study's existing board preview rather
-than reusing the White-labelled cover. No new study rows or thumbnails were needed.
+The Black overview uses its own editorial cover. No study rows or board thumbnails
+were changed.
 
 ## Rook collection cover
 
@@ -57,3 +57,26 @@ images, keeping the portrait and character recognizable. Put the portrait on the
 right and the smaller character at lower left. Use cream modern sans-serif text
 "Bosburp's Opening Recommendations" and muted-gold "WHITE REPERTOIRE". No invented
 chessboards, extra figures, logos or ornate frames. Keep generous safe margins.
+
+## Black repertoire cover
+
+`assets/collections/bosburp-black-repertoire.png` was composed with the built-in
+image-generation tool using the orchard painting supplied by the user in chat.
+It is an AI-composed adaptation, not an unaltered archival reproduction. No
+external artwork was downloaded or independently attributed. This is collection
+artwork, not a study-position thumbnail. The native landscape image is displayed
+in the existing 16:9 contain box and used in Open Graph/Twitter previews.
+
+Prompt: Create a premium 16:9 editorial cover using the supplied orchard painting
+as the base. Preserve recognizable figures, blossoms, painted texture and muted
+ochre/green/red colours. Use a broad charcoal title area on the left, the orchard
+on the right, cream light/regular modern sans-serif text "Bosburp's Opening
+Recommendations" and muted-gold "BLACK REPERTOIRE". Keep safe margins and readable
+lettering at card size. No added people, chessboards, pieces, reading mascot,
+other portraits, extra words, watermarks or ornate frames.
+
+Final compositing edit (built-in image-generation tool): add the user-supplied
+Bosburp reading-character/tree-stump logo beneath the subtitle in the empty
+lower-left area. Preserve the green book and recognizable white/black logo;
+remove its rectangular background and show the cover through stump cutouts.
+Keep the existing painting, wording, typography and landscape composition.
