@@ -1,12 +1,12 @@
 /* Shared editorial treatment for the library, collections and community pages. */
 :root {
-    --bg: #191b1d; --surface: #222527; --surface-soft: #292d2f;
-    --card: #222527; --heading: #f0f1ed; --text: #e0e3e0;
-    --text-secondary: #b8bfbc; --text-muted: #a2aba6;
-    --border: #383e3c; --border-dark: #56605b;
+    --bg: #161512; --surface: #262421; --surface-soft: #302e2a;
+    --card: #262421; --heading: #ece9e3; --text: #d8d5cf;
+    --text-secondary: #bdb9b1; --text-muted: #aaa69e;
+    --border: #393631; --border-dark: #504b44;
     --accent: #94bda7; --accent-strong: #b0d5be; --gold: #a5c2b1;
     --accent-soft: #2b3932; --accent-quiet: #242e28;
-    --surface-lift: #2b2f31;
+    --surface-lift: #383530;
     --shadow-card: none; --shadow-gold: none;
 }
 body.light-mode {
@@ -139,6 +139,24 @@ a, button, input, select { -webkit-tap-highlight-color: transparent; }
 .modal-overlay h2 { font: 500 32px/1.2 'Fraunces', Georgia, serif; letter-spacing: -.025em; text-transform: none; margin-bottom: 24px; }
 .modal-overlay p, .modal-overlay li { font-style: normal; }
 .modal-overlay button { min-height: 40px; }
+/* Dark surfaces are separated by tone and depth, not decorative outlines. */
+body:not(.light-mode) { color-scheme: dark; }
+body:not(.light-mode) :is(.site-header, .library-tabs, .section-heading, #archiveHeader, .site-footer, .active-filter-bar, .collection-group > h2) { border-color: transparent; }
+body:not(.light-mode) :is(.filter-panel, .search-container input, .library-select, .chess-card, .featured-shell, .featured-image, .featured-copy-panel, .collection-summary, .author-profile-shell, .author-profile-header, .author-profile-card, .contribute-panel, .scf-schedule, .trainer-shell) { border-color: transparent; }
+body:not(.light-mode) .search-container input { background: var(--surface-soft); }
+body:not(.light-mode) .library-select { background-color: var(--surface-lift); }
+body:not(.light-mode) :is(.featured-shell, .chess-card, .collection-summary, .author-profile-shell) { box-shadow: 0 2px 5px #0003; }
+body:not(.light-mode) :is(.chess-card, .collection-summary):hover { background: #2d2a26; box-shadow: 0 4px 12px #0004; }
+body:not(.light-mode) :is(.filter-chip, .featured-btn:not(.primary-action), .search-shortcut, .fav-btn, #latestSection .section-heading button, #surpriseBtn, #themeToggle, #toTopBtn) { border-color: transparent; background: var(--surface-lift); }
+body:not(.light-mode) :is(.filter-chip, .featured-btn:not(.primary-action), #latestSection .section-heading button, #surpriseBtn, #themeToggle, #toTopBtn):hover { background: #45413b; box-shadow: 0 2px 4px #0003; }
+body:not(.light-mode) :is(.filter-chip.active, .fav-btn.active) { background: var(--accent-soft); color: var(--accent); }
+body:not(.light-mode) .library-tabs a { border-bottom-color: transparent; }
+body:not(.light-mode) .library-tabs a[aria-current="page"] { border-bottom-color: var(--accent); }
+body:not(.light-mode) .scf-discovery-links a { border-color: transparent; }
+body:not(.light-mode) .scf-discovery-links a:hover { text-decoration: underline; }
+body:not(.light-mode) .search-container input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+body:not(.light-mode) .scf-schedule :is(th, td) { border-color: transparent; }
+body:not(.light-mode) .scf-schedule tbody tr:nth-child(even) { background: var(--surface-soft); }
 @media (max-width: 1000px) {
     .library-filter-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .community-library-note { gap: 30px; }
