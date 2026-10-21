@@ -1,0 +1,14 @@
+﻿import fs from 'node:fs/promises';
+import {libraryContext,fetchLibrary} from './lib/library-context.mjs';
+const context=await libraryContext();
+const studies=await fetchLibrary(context);
+const names=[...new Set(studies.flatMap(s=>s.authors))];
+const handle=name=>name.replace(/^(?:GM|IM|FM|CM|NM|WGM|WIM|WFM|WCM)\s+/i,'').toLowerCase();
+const ids=[...new Set(names.map(handle).filter(x=>/^[a-z0-9_-]{2,30}$/.test(x)))];
+const response=await fetch('https://lichess.org/api/users',{method:'POST',headers:{'Content-Type':'text/plain'},body:ids.join(','),signal:AbortSignal.timeout(30000)});
+if(!response.ok)throw Error(`Lichess returned ${response.status}; existing snapshot preserved.`);
+const users=await response.json();
+const titles=new Map(users.filter(u=>/^(GM|IM|FM|CM|NM|WGM|WIM|WFM|WCM)$/.test(u.title)).map(u=>[u.id.toLowerCase(),u.title]));
+const authors=Object.fromEntries(names.filter(n=>titles.has(handle(n))).map(n=>[n.toLowerCase(),{title:titles.get(handle(n)),username:handle(n)}]));
+await fs.writeFile('generated/titled-authors.json',JSON.stringify({checkedAt:new Date().toISOString(),source:'https://lichess.org/api/users',authors},null,2)+'\n');
+console.log(`Verified ${Object.keys(authors).length} titled library authors.`);

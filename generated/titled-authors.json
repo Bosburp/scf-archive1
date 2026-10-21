@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-21T12:06:39.200Z",
+  "source": "https://lichess.org/api/users",
+  "authors": {
+    "im theheartofchess": {
+      "title": "IM",
+      "username": "theheartofchess"
+    },
+    "im hsgm": {
+      "title": "IM",
+      "username": "hsgm"
+    },
+    "fm mr_penings": {
+      "title": "FM",
+      "username": "mr_penings"
+    },
+    "nm chessdoofus": {
+      "title": "NM",
+      "username": "chessdoofus"
+    },
+    "kpio91": {
+      "title": "GM",
+      "username": "kpio91"
+    },
+    "fm zig_zag_zug_zwang": {
+      "title": "FM",
+      "username": "zig_zag_zug_zwang"
+    }
+  }
+}

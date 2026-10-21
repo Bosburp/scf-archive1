@@ -8,6 +8,7 @@ let currentFilter = 'All',
     currentVariationFilter = 'All Variations',
     currentSideFilter = 'Any Side',
     currentStaffPickFilter = 'Any',
+    currentTitledFilter = false,
     currentAuthor = null,
     currentAuthorFilter = 'All Authors',
     currentThemeFilter = 'All Themes',
@@ -475,6 +476,7 @@ function surpriseMe() {
     currentVariationFilter = 'All Variations';
     currentSideFilter = 'Any Side';
     currentStaffPickFilter = 'Any';
+    currentTitledFilter = false;
     currentAuthor = null;
     currentAuthorFilter = 'All Authors';
     currentThemeFilter = 'All Themes';
@@ -741,6 +743,17 @@ function showLoadErrorState() {
     document.getElementById('liveCounter').innerText = 'ARCHIVE UNAVAILABLE';
 }
 
+function isTitledStudy(study) {
+    return (study.authors || [study.author]).some(author => Boolean(window.titledAuthors?.authors?.[cleanAuthorName(author).toLowerCase()]));
+}
+async function loadTitledAuthors() {
+    try {
+        const response = await fetch('/generated/titled-authors.json', { cache: 'no-cache' });
+        if (!response.ok) throw new Error('Title data unavailable');
+        window.titledAuthors = await response.json();
+    } catch { window.titledAuthors = { authors: {} }; }
+}
+
 async function loadAuthorData() {
     try {
         const csv = await fetchCsvCached(authorSheetUrl, 'scf-author-csv');
@@ -826,6 +839,7 @@ async function loadData() {
 
     try {
         await loadAuthorData();
+        await loadTitledAuthors();
         await loadStudyPreviewData();
         await loadGeneratedStudyData();
 
@@ -1466,7 +1480,7 @@ function renderArchive() {
         const matchesTheme = currentThemeFilter === 'All Themes' || (i.themes || []).includes(currentThemeFilter);
         const matchesFavorite = (!showFavoritesOnly || renderFavorites.has(i.link));
 
-        return matchesText && matchesOpening && matchesVariation && matchesCategory && matchesStaffPick && matchesSide && matchesAuthor && matchesTheme && matchesFavorite;
+        return (!currentTitledFilter || isTitledStudy(i)) && matchesText && matchesOpening && matchesVariation && matchesCategory && matchesStaffPick && matchesSide && matchesAuthor && matchesTheme && matchesFavorite;
     });
 
     filtered = getSortedStudies(filtered, term);
@@ -1478,7 +1492,7 @@ function renderArchive() {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-    const isSearchingOrFiltering = term.length > 0 || currentOpeningFilter !== 'All Openings' || currentVariationFilter !== 'All Variations' || currentFilter !== 'All' || currentStaffPickFilter !== 'Any' || currentSideFilter !== 'Any Side' || currentAuthorFilter !== 'All Authors' || currentThemeFilter !== 'All Themes' || showFavoritesOnly;
+    const isSearchingOrFiltering = currentTitledFilter || term.length > 0 || currentOpeningFilter !== 'All Openings' || currentVariationFilter !== 'All Variations' || currentFilter !== 'All' || currentStaffPickFilter !== 'Any' || currentSideFilter !== 'Any Side' || currentAuthorFilter !== 'All Authors' || currentThemeFilter !== 'All Themes' || showFavoritesOnly;
     const latestSec = document.getElementById('latestSection');
     const recentSec = document.getElementById('recentlyViewedSection');
     const featuredSec = document.getElementById('featuredSection');
@@ -1566,6 +1580,7 @@ function readUrlParams() {
     const variation = params.get('variation');
     const side = params.get('side');
     const staff = params.get('staff');
+    currentTitledFilter = params.get('titled') === '1';
     const author = params.get('author');
     const authorFilter = params.get('authorFilter');
     const theme = params.get('theme');
@@ -1601,6 +1616,7 @@ function syncUrlParams(term) {
         return;
     }
 
+    if (currentTitledFilter) params.set('titled', '1');
     if (term) params.set('q', term);
     if (currentOpeningFilter !== 'All Openings') params.set('opening', currentOpeningFilter);
     if (currentVariationFilter !== 'All Variations') params.set('variation', currentVariationFilter);
@@ -1646,6 +1662,7 @@ function resetFilters() {
     currentVariationFilter = 'All Variations';
     currentSideFilter = 'Any Side';
     currentStaffPickFilter = 'Any';
+    currentTitledFilter = false;
     currentAuthor = null;
     currentAuthorFilter = 'All Authors';
     currentThemeFilter = 'All Themes';
@@ -1665,6 +1682,8 @@ window.onscroll = function() {
 function createFilters() {
     populateSelect('categorySelect', ['All', ...getCategoryOptions()], currentFilter);
     document.getElementById('staffSelect').value = currentStaffPickFilter;
+    const titledSelect = document.getElementById('titledSelect');
+    if (titledSelect) titledSelect.value = currentTitledFilter ? 'Yes' : 'Any';
     const openingField = document.getElementById('openingFilterField');
     const variationField = document.getElementById('variationFilterField');
     if (isOpeningCategoryGroup(currentFilter)) {
@@ -1693,6 +1712,7 @@ function getCompatibleStudies(exclude = '') {
     const favorites = getFavorites();
 
     return window.chessData.filter(study => {
+        if (exclude !== 'titled' && currentTitledFilter && !isTitledStudy(study)) return false;
         if (exclude !== 'search' && term && !matchesSearch(study, term)) return false;
         if (exclude !== 'opening' && currentOpeningFilter !== 'All Openings' && study.opening !== currentOpeningFilter) return false;
         if (exclude !== 'specificOpening' && currentVariationFilter !== 'All Variations' && !(study.specificOpenings || [study.specificOpening]).includes(currentVariationFilter)) return false;
@@ -1755,6 +1775,7 @@ function renderActiveFilters(resultCount) {
 
     const term = document.getElementById('searchInput').value.trim();
     const filters = [];
+    if (currentTitledFilter) filters.push(['Players', 'Titled only', 'titled']);
     if (term) filters.push(['Search', term, 'search']);
     if (currentFilter !== 'All') filters.push(['Category', currentFilter, 'category']);
     if (currentOpeningFilter !== 'All Openings') filters.push(['Opening', currentOpeningFilter, 'opening']);
@@ -1785,6 +1806,7 @@ function renderActiveFilters(resultCount) {
 }
 
 window.clearFilter = (key) => {
+    if (key === 'titled') currentTitledFilter = false;
     if (key === 'search') document.getElementById('searchInput').value = '';
     if (key === 'opening') currentOpeningFilter = 'All Openings';
     if (key === 'variation') currentVariationFilter = 'All Variations';
@@ -1809,6 +1831,15 @@ window.setFilter = (cat) => {
     createFilters();
     renderArchive();
 };
+
+document.getElementById('titledSelect')?.addEventListener('change', e => {
+    currentTitledFilter = e.target.value === 'Yes';
+    currentAuthor = null;
+    currentPage = 1;
+    pendingUrlPush = true;
+    createFilters();
+    renderArchive();
+});
 
 document.getElementById('searchInput').addEventListener('input', (e) => {
     updateSearchSuggestions(e.target.value.trim());
@@ -1899,6 +1930,7 @@ window.addEventListener('popstate', () => {
     currentVariationFilter = 'All Variations';
     currentSideFilter = 'Any Side';
     currentStaffPickFilter = 'Any';
+    currentTitledFilter = false;
     currentAuthor = null;
     currentAuthorFilter = 'All Authors';
     currentThemeFilter = 'All Themes';
