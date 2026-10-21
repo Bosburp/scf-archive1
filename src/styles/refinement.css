@@ -107,7 +107,10 @@ a, button, input, select { -webkit-tap-highlight-color: transparent; }
 .card-image, .chess-card:hover .card-image, .featured-image img, .collection-summary > img { filter: none; transform: none; opacity: 1; }
 .card-image-wrap { background: var(--surface-soft); }
 .image-vignette { display: none; }
-.study-card-body { padding: 20px; gap: 9px; min-height: 215px; }
+.study-card-body { display: flex; flex-direction: column; padding: 18px 20px 20px; gap: 10px; min-height: 175px; flex: 1; }
+.study-card-body > .flex { margin-bottom: 0; }
+.card-note:empty { display: none; }
+.study-card-body .card-open-link { margin-top: auto; padding-top: 8px; align-self: flex-start; }
 .card-category { font-size: 10px; font-weight: 500; letter-spacing: .035em; font-style: normal; }
 .card-title { font: 500 19px/1.35 Inter, Arial, sans-serif; letter-spacing: -.035em; min-height: 0; }
 .card-author, .card-author-link { font-size: 12px; font-weight: 400; letter-spacing: 0; color: var(--text-secondary) !important; }
@@ -212,3 +215,33 @@ body:not(.light-mode) .scf-schedule tbody tr:nth-child(even) { background: var(-
 .library-tabs a[aria-current="page"], body:not(.light-mode) .library-tabs a[aria-current="page"] { color: var(--selection); border-bottom-color: var(--selection); }
 .filter-chip.active, body:not(.light-mode) .filter-chip.active, .active-filter-chip { background: var(--selection-soft); color: var(--selection); border-color: transparent; }
 .community-eyebrow { color: var(--text-secondary); }
+
+/* Keep study cards compact, with depth and a deliberate hover response. */
+.chess-card, .collection-summary {
+    box-shadow: 0 3px 10px #0000000a;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+body:not(.light-mode) :is(.chess-card, .collection-summary) {
+    background: #1e1d1a;
+    box-shadow: 0 4px 12px #0005;
+}
+body:not(.light-mode) .card-image-wrap { background: #24231f; }
+.card-image { transition: transform .25s ease, filter .25s ease; }
+@media (hover: hover) and (pointer: fine) {
+    .chess-card:hover, .collection-summary:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 26px #0000001c;
+    }
+    body:not(.light-mode) :is(.chess-card, .collection-summary):hover {
+        background: #1e1d1a;
+        transform: translateY(-4px);
+        box-shadow: 0 14px 30px #0008;
+    }
+    .chess-card:hover .card-image { transform: scale(1.025); filter: brightness(1.04); }
+}
+.chess-card:focus-within { box-shadow: 0 0 0 2px var(--accent), 0 8px 20px #0003; }
+@media (prefers-reduced-motion: reduce) {
+    .chess-card:hover, body:not(.light-mode) .chess-card:hover,
+    .collection-summary:hover, body:not(.light-mode) .collection-summary:hover,
+    .chess-card:hover .card-image { transform: none; }
+}
