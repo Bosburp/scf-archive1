@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build:site": "npm run build:collections && node scripts/build-community.mjs",
+    "build:site": "npm run build:collections && node scripts/build-community.mjs && npm run build:css",
     "generate:rook-cover": "node scripts/generate-rook-cover.mjs",
     "build:collections": "node scripts/build-collections.mjs",
     "test:collections": "node scripts/test-collections.mjs",
@@ -10,12 +10,16 @@
     "audit:screenshot-thumbnails": "node scripts/audit-screenshot-thumbnails.mjs",
     "test:thumbnails": "node scripts/test-thumbnails.mjs",
     "qa:static": "node scripts/qa-static-production.mjs",
-    "check": "node scripts/check-inline-script.mjs"
+    "check": "node scripts/check-inline-script.mjs",
+    "build:css": "tailwindcss -c tailwind.config.cjs -i src/styles/utilities.css -o assets/site-utilities.css --minify",
+    "test:site": "node scripts/test-site-refinement.mjs",
+    "update:titled-authors": "node scripts/update-titled-authors.mjs"
   },
   "dependencies": {
     "chess.js": "^1.0.0"
   },
   "devDependencies": {
-    "playwright": "^1.63.0"
+    "playwright": "^1.63.0",
+    "tailwindcss": "3.4.17"
   }
 }

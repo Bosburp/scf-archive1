@@ -396,16 +396,24 @@ function selectVariationSuggestion(variation) {
     renderArchive();
 }
 
+let modalReturnFocus = null;
+function toggleModal(id) {
+    const el = document.getElementById(id);
+    const opening = el.classList.contains('hidden');
+    el.classList.toggle('hidden', !opening);
+    document.body.style.overflow = opening ? 'hidden' : '';
+    document.querySelector('body > .site-layer').inert = opening;
+    if (opening) {
+        modalReturnFocus = document.activeElement;
+        el.querySelector('button')?.focus();
+    } else { modalReturnFocus?.focus(); }
+}
 function toggleAbout() {
-    const el = document.getElementById('aboutPage');
-    el.classList.toggle('hidden');
-    document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+    toggleModal('aboutPage');
 }
 
 function toggleSubmit() {
-    const el = document.getElementById('submitPage');
-    el.classList.toggle('hidden');
-    document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+    toggleModal('submitPage');
 }
 
 function toggleTheme() {
@@ -535,7 +543,11 @@ function toggleFavorite(link, btnEl) {
         favs.add(link);
     }
     saveFavorites(favs);
-    if (btnEl) btnEl.classList.toggle('active', favs.has(link));
+    document.querySelectorAll('[data-favorite-link]').forEach(button => {
+        if (button.dataset.favoriteLink !== link) return;
+        button.classList.toggle('active', favs.has(link));
+        button.setAttribute('aria-pressed', String(favs.has(link)));
+    });
     if (showFavoritesOnly) renderArchive();
 }
 
@@ -705,6 +717,7 @@ async function fetchCsvCached(url, cacheKey) {
 
     try {
         const res = await fetch(url);
+        if (!res.ok) throw new Error('Library data could not be loaded');
         const csv = await res.text();
         writeCache(cacheKey, csv);
         return csv;
@@ -838,12 +851,10 @@ async function loadData() {
     showLoadingState();
 
     try {
-        await loadAuthorData();
-        await loadTitledAuthors();
-        await loadStudyPreviewData();
-        await loadGeneratedStudyData();
-
-        const csv = await fetchCsvCached(sheetUrl, 'scf-studies-csv');
+        const [, , , , csv] = await Promise.all([
+            loadAuthorData(), loadTitledAuthors(), loadStudyPreviewData(), loadGeneratedStudyData(),
+            fetchCsvCached(sheetUrl, 'scf-studies-csv')
+        ]);
         window.chessData = parseStudyRows(csv);
 
         markNewStudies(window.chessData);
@@ -863,8 +874,9 @@ async function loadData() {
 
 function startCarouselAutoplay() {
     clearInterval(carouselInterval);
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
     carouselInterval = setInterval(() => {
-        if (document.hidden) return;
+        if (document.hidden || document.querySelector('#latestSection:hover, #latestSection:focus-within')) return;
         moveCarousel(1);
     }, 8000);
 }
@@ -1052,7 +1064,7 @@ function renderFeaturedStudy() {
         <div class="featured-shell">
             <div class="featured-layout grid md:grid-cols-[minmax(280px,390px)_minmax(0,1fr)]">
                 <a href="${featured.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${featured.link.replace(/'/g, "\\'")}')" class="featured-image ${thumbnailClass} block relative">
-                    <img src="${featured.image}" alt="${featured.title}" onerror="this.src='assets/thumbnails/5SfDslVB-chapter1-200de70c3b.svg'">
+                    <img src="${featured.image}" alt="${escapeHTML(featured.title)}" width="390" height="390" decoding="async" onerror="this.src='assets/thumbnails/5SfDslVB-chapter1-200de70c3b.svg'">
                 </a>
 
                 <div class="featured-copy-panel flex flex-col justify-center relative z-10 border-t md:border-t-0 md:border-l">
@@ -1147,13 +1159,13 @@ function cardHtml(i, favorites = getFavorites()) {
     <div class="chess-card flex flex-col group relative">
         ${isStar ? `<div class="absolute top-0 right-0 z-40 staff-pick-ribbon px-3 py-1 font-bold text-[8px] brand-font uppercase tracking-tighter shadow-md">&#9733; Staff Pick</div>` : ''}
         ${noteOverlay}
-        <button onclick="toggleFavorite('${favoriteLink.replace(/'/g, "\\'")}', this)" data-favorite-link="${escapeHTML(favoriteLink)}" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/80 hover:text-[var(--accent)]" title="Save to favorites">
+        <button onclick="toggleFavorite('${favoriteLink.replace(/'/g, "\\'")}', this)" data-favorite-link="${escapeHTML(favoriteLink)}" class="fav-btn ${favActive} absolute ${favTopClass} right-3 z-40 text-white/80 hover:text-[var(--accent)]" title="Save to favorites" aria-label="Save ${escapeHTML(i.title)} to favorites" aria-pressed="${favActive ? 'true' : 'false'}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
         </button>
 
         <a href="${i.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-media ${thumbnailClass} w-full relative block">
             <div class="card-image-wrap ${thumbnailClass}">
-                <img src="${i.image}" class="card-image" alt="${i.title}" loading="lazy" decoding="async" onerror="this.src='assets/thumbnails/5SfDslVB-chapter1-200de70c3b.svg'">
+                <img src="${i.image}" class="card-image" alt="${escapeHTML(i.title)}" loading="lazy" decoding="async" onerror="this.src='assets/thumbnails/5SfDslVB-chapter1-200de70c3b.svg'">
                 <div class="image-vignette"></div>
                 <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
                     ${i.isNew ? `<div class="new-tag brand-font">New</div>` : ''}
@@ -1173,11 +1185,11 @@ function cardHtml(i, favorites = getFavorites()) {
                 </button>
             </div>
 
-            <a href="${i.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-title brand-font parchment-text hover:text-[var(--accent)] transition-colors" title="${escapeHTML(i.title)}">${i.title}</a>
+            <a href="${i.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-title brand-font parchment-text hover:text-[var(--accent)] transition-colors" title="${escapeHTML(i.title)}">${escapeHTML(i.title)}</a>
 
             <div class="card-author" title="By ${escapeHTML(authorDisplay(i))}">By ${authorLinksHtml(i)}</div>
 
-            <p class="card-note text-zinc-500 text-[11px] italic leading-relaxed">${i.notes.replace(/STAR/gi, '')}</p>
+            <p class="card-note text-zinc-500 text-[11px] italic leading-relaxed">${escapeHTML(i.notes.replace(/STAR/gi, ''))}</p>
 
             <a href="${i.link}" target="_blank" rel="noopener noreferrer" onclick="return handleStudyLinkClick(event, '${i.link.replace(/'/g, "\\'")}')" class="card-open-link brand-font">Hosted on Lichess &middot; Open &rarr;</a>
             ${typeof studyDetailsLink === 'function' ? studyDetailsLink(i.link) : ''}
@@ -1545,12 +1557,12 @@ function renderArchive() {
         featuredSec.style.display = 'block';
     }
     authorSec.classList.add('hidden');
-    archiveHeader.textContent = totalPages > 1 ? `Full Archive - Page ${currentPage} of ${totalPages}` : 'Full Archive';
+    archiveHeader.textContent = totalPages > 1 ? `All studies / Page ${currentPage} of ${totalPages}` : 'All studies';
 
     const counter = document.getElementById('liveCounter');
     counter.innerText = isSearchingOrFiltering
-        ? `SHOWING ${filtered.length} OF ${window.chessData.length} STUDIES - PAGE ${currentPage}/${totalPages}`
-        : `LIBRARY TOTAL: ${window.chessData.length}`;
+        ? `${filtered.length} of ${window.chessData.length} studies / Page ${currentPage} of ${totalPages}`
+        : `${window.chessData.length} studies in the library`;
 
     syncUrlParams(term);
 
@@ -1832,6 +1844,11 @@ window.setFilter = (cat) => {
     renderArchive();
 };
 
+document.getElementById('mobileFilterToggle')?.addEventListener('click', e => {
+    const expanded = e.currentTarget.closest('.filter-panel').classList.toggle('filters-expanded');
+    e.currentTarget.setAttribute('aria-expanded', String(expanded));
+});
+
 document.getElementById('titledSelect')?.addEventListener('change', e => {
     currentTitledFilter = e.target.value === 'Yes';
     currentAuthor = null;
@@ -1944,6 +1961,13 @@ window.addEventListener('popstate', () => {
 });
 
 document.addEventListener('keydown', (e) => {
+    const modal = document.querySelector('.modal-overlay:not(.hidden)');
+    if (modal && e.key === 'Tab') {
+        const focusable = [...modal.querySelectorAll('a[href], button, input, select, textarea, [tabindex="0"]')];
+        const first = focusable[0], last = focusable.at(-1);
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+    }
     if (e.key === 'Escape') {
         const about = document.getElementById('aboutPage');
         const submit = document.getElementById('submitPage');
@@ -1953,7 +1977,7 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-    if (e.key === '/' && document.activeElement.id !== 'searchInput') {
+    if (e.key === '/' && !modal && !document.activeElement.matches('input, textarea, select, [contenteditable="true"]') && !document.body.classList.contains('collections-view')) {
         e.preventDefault();
         document.getElementById('searchInput').focus();
     }

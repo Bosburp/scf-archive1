@@ -22,6 +22,7 @@ for (const collection of [null, ...collections]) {
     const description = collection?.description || 'Explore curated chess study collections, including rook endgames and Bosburp\'s White and Black opening repertoire recommendations. Free community studies on Lichess.';
     let html = template.replace('<head>', '<head>\n    <base href="/">')
         .replace('<body class="', '<body class="collections-view ')
+        .replace('href="#libraryControls" class="skip-link">Skip to studies', `href="${route}#collectionsContent" class="skip-link">Skip to content`)
         .replace(/<title>[^<]*<\/title>/, `<title>${escape(title)} | Chess Study Library</title>`)
         .replace(/(<meta name="description" content=")[^"]*/, `$1${escape(description)}`)
         .replace(/(<link rel="canonical" href=")[^"]*/, `$1${origin}${route}`)
@@ -51,7 +52,7 @@ for (const collection of [null, ...collections]) {
     const end = html.indexOf('        <footer class="site-footer">');
     if (start < 0 || end < start) throw new Error('Library template boundaries changed');
     html = html.slice(0, start)
-        + `<main id="collectionsContent" data-collection="${slug}">${context.collectionPageHtml(collection, studies)}</main>\n`
+        + `<main id="collectionsContent" tabindex="-1" data-collection="${slug}">${context.collectionPageHtml(collection, studies)}</main>\n`
         + '<div hidden>\n' + html.slice(start, end) + '</div>\n' + html.slice(end);
     await fs.mkdir('collections/' + slug, { recursive: true });
     await fs.writeFile(`collections/${slug ? slug + '/' : ''}index.html`, html.replace(/[\t ]+\r?$/gm, ''));

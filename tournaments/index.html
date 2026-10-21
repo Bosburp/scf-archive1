@@ -32,17 +32,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://docs.google.com">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/site-utilities.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"SCF Daily Swiss Tournaments","description":"The Study Creators & Friends daily Swiss schedule: five rated standard chess tournaments, UTC start times, time controls and rounds. Join through the SCF Lichess team.","url":"https://chessstudylibrary.vercel.app/tournaments/","isPartOf":{"@type":"WebSite","name":"Chess Study Library","url":"https://chessstudylibrary.vercel.app/"}}</script>
 
     <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="src/styles/refinement.css">
 
 </head>
 <body class="collections-view light-mode min-h-screen px-0 pt-0 pb-0">
 
-    <div id="copyToast" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
+    <a href="/tournaments/#communityContent" class="skip-link">Skip to content</a>
+    <div id="copyToast" role="status" class="copy-toast brand-font uppercase tracking-widest">Link Copied to Clipboard</div>
 
     <button id="surpriseBtn" onclick="surpriseMe()" title="Surprise Me (Random Study)">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -56,13 +58,13 @@
         </svg>
     </button>
 
-    <button id="toTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <button id="toTopBtn" aria-label="Back to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
 
-    <div id="aboutPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
+    <div id="aboutPage" role="dialog" aria-modal="true" aria-label="About SCF" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center site-layer">
             <button onclick="toggleAbout()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-[var(--heading)] transition-colors">&larr; Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">ABOUT US</h2>
@@ -74,7 +76,7 @@
         </div>
     </div>
 
-    <div id="submitPage" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
+    <div id="submitPage" role="dialog" aria-modal="true" aria-label="Submit a study" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-8">
         <div class="max-w-3xl mx-auto text-center site-layer">
             <button onclick="toggleSubmit()" class="gold-accent brand-font uppercase tracking-widest text-[10px] mb-12 hover:text-[var(--heading)] transition-colors">&larr; Close</button>
             <h2 class="text-3xl brand-font parchment-text mb-10 uppercase tracking-[0.4em]">SUBMIT A STUDY</h2>
@@ -95,15 +97,15 @@
 
     <div class="max-w-6xl mx-auto site-layer">
         <header class="site-header">
-            <div class="brand-block">
+            <a class="brand-block" href="/" aria-label="Chess Study Library home">
                 <img src="assets/brand/csl-mark.svg" alt="" class="brand-mark" aria-hidden="true">
                 <div class="brand-copy">
                     <p class="brand-title brand-font font-light parchment-text">Chess Study Library</p>
                     <p class="brand-subtitle brand-font font-semibold uppercase">Hosted by Study Creators & Friends</p>
                 </div>
-            </div>
+            </a>
             <div class="header-actions">
-                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-2 border transition-all">
+                <a href="https://discord.gg/sD7sCvyHMa" target="_blank" rel="noopener noreferrer" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-2 border transition-all">
                     <svg class="h-4 w-4 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                     <span class="relative z-10">Discord</span>
                 </a>
@@ -112,13 +114,9 @@
                     <span class="relative z-10">Submit Study</span>
                 </button>
 
-                <a href="https://lichess.org/team/study-creators--friends" target="_blank" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-2 border transition-all group">
-                    <img src="https://lichess1.org/assets/_6m999D/logo/lichess-favicon-256.png" class="w-3 h-3 relative z-10" alt="Lichess" loading="lazy">
-                    <span class="relative z-10">Lichess</span>
-                </a>
+                <a href="https://lichess.org/team/study-creators--friends" target="_blank" rel="noopener noreferrer" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase flex items-center gap-2 border transition-all group">
 
-                <a href="/about/" class="header-btn px-4 py-2 rounded-sm text-[9px] brand-font font-bold uppercase border transition-all">
-                    <span class="relative z-10">About Us</span>
+                    <span class="relative z-10">Lichess</span>
                 </a>
 
             </div>
@@ -131,7 +129,7 @@
             <a href="/about/">About SCF</a>
         </nav>
 
-<main id="communityContent" class="scf-page"><header class="collection-intro"><h1>SCF Daily Swiss Tournaments</h1></header><section><h2>Five opportunities to play each day</h2><p>Put your study into practice with the SCF community. Our regular Swiss tournaments are rated standard chess and are restricted to Study Creators &amp; Friends team members.</p>
+<main id="communityContent" tabindex="-1" class="scf-page"><header class="collection-intro"><h1>SCF Daily Swiss Tournaments</h1></header><section><h2>Five opportunities to play each day</h2><p>Put your study into practice with the SCF community. Our regular Swiss tournaments are rated standard chess and are restricted to Study Creators &amp; Friends team members.</p>
             <table class="scf-schedule"><caption>Regular daily schedule. All start times are UTC.</caption><thead><tr><th scope="col">UTC</th><th scope="col">Tournament</th><th scope="col">Time control</th><th scope="col">Rounds</th></tr></thead>
             <tbody><tr><th scope="row">00:00</th><td>SCF Americas Swiss</td><td>5+0</td><td>7</td></tr><tr><th scope="row">04:00</th><td>SCF Asia-Pacific Swiss</td><td>3+2</td><td>7</td></tr><tr><th scope="row">09:00</th><td>SCF Global Morning Swiss</td><td>5+0</td><td>7</td></tr><tr><th scope="row">14:00</th><td>SCF Global Rapid Swiss</td><td>10+0</td><td>5</td></tr><tr><th scope="row">19:00</th><td>SCF Prime Swiss</td><td>3+2</td><td>9</td></tr></tbody></table>
             <p>Time controls show minutes per player plus the increment in seconds per move. For example, 3+2 means three minutes plus two seconds after each move.</p>
@@ -141,24 +139,41 @@
 <div hidden>
         <section id="communityLibraryNote" class="community-library-note">
             <div>
-                <p class="community-eyebrow brand-font">SCF Community</p>
-                <h2>Community studies, easier to discover.</h2>
+                <p class="community-eyebrow brand-font">Selected by Study Creators &amp; Friends</p>
+                <h2>Find your next<br><span>chess study.</span></h2>
             </div>
-            <div><p>Creators make the studies. Lichess hosts them. SCF curates and organizes excellent educational material so it is easier to find. Study ownership and attribution stay with the original creators on Lichess.</p>
-            <nav class="scf-discovery-links" aria-label="Explore SCF"><a href="/collections/rook-endgames/">Rook endgames</a><a href="/collections/bosburp-opening-repertoire/">Bosburp's White repertoire</a><a href="/collections/bosburp-black-repertoire/">Bosburp's Black repertoire</a><a href="/tournaments/">Daily Swiss schedule</a></nav></div>
+            <div class="library-introduction">
+                <p>Thoughtful analysis. Clear explanations. Free studies from people who love the game, reviewed by our community and ready to explore on Lichess.</p>
+                <nav class="scf-discovery-links" aria-label="Start exploring">
+                    <a href="/?staff=1">Staff picks <span aria-hidden="true">&#8599;</span></a>
+                    <a href="/?titled=1">Titled players <span aria-hidden="true">&#8599;</span></a>
+                    <a href="/collections/">Guided collections <span aria-hidden="true">&#8599;</span></a>
+                </nav>
+            </div>
         </section>
 
-        <div id="libraryControls" class="max-w-5xl mx-auto mb-16 md:mb-20 text-center">
+        <div id="libraryControls" tabindex="-1" class="max-w-5xl mx-auto mb-16 md:mb-20 text-center">
             <div class="search-container relative mb-5">
-                <input type="text" id="searchInput" autocomplete="off" placeholder="Search studies, authors, openings, notes, themes... (press / to focus)" class="w-full rounded-sm py-3.5 px-5 text-sm focus:outline-none italic">
+                <label for="searchInput" class="sr-only">Search the study library</label>
+                <svg class="search-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+                <input type="search" id="searchInput" autocomplete="off" placeholder="Search an opening, topic, or author" aria-describedby="searchHint" class="w-full rounded-sm py-3.5 px-5 text-sm focus:outline-none italic">
+                <span id="searchHint" class="search-shortcut" aria-hidden="true">/</span>
                 <div id="searchSuggestions" class="hidden text-left absolute left-0 right-0 mt-2 rounded-sm overflow-hidden z-30" style="background: var(--card); border: 1px solid var(--border);"></div>
             </div>
 
             <div class="filter-panel">
-                <div class="library-filter-grid">
+                <button type="button" id="mobileFilterToggle" class="mobile-filter-toggle" aria-expanded="false" aria-controls="filterGrid">Filter and sort studies</button>
+                <div id="filterGrid" class="library-filter-grid">
                     <label class="library-filter-field">
                         <span class="filter-label">Category</span>
                         <select id="categorySelect" class="library-select brand-font"></select>
+                    </label>
+                    <label class="library-filter-field">
+                        <span class="filter-label">Players</span>
+                        <select id="titledSelect" class="library-select brand-font" title="Verified Lichess titles. Combine with Staff Pick for recommended studies.">
+                            <option value="Any">All players</option>
+                            <option value="Yes">Titled players only</option>
+                        </select>
                     </label>
                     <label id="openingFilterField" class="library-filter-field">
                         <span class="filter-label">Opening</span>
@@ -213,8 +228,8 @@
 
         <section id="featuredSection" class="mb-14 md:mb-16 hidden">
             <div class="section-heading">
-                <h3 class="section-kicker">Featured Study of the Week</h3>
-                <p class="section-meta">Curated Spotlight</p>
+                <h3 class="section-kicker">Study of the week</h3>
+                <p class="section-meta">Chosen by the community</p>
             </div>
             <div id="featuredStudyContainer"></div>
         </section>
@@ -253,10 +268,10 @@
 
         <div id="latestSection" class="mb-20 transition-opacity duration-500">
             <div class="section-heading">
-                <h3 class="section-kicker">Latest Additions</h3>
+                <h3 class="section-kicker">Recently added</h3>
                 <div class="flex gap-4">
-                    <button onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[var(--accent)] transition-colors text-xs">&larr;</button>
-                    <button onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[var(--accent)] transition-colors text-xs">&rarr;</button>
+                    <button aria-label="Previous studies" onclick="moveCarousel(-1)" class="text-zinc-700 hover:text-[var(--accent)] transition-colors text-xs">&larr;</button>
+                    <button aria-label="Next studies" onclick="moveCarousel(1)" class="text-zinc-700 hover:text-[var(--accent)] transition-colors text-xs">&rarr;</button>
                 </div>
             </div>
             <div class="carousel-viewport">
@@ -264,7 +279,7 @@
             </div>
         </div>
 
-        <h3 id="archiveHeader" class="section-kicker mb-5 border-b border-[var(--border)] pb-2">Full Archive</h3>
+        <h3 id="archiveHeader" class="section-kicker mb-5 border-b border-[var(--border)] pb-2">All studies</h3>
         <div id="noResults" class="empty-state brand-font italic text-zinc-600" style="display:none;">
             <p class="text-lg">No studies match this library view.</p>
             <p class="text-sm mt-2 text-zinc-500">Try a broader opening, category, author, or search term.</p>

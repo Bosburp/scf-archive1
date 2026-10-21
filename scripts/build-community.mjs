@@ -67,13 +67,13 @@ for (const page of pages) {
     const schema = { '@context': 'https://schema.org', '@type': page.route === '/about/' ? 'AboutPage' : 'WebPage',
         name: page.title, description: page.description, url: origin + page.route,
         isPartOf: { '@type': 'WebSite', name: 'Chess Study Library', url: origin + '/' } };
-    let html = template.replace(/<title>[^<]*<\/title>/, `<title>${escape(page.title)} | Chess Study Library</title>`)
+    let html = template.replace(/href="[^"]*#collectionsContent"/, `href="${page.route}#communityContent"`).replace(/<title>[^<]*<\/title>/, `<title>${escape(page.title)} | Chess Study Library</title>`)
         .replace(/(<meta (?:name="description"|property="og:description"|name="twitter:description") content=")[^"]*/g, `$1${escape(page.description)}`)
         .replace(/(<meta (?:property="og:title"|name="twitter:title") content=")[^"]*/g, `$1${escape(page.title)} | Chess Study Library`)
         .replace(/(<link rel="canonical" href=")[^"]*/, `$1${origin}${page.route}`)
         .replace(/(<meta property="og:url" content=")[^"]*/, `$1${origin}${page.route}`)
         .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, `<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`)
-        .replace(/<main id="collectionsContent"[\s\S]*?<\/main>/, `<main id="communityContent" class="scf-page"><header class="collection-intro"><h1>${escape(page.title)}</h1></header>${page.content}</main>`)
+        .replace(/<main id="collectionsContent"[\s\S]*?<\/main>/, `<main id="communityContent" tabindex="-1" class="scf-page"><header class="collection-intro"><h1>${escape(page.title)}</h1></header>${page.content}</main>`)
         .replace('href="/collections/" aria-current="page"', 'href="/collections/"')
         .replace(`<a href="${navRoute}">`, `<a href="${navRoute}" aria-current="page">`);
     if (html.includes('id="collectionsContent"') || !html.includes('id="communityContent"')) throw new Error('Community template boundary changed');
