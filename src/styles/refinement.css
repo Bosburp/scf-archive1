@@ -4,9 +4,9 @@
     --card: #262421; --heading: #ece9e3; --text: #d8d5cf;
     --text-secondary: #bdb9b1; --text-muted: #aaa69e;
     --border: #393631; --border-dark: #504b44;
-    --accent: #69a9e5; --accent-strong: #98c4ed; --gold: #69a9e5;
-    --selection: #ef9b40; --selection-soft: #403021; --button: #286da8; --button-hover: #337fbd;
-    --accent-soft: #253747; --accent-quiet: #252c32;
+    --accent: #c7ae72; --accent-strong: #e1c88d; --gold: #c7ae72;
+    --selection: #d0b574; --selection-soft: #393224; --button: #285b43; --button-hover: #326e51;
+    --accent-soft: #393426; --accent-quiet: #2b2820;
     --surface-lift: #383530;
     --shadow-card: none; --shadow-gold: none;
 }
@@ -15,9 +15,9 @@ body.light-mode {
     --card: #fff; --heading: #292724; --text: #363431;
     --text-secondary: #5c5955; --text-muted: #6b6762;
     --border: #dcd9d4; --border-dark: #b5b0a9;
-    --accent: #246da8; --accent-strong: #184f7e; --gold: #246da8;
-    --selection: #a9550a; --selection-soft: #fae9d6; --button: #286da8; --button-hover: #205b8e;
-    --accent-soft: #e5eff8; --accent-quiet: #f0f5fa;
+    --accent: #80601f; --accent-strong: #604615; --gold: #80601f;
+    --selection: #80601f; --selection-soft: #f1e8d3; --button: #285b43; --button-hover: #204a36;
+    --accent-soft: #f1e8d3; --accent-quiet: #f7f3e9;
     --surface-lift: #e4e1dc;
     --shadow-card: none; --shadow-gold: none;
 }
@@ -57,7 +57,7 @@ a, button, input, select { -webkit-tap-highlight-color: transparent; }
 }
 .community-eyebrow { color: var(--accent); font-size: 10px !important; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; margin-bottom: 14px; }
 .community-library-note h2 { font: 600 clamp(36px, 4.3vw, 58px)/1.07 'Fraunces', Georgia, serif; letter-spacing: -.045em; color: var(--heading); }
-.community-library-note h2 span { color: var(--accent); }
+.community-library-note h2 span { color: var(--heading); }
 .library-introduction > p { font-size: 14px; line-height: 1.85; max-width: 440px; color: var(--text-secondary); }
 .scf-discovery-links { gap: 10px 20px; margin-top: 18px; }
 .scf-discovery-links a { font-size: 12px; font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--border-dark); padding-bottom: 4px; }
@@ -208,7 +208,7 @@ body:not(.light-mode) .scf-schedule tbody tr:nth-child(even) { background: var(-
     *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
 }
 
-/* Blue denotes links/actions; orange denotes the selected view and curator picks. */
+/* Muted gold marks navigation and curation; deep green identifies primary actions. */
 .library-tabs a[aria-current="page"], body:not(.light-mode) .library-tabs a[aria-current="page"] { color: var(--selection); border-bottom-color: var(--selection); }
 .filter-chip.active, body:not(.light-mode) .filter-chip.active, .active-filter-chip { background: var(--selection-soft); color: var(--selection); border-color: transparent; }
 .community-eyebrow { color: var(--text-secondary); }
