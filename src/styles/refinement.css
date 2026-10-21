@@ -232,7 +232,7 @@ body:not(.light-mode) :is(.chess-card, .collection-summary) {
     background: #1e1d1a;
     box-shadow: 0 4px 12px #0005;
 }
-body:not(.light-mode) .card-image-wrap { background: #182820; }
+body:not(.light-mode) .card-image-wrap { background: #292824; }
 .card-image { transition: transform .25s ease, filter .25s ease; }
 @media (hover: hover) and (pointer: fine) {
     .chess-card:hover, .collection-summary:hover {
@@ -254,7 +254,7 @@ body:not(.light-mode) .card-image-wrap { background: #182820; }
 .card-author-link:hover { color: var(--accent-strong) !important; }
 .staff-pick-ribbon { background: #463a20; color: #ebc66e; }
 body.light-mode .staff-pick-ribbon { background: #f2e3b8; color: #705013; }
-body.light-mode .card-image-wrap { background: #e5ece2; }
+body.light-mode .card-image-wrap { background: #f5f5f3; }
 body:not(.light-mode) .chess-card .card-open-link { color: #a3c9ab !important; }
 body.light-mode .chess-card .card-open-link { color: #285b43 !important; }
 @media (prefers-reduced-motion: reduce) {
