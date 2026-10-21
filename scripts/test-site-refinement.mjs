@@ -44,9 +44,9 @@ try {
   }
  }
  await page.setViewportSize({width:390,height:900});await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:output+'/mobile.png'});
- await page.locator('#themeToggle').click();await page.screenshot({path:output+'/mobile-dark.png'});
+ await page.locator('#themeToggle').click();await page.waitForTimeout(400);await page.screenshot({path:output+'/mobile-dark.png'});
  await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:output+'/desktop-dark.png'});
- await page.locator('#themeToggle').click();await page.screenshot({path:output+'/desktop.png'});
+ await page.locator('#themeToggle').click();await page.waitForTimeout(400);await page.screenshot({path:output+'/desktop.png'});
  await page.locator('#resultsGrid').scrollIntoViewIfNeeded();await page.screenshot({path:output+'/cards.png'});
  for(const route of ['/collections/','/about/','/tournaments/','/studies/bnboDhFM/']) {
   await page.goto(base+route);await page.waitForFunction(()=>window.chessData?.length>250);

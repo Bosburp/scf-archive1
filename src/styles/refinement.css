@@ -36,6 +36,9 @@ a, button, input, select { -webkit-tap-highlight-color: transparent; }
     padding: 22px max(32px, calc((100vw - 1176px) / 2)); margin-bottom: 0;
     border-bottom: 1px solid var(--border); overflow: visible;
 }
+.site-header { grid-template-columns: minmax(240px, 1fr) auto auto; }
+.site-header .library-tabs { gap: 24px; border: 0; align-self: stretch; align-items: center; }
+.site-header .library-tabs a { padding: 12px 0; font-size: 12px; }
 .site-header::before { display: none; }
 .brand-block { display: flex; gap: 12px; text-align: left; }
 .brand-mark { width: 40px; height: 40px; border-radius: 8px; box-shadow: none; }
@@ -165,6 +168,9 @@ body:not(.light-mode) .search-container input:focus-visible { outline: 2px solid
 body:not(.light-mode) .scf-schedule :is(th, td) { border-color: transparent; }
 body:not(.light-mode) .scf-schedule tbody tr:nth-child(even) { background: var(--surface-soft); }
 @media (max-width: 1000px) {
+    .site-header { grid-template-columns: minmax(220px, 1fr) auto; }
+    .site-header .library-tabs { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; }
+    .site-header .header-actions { grid-column: 2; grid-row: 1; }
     .library-filter-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .community-library-note { gap: 30px; }
     .header-actions a { display: none; }
@@ -172,7 +178,8 @@ body:not(.light-mode) .scf-schedule tbody tr:nth-child(even) { background: var(-
 }
 @media (max-width: 640px) {
     body > .site-layer > :not(.site-header):not(.site-footer) { width: calc(100% - 36px); }
-    .site-header, body.light-mode .site-header { display: flex; align-items: center; justify-content: space-between; padding: 18px; gap: 12px; }
+    .site-header, body.light-mode .site-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 16px 18px 0; gap: 10px 12px; }
+    .site-header .library-tabs { gap: 22px; width: 100%; }
     .brand-mark { width: 32px; height: 32px; }
     .brand-block { gap: 8px; }
     .brand-title { font-size: 17px; }
@@ -225,7 +232,7 @@ body:not(.light-mode) :is(.chess-card, .collection-summary) {
     background: #1e1d1a;
     box-shadow: 0 4px 12px #0005;
 }
-body:not(.light-mode) .card-image-wrap { background: #24231f; }
+body:not(.light-mode) .card-image-wrap { background: #182820; }
 .card-image { transition: transform .25s ease, filter .25s ease; }
 @media (hover: hover) and (pointer: fine) {
     .chess-card:hover, .collection-summary:hover {
@@ -240,6 +247,16 @@ body:not(.light-mode) .card-image-wrap { background: #24231f; }
     .chess-card:hover .card-image { transform: scale(1.025); filter: brightness(1.04); }
 }
 .chess-card:focus-within { box-shadow: 0 0 0 2px var(--accent), 0 8px 20px #0003; }
+/* Give attribution and chess metadata their own color hierarchy. */
+.forest-tag { background: #285b43; color: #f0f4e9; }
+.card-category { color: var(--gold) !important; }
+.card-author-link { color: var(--gold) !important; }
+.card-author-link:hover { color: var(--accent-strong) !important; }
+.staff-pick-ribbon { background: #463a20; color: #ebc66e; }
+body.light-mode .staff-pick-ribbon { background: #f2e3b8; color: #705013; }
+body.light-mode .card-image-wrap { background: #e5ece2; }
+body:not(.light-mode) .chess-card .card-open-link { color: #a3c9ab !important; }
+body.light-mode .chess-card .card-open-link { color: #285b43 !important; }
 @media (prefers-reduced-motion: reduce) {
     .chess-card:hover, body:not(.light-mode) .chess-card:hover,
     .collection-summary:hover, body:not(.light-mode) .collection-summary:hover,
