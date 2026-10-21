@@ -556,6 +556,7 @@ let showFavoritesOnly = false;
 function toggleFavoritesFilter() {
     showFavoritesOnly = !showFavoritesOnly;
     document.getElementById('favoritesToggle').classList.toggle('active', showFavoritesOnly);
+    document.getElementById('favoritesToggle').setAttribute('aria-pressed', String(showFavoritesOnly));
     currentPage = 1;
     renderArchive();
 }
@@ -1668,6 +1669,9 @@ function backToArchive() {
 }
 
 function resetFilters() {
+    showFavoritesOnly = false;
+    document.getElementById('favoritesToggle').classList.remove('active');
+    document.getElementById('favoritesToggle').setAttribute('aria-pressed', 'false');
     document.getElementById('searchInput').value = '';
     currentFilter = 'All';
     currentOpeningFilter = 'All Openings';
@@ -1806,14 +1810,14 @@ function renderActiveFilters(resultCount) {
 
     box.classList.remove('hidden');
     box.innerHTML = `
-        <span class="filter-label">${resultCount} matching</span>
+
         ${filters.map(([label, value, key]) => `
             <span class="active-filter-chip brand-font">
                 <span>${label}: ${escapeHTML(value)}</span>
                 <button type="button" onclick="clearFilter('${key}')" aria-label="Clear ${escapeHTML(label)}">&times;</button>
             </span>
         `).join('')}
-        <button type="button" onclick="resetFilters()" class="filter-chip brand-font">Clear All</button>
+        <button type="button" onclick="resetFilters()" class="filter-reset">Clear filters</button>
     `;
 }
 

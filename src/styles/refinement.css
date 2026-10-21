@@ -223,6 +223,33 @@ body:not(.light-mode) .scf-schedule tbody tr:nth-child(even) { background: var(-
 .filter-chip.active, body:not(.light-mode) .filter-chip.active, .active-filter-chip { background: var(--selection-soft); color: var(--selection); border-color: transparent; }
 .community-eyebrow { color: var(--text-secondary); }
 
+/* A compact search toolbar, with quieter filters and one reset action. */
+.library-search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+#libraryControls .search-container input { height: 46px; min-height: 46px; border-radius: 6px; padding: 12px 48px; font-size: 14px; }
+#libraryControls .search-icon { top: 14px; width: 18px; height: 18px; }
+#libraryControls .search-shortcut { top: 11px; }
+#libraryControls #favoritesToggle { height: 44px; padding-inline: 14px; white-space: nowrap; }
+#libraryControls .filter-panel { background: transparent; border: 0; padding: 16px 0 0; border-radius: 0; box-shadow: none; }
+#libraryControls .library-filter-grid { gap: 12px; }
+#libraryControls .library-filter-field { gap: 4px; }
+#libraryControls .filter-label { font-size: 10px; color: var(--text-muted); }
+#libraryControls .library-select { height: 36px; min-height: 36px; padding: 6px 24px 6px 10px; background-color: var(--surface); font-size: 12px; }
+#libraryControls .active-filter-bar { margin-top: 12px; padding-top: 0; border: 0; gap: 6px; }
+#libraryControls .active-filter-chip { min-height: 28px; padding: 0 3px 0 10px; gap: 6px; font-size: 11px; border: 0; border-radius: 4px; }
+#libraryControls .active-filter-chip button { font-size: 15px; }
+.filter-reset { color: var(--text-secondary); font-size: 11px; min-height: 32px; padding: 4px 10px; text-decoration: underline; text-underline-offset: 3px; }
+.filter-reset:hover { color: var(--heading); }
+#libraryControls #liveCounter { margin-top: 12px; font-weight: 400; text-transform: none; }
+@media (max-width: 640px) {
+    .library-search-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    #libraryControls #favoritesToggle { justify-self: end; height: 34px; min-height: 34px; }
+    #libraryControls .filter-panel { padding-top: 0; margin-top: -42px; pointer-events: none; }
+    #libraryControls .filter-panel > * { pointer-events: auto; }
+    #libraryControls .mobile-filter-toggle { width: 55%; min-height: 42px; font-size: 12px; }
+    #libraryControls .library-select { min-height: 44px; }
+    #libraryControls .filters-expanded .mobile-filter-toggle { margin-bottom: 10px; }
+}
+
 /* Keep study cards compact, with depth and a deliberate hover response. */
 .chess-card, .collection-summary {
     box-shadow: 0 3px 10px #0000000a;
