@@ -1,11 +1,12 @@
 /* Shared editorial treatment for the library, collections and community pages. */
 :root {
-    --bg: #151b19; --surface: #1d2521; --surface-soft: #26312b;
-    --card: #1d2521; --heading: #f2f4ed; --text: #e4e9e1;
-    --text-secondary: #b5c0b7; --text-muted: #a0afa4;
-    --border: #34433a; --border-dark: #56675c;
-    --accent: #8abea0; --accent-strong: #b0d5be; --gold: #a9c6b1;
-    --accent-soft: #2b3d32; --accent-quiet: #26352d;
+    --bg: #191b1d; --surface: #222527; --surface-soft: #292d2f;
+    --card: #222527; --heading: #f0f1ed; --text: #e0e3e0;
+    --text-secondary: #b8bfbc; --text-muted: #a2aba6;
+    --border: #383e3c; --border-dark: #56605b;
+    --accent: #94bda7; --accent-strong: #b0d5be; --gold: #a5c2b1;
+    --accent-soft: #2b3932; --accent-quiet: #242e28;
+    --surface-lift: #2b2f31;
     --shadow-card: none; --shadow-gold: none;
 }
 body.light-mode {
@@ -17,7 +18,8 @@ body.light-mode {
     --accent-soft: #e7f0e8; --accent-quiet: #f0f5ef;
     --shadow-card: none; --shadow-gold: none;
 }
-body, body.light-mode { background: var(--bg); }
+/* Match the legacy dark selector so it cannot restore a hard-coded black canvas. */
+body, body:not(.light-mode), body.light-mode { background: var(--bg); }
 body::before, body::after { display: none; }
 body > .site-layer { padding: 0; }
 body > .site-layer > :not(.site-header):not(.site-footer) { width: min(100% - 64px, 1176px); }
