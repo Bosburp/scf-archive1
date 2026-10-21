@@ -4,18 +4,21 @@
     --card: #262421; --heading: #ece9e3; --text: #d8d5cf;
     --text-secondary: #bdb9b1; --text-muted: #aaa69e;
     --border: #393631; --border-dark: #504b44;
-    --accent: #94bda7; --accent-strong: #b0d5be; --gold: #a5c2b1;
-    --accent-soft: #2b3932; --accent-quiet: #242e28;
+    --accent: #69a9e5; --accent-strong: #98c4ed; --gold: #69a9e5;
+    --selection: #ef9b40; --selection-soft: #403021; --button: #286da8; --button-hover: #337fbd;
+    --accent-soft: #253747; --accent-quiet: #252c32;
     --surface-lift: #383530;
     --shadow-card: none; --shadow-gold: none;
 }
 body.light-mode {
-    --bg: #f8f9f6; --surface: #fff; --surface-soft: #eef1eb;
-    --card: #fff; --heading: #172d25; --text: #253b32;
-    --text-secondary: #52645a; --text-muted: #64736a;
-    --border: #dce3da; --border-dark: #a9b9ac;
-    --accent: #236448; --accent-strong: #174a34; --gold: #326348;
-    --accent-soft: #e7f0e8; --accent-quiet: #f0f5ef;
+    --bg: #f1f1ef; --surface: #fff; --surface-soft: #e8e7e4;
+    --card: #fff; --heading: #292724; --text: #363431;
+    --text-secondary: #5c5955; --text-muted: #6b6762;
+    --border: #dcd9d4; --border-dark: #b5b0a9;
+    --accent: #246da8; --accent-strong: #184f7e; --gold: #246da8;
+    --selection: #a9550a; --selection-soft: #fae9d6; --button: #286da8; --button-hover: #205b8e;
+    --accent-soft: #e5eff8; --accent-quiet: #f0f5fa;
+    --surface-lift: #e4e1dc;
     --shadow-card: none; --shadow-gold: none;
 }
 /* Match the legacy dark selector so it cannot restore a hard-coded black canvas. */
@@ -42,8 +45,8 @@ a, button, input, select { -webkit-tap-highlight-color: transparent; }
 .header-btn, .featured-btn { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border-radius: 6px; font: 500 12px/1.3 Inter, Arial, sans-serif; letter-spacing: 0; text-transform: none; box-shadow: none; }
 .header-btn:not(.primary-action) { background: transparent; border-color: transparent; }
 .header-btn::before, .featured-btn::before, .filter-panel::before { display: none; }
-.primary-action { background: #236448; color: #fff; border: 1px solid #236448; }
-.primary-action:hover { background: #174a34; color: #fff; border-color: #174a34; }
+.primary-action { background: var(--button); color: #fff; border: 1px solid var(--button); }
+.primary-action:hover { background: var(--button-hover); color: #fff; border-color: var(--button-hover); }
 .library-tabs { margin: 0; gap: 30px; font-size: 13px; }
 .library-tabs a { padding: 18px 0 15px; }
 .library-tabs a[aria-current="page"] { font-weight: 600; }
@@ -94,7 +97,8 @@ a, button, input, select { -webkit-tap-highlight-color: transparent; }
 .featured-spotlight-text { font-style: normal; color: var(--text-secondary); }
 .featured-taxonomy-text { font-style: normal; }
 .featured-badge, .forest-tag, .skill-tag, .new-tag { font-size: 9px; letter-spacing: .04em; font-weight: 500; border-radius: 3px; }
-.forest-tag, .featured-badge { background: #236448; color: #fff; }
+.forest-tag, .skill-tag { background: var(--surface-lift); color: var(--text); }
+.featured-badge, .new-tag { background: var(--accent-soft); color: var(--accent); }
 .featured-author-line { margin-bottom: 16px; }
 .featured-author-line a { letter-spacing: 0; }
 .chess-card { border-radius: 8px; box-shadow: none; min-height: 0; overflow: hidden; opacity: 1; transform: none; transition: border-color .15s ease; }
@@ -109,7 +113,7 @@ a, button, input, select { -webkit-tap-highlight-color: transparent; }
 .card-author, .card-author-link { font-size: 12px; font-weight: 400; letter-spacing: 0; color: var(--text-secondary) !important; }
 .card-note { font-size: 13px; font-style: normal; line-height: 1.65; color: var(--text-secondary); }
 .card-open-link { font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none; opacity: 1; color: var(--accent) !important; }
-.staff-pick-ribbon { background: #e7ede2; color: #21482f; box-shadow: none; font-size: 9px; }
+.staff-pick-ribbon { background: var(--selection-soft); color: var(--selection); box-shadow: none; font-size: 9px; }
 .fav-btn { min-width: 32px; min-height: 32px; background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 50%; display: grid; place-items: center; }
 .fav-btn.active { color: var(--accent); background: var(--accent-soft); border-color: var(--accent); }
 .study-card-body button[title="Copy Study Link"] { padding: 6px; margin: -4px; }
@@ -203,3 +207,8 @@ body:not(.light-mode) .scf-schedule tbody tr:nth-child(even) { background: var(-
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
 }
+
+/* Blue denotes links/actions; orange denotes the selected view and curator picks. */
+.library-tabs a[aria-current="page"], body:not(.light-mode) .library-tabs a[aria-current="page"] { color: var(--selection); border-bottom-color: var(--selection); }
+.filter-chip.active, body:not(.light-mode) .filter-chip.active, .active-filter-chip { background: var(--selection-soft); color: var(--selection); border-color: transparent; }
+.community-eyebrow { color: var(--text-secondary); }
